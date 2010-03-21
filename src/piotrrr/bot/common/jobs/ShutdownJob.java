@@ -1,6 +1,6 @@
-package piotrrr.bot.common.jobs;
+package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.smart.MyBot;
+import piotrrr.bot.misc.MyBot;
 
 /**
  * Used to call some methods, when the application is interrupted by 
