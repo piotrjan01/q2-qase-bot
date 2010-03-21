@@ -1,6 +1,6 @@
-package piotrrr.bot.common.jobs;
+package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.smart.MyBot;
+import piotrrr.bot.misc.MyBot;
 
 /**
  * The Job is a job, usually run periodically by the bot.

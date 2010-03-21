@@ -1,6 +1,7 @@
-package piotrrr.bot.common.jobs;
+package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.smart.MyBot;
+import piotrrr.bot.basicbot.SimpleBot;
+import piotrrr.bot.misc.MyBot;
 
 /**
  * Dummy job, that repeats a phrase with given period.
@@ -22,7 +23,11 @@ public class DebugTalk extends Job {
 	public void run() {
 		if (bot.getFrameNumber() - lastFrame < period ) return;
 		lastFrame = bot.getFrameNumber();
-		bot.consoleCommand("say \"I'm alive!\"");
+		float h = bot.getBotHealth();
+		float a = bot.getBotArmor();
+		String st = ((SimpleBot)bot).getCurrentStateName();
+		bot.say("I'm alive! H="+h+" A="+a+" St="+st);
+		
 	}
 
 }
