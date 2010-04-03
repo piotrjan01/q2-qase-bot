@@ -1,4 +1,4 @@
-package piotrrr.thesis.misc;
+package piotrrr.thesis.misc.entities;
 
 import soc.qase.state.Entity;
 
@@ -9,11 +9,10 @@ public class EntityWrapper {
 	String explicitType;
 	
 	/**
-	 * Some additional floating number that can be used on various occasions.
-	 * For example as preference when State Machine is telling which 
-	 * entity types are needed. 
+	 * Some extra field, which can store additional information that can be
+	 * useful to associate it with the entity.
 	 */
-	double fNum;
+	Object extra;
 
 	public EntityWrapper(Entity e) {
 		entity = e;
@@ -25,14 +24,14 @@ public class EntityWrapper {
 		entity = null;
 	}
 	
-	public EntityWrapper(Entity e, double f) {
+	public EntityWrapper(Entity e, Object f) {
 		this(e);
-		fNum = f;
+		extra = f;
 	}
 	
-	public EntityWrapper(String e, double f) {
+	public EntityWrapper(String e, Object f) {
 		this(e);
-		fNum = f;
+		extra = f;
 	}
 
 	@Override

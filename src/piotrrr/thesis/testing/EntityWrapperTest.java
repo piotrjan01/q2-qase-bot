@@ -1,6 +1,6 @@
 package piotrrr.thesis.testing;
 
-import piotrrr.thesis.misc.EntityWrapper;
+import piotrrr.thesis.misc.entities.EntityWrapper;
 import soc.qase.state.Entity;
 
 public class EntityWrapperTest implements Test {

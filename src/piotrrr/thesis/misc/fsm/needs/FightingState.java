@@ -2,10 +2,10 @@ package piotrrr.thesis.misc.fsm.needs;
 
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.misc.EntityWrapper;
+import piotrrr.thesis.misc.entities.EntityWrapper;
 import soc.qase.state.Entity;
 
-public class FightingState implements NeedsState {
+public class FightingState implements State {
 	
 	BotBase bot;
 	
@@ -26,7 +26,7 @@ public class FightingState implements NeedsState {
 	}
 
 	@Override
-	public NeedsState getNextState() {
+	public State getNextState() {
 		float wellness = NeedsFSM.getBotWellness(bot);
 		float firepower = NeedsFSM.getBotFirePower(bot);
 		if (wellness <= NeedsFSM.BAD_WELLNESS) return new HealingState(bot);
