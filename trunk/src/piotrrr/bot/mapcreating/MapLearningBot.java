@@ -2,9 +2,9 @@ package piotrrr.bot.mapcreating;
 
 import java.util.Vector;
 
+import piotrrr.bot.base.BotBase;
 import piotrrr.bot.common.CommFun;
 import piotrrr.bot.common.Dbg;
-import piotrrr.bot.misc.BotBase;
 import piotrrr.bot.movement.MoveInstructions;
 import piotrrr.bot.movement.MovePlan;
 import soc.qase.ai.waypoint.Waypoint;
