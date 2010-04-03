@@ -1,4 +1,4 @@
-package piotrrr.thesis.bot;
+package piotrrr.thesis;
 
 import piotrrr.thesis.bot.mapbot.MapLearningBot;
 import piotrrr.thesis.misc.jobs.ShutdownJob;
