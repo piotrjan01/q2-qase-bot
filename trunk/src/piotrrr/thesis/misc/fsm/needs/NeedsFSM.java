@@ -3,7 +3,7 @@ package piotrrr.thesis.misc.fsm.needs;
 import java.util.LinkedList;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
+import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 
 /**
  * The Finite State Machine that is used to determine how much the bot 

@@ -1,7 +1,7 @@
 package piotrrr.thesis.misc.fsm.needs;
 
 
-import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
+import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 
 /**
  * The interface of the state that can be used by NeedsFSM.
