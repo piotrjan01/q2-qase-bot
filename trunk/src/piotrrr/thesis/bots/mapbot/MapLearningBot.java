@@ -13,6 +13,11 @@ import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
+/**
+ * This bot is capable of learning the map basing on observation of other 
+ * players and its own experiments.
+ * @author Piotr Gwizda³a
+ */
 public class MapLearningBot extends BotBase {
 	
 	Vector<Waypoint> observed = new Vector<Waypoint>();
@@ -53,9 +58,9 @@ public class MapLearningBot extends BotBase {
 				break;
 			case OBSERVE:
 				setNoclip(true);
-				if (plan == null || plan.done == true) {
-					plan = getPlanForObserving();
-				}
+//				if (plan == null || plan.done == true) {
+//					plan = getPlanForObserving();
+//				}
 				observeCommander();
 				instr = getInstructions(plan);
 				break;
@@ -78,7 +83,7 @@ public class MapLearningBot extends BotBase {
 		
 	}
 
-	private MovePath getPlanForObserving() {
+	MovePath getPlanForObserving() {
 		Entity commander = world.getOpponentByName(commanderName);
 		if (commander == null) { 
 			say("I can't see you!"); 
@@ -94,7 +99,7 @@ public class MapLearningBot extends BotBase {
 		if (plan == null) return null;
 		Vector3f playerPos = new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 		if (isPositionReached(plan.dest.getPosition())) {
-			plan.done = true;
+//			plan.done = true;
 			return null;
 		}
 		//else go to the direction of the goal.

@@ -4,7 +4,11 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.entities.EntityType;
 import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 
-public class HealingState implements State {
+/**
+ * This state should be used by bot when it searches for some health packages.
+ * @author Piotr Gwizda³a
+ */
+public class HealingState extends State {
 	
 	BotBase bot;
 	

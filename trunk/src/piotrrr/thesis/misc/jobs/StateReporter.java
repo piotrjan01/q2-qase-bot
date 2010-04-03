@@ -4,7 +4,7 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
 
 /**
- * Dummy job, that repeats a phrase with given period.
+ * This job reports bot's state changes.
  * @author Piotr Gwizda³a
  */
 public class StateReporter extends Job {

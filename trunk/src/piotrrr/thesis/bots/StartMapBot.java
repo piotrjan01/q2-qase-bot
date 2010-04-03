@@ -4,9 +4,13 @@ import piotrrr.thesis.bots.mapbot.MapLearningBot;
 import piotrrr.thesis.misc.jobs.ShutdownJob;
 
 /**
+ * This class is used as a starter of the map learning bots.
+ * It starts the bots programs and tells them where to connect basing
+ * on given configuration.
+ * 
+ * TODO: remove it and merge with another one
  * 
  * @author Piotr Gwizda³a
- *
  */
 public class StartMapBot {
 	

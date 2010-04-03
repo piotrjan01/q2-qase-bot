@@ -2,8 +2,15 @@ package piotrrr.thesis.misc.entities;
 
 import soc.qase.state.Entity;
 
+/**
+ * Wraps the Entity class from QASE with some additional functionality.
+ * @author Piotr Gwizda³a
+ */
 public class EntityWrapper {
 
+	/**
+	 * The entity from QASE.
+	 */
 	Entity entity;
 
 	public EntityWrapper(Entity e) {
@@ -12,6 +19,9 @@ public class EntityWrapper {
 	
 	
 
+	/**
+	 * Returns string representation of entity.
+	 */
 	@Override
 	public String toString() {
 		return "cat = " + entity.getCategory() + "\ntype = " + entity.getType()
@@ -19,8 +29,9 @@ public class EntityWrapper {
 	}
 	
 	/**
-	 * Convenience method.
-	 * @return
+	 * Convenience method. 
+	 * @return The EntityType of this entity.
+	 * @see EntityType
 	 */
 	public EntityType getType() {
 		return EntityType.getEntityType(entity);

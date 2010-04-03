@@ -15,15 +15,8 @@ public class EntityWrapperTest implements Test {
 
 	@Override
 	public boolean runTest() {
-		new T1().runTestCase();
+		assert new T1().runTestCase();
 		return true;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("Starting...");
-		EntityWrapperTest t = new EntityWrapperTest();
-		assert (t.runTest()==true) : "Test failed!";
-		System.out.println("Done!");
-	}
-
 }
