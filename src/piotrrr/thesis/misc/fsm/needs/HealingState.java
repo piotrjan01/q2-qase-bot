@@ -1,6 +1,8 @@
 package piotrrr.thesis.misc.fsm.needs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.misc.entities.EntityType;
+import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 import piotrrr.thesis.misc.entities.EntityWrapper;
 import soc.qase.state.Entity;
 
@@ -15,12 +17,12 @@ public class HealingState implements State {
 	}
 
 	@Override
-	public EntityWrapper []  getDesiredEntities() {
-		EntityWrapper []  ret = { 
-				new EntityWrapper(Entity.TYPE_HEALTH, 0.9),
-				new EntityWrapper(Entity.TYPE_ARMOR, 0.6),
-				new EntityWrapper(Entity.CAT_WEAPONS, 0.2),
-				new EntityWrapper(Entity.TYPE_AMMO, 0.2)
+	public EntityTypeDoublePair []  getDesiredEntities() {
+		EntityTypeDoublePair []  ret = { 
+				new EntityTypeDoublePair(EntityType.HEALTH, 0.9),
+				new EntityTypeDoublePair(EntityType.ARMOR, 0.6),
+				new EntityTypeDoublePair(EntityType.WEAPON, 0.2),
+				new EntityTypeDoublePair(EntityType.AMMO, 0.2)
 		};
 		return ret;
 	}
