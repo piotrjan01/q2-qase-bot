@@ -3,8 +3,6 @@ package piotrrr.thesis.misc.fsm.needs;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.entities.EntityType;
 import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
-import piotrrr.thesis.misc.entities.EntityWrapper;
-import soc.qase.state.Entity;
 
 public class HealingState implements State {
 	

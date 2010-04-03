@@ -2,7 +2,7 @@ package piotrrr.thesis.movement;
 
 import soc.qase.ai.waypoint.Waypoint;
 
-public class MovePlan {
+public class MovePath {
 
 	public Waypoint dest;
 	
@@ -10,7 +10,7 @@ public class MovePlan {
 	
 	public boolean done;
 	
-	public MovePlan(Waypoint dest) {
+	public MovePath(Waypoint dest) {
 		this.dest = dest;
 		this.done = false;
 	}

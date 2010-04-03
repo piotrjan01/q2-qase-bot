@@ -23,5 +23,22 @@ public enum EntityType {
 		return null;
 	}
 	
+	public static EntityType getEntityType(String cat, String type, String subtype) {
+		if (cat.equals(Entity.CAT_WEAPONS)) return EntityType.WEAPON;
+		
+		if (type.equals(Entity.TYPE_HEALTH)
+				|| type.equals(Entity.TYPE_INVULNERABILITY) || 
+				type.equals(Entity.TYPE_MEGAHEALTH)) return EntityType.HEALTH;
+		
+		if (type.equals(Entity.TYPE_ARMOR)) return EntityType.ARMOR;
+		
+		if ((type.equals(Entity.TYPE_AMMO) || type.equals(Entity.TYPE_AMMOPACK))) return EntityType.AMMO;
+		
+		if (cat.equals(Entity.CAT_PLAYERS)) return EntityType.PLAYER;
+		
+		return null;
+	}
+	
+	
 }
 

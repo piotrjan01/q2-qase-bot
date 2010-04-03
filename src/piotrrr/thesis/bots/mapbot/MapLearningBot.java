@@ -7,7 +7,7 @@ import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.Dbg;
 import piotrrr.thesis.misc.jobs.DebugTalk;
 import piotrrr.thesis.movement.MoveInstructions;
-import piotrrr.thesis.movement.MovePlan;
+import piotrrr.thesis.movement.MovePath;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
@@ -35,7 +35,7 @@ public class MapLearningBot extends BotBase {
 	
 	int reachedDistance = 50;
 	
-	MovePlan plan = null;
+	MovePath plan = null;
 
 	public MapLearningBot(String arg0, String arg1) {
 		super(arg0, arg1);
@@ -78,19 +78,19 @@ public class MapLearningBot extends BotBase {
 		
 	}
 
-	private MovePlan getPlanForObserving() {
+	private MovePath getPlanForObserving() {
 		Entity commander = world.getOpponentByName(commanderName);
 		if (commander == null) { 
 			say("I can't see you!"); 
 			return null; 
 		}
-		MovePlan plan = new MovePlan(new Waypoint(commander.getOrigin()));
+		MovePath plan = new MovePath(new Waypoint(commander.getOrigin()));
 		if (isPositionReached(plan.dest.getPosition())) return null;
 		say("Got new plan...");
 		return plan;
 	}
 	
-	private MoveInstructions getInstructions(MovePlan plan) {
+	private MoveInstructions getInstructions(MovePath plan) {
 		if (plan == null) return null;
 		Vector3f playerPos = new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 		if (isPositionReached(plan.dest.getPosition())) {
