@@ -1,8 +1,6 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.simplebot.logic.states.NeedsFSM;
-import piotrrr.thesis.bots.simplebot.navigation.knowledge.SimpleKB;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;

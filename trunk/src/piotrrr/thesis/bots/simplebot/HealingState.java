@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot.logic.states;
+package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.entities.EntityType;

@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot.navigation.knowledge;
+package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.common.entities.EntityType;
 import soc.qase.ai.waypoint.Waypoint;

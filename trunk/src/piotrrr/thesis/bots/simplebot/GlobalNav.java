@@ -1,6 +1,5 @@
-package piotrrr.thesis.bots.simplebot.navigation.global;
+package piotrrr.thesis.bots.simplebot;
 
-import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.common.navigation.NavPlan;
 
 /**
