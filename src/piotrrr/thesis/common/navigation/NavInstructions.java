@@ -9,7 +9,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * should move and what speed and where should it aim.
  * @author Piotr Gwizda³a
  */
-public class MoveInstructions {
+public class NavInstructions {
 
 	/**
 	 * The movement direction.
@@ -45,7 +45,7 @@ public class MoveInstructions {
 	 * @param walkState walking state
 	 * @see PlayerMove
 	 */
-	public MoveInstructions(Vector3f movDir, Vector3f aimDir,
+	public NavInstructions(Vector3f movDir, Vector3f aimDir,
 			float velocity, int postureState, int walkState) {
 		this.moveDir = movDir;
 		this.aimDir = aimDir;
