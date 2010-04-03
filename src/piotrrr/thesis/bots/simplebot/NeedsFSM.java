@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot.logic.states;
+package piotrrr.thesis.bots.simplebot;
 
 import java.util.LinkedList;
 
