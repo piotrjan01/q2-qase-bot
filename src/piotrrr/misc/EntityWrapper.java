@@ -1,4 +1,4 @@
-package piotrrr.bot.misc;
+package piotrrr.misc;
 
 import soc.qase.state.Entity;
 

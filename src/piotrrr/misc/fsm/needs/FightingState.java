@@ -1,8 +1,8 @@
-package piotrrr.bot.misc.fsm.needs;
+package piotrrr.misc.fsm.needs;
 
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.misc.EntityWrapper;
+import piotrrr.misc.EntityWrapper;
 import soc.qase.state.Entity;
 
 public class FightingState implements NeedsState {

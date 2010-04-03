@@ -1,6 +1,6 @@
-package piotrrr.bot.testing;
+package piotrrr.testing;
 
-import piotrrr.bot.misc.EntityWrapper;
+import piotrrr.misc.EntityWrapper;
 import soc.qase.state.Entity;
 
 public class EntityWrapperTest implements Test {

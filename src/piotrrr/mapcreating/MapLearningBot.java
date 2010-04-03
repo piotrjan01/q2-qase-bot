@@ -1,12 +1,12 @@
-package piotrrr.bot.mapcreating;
+package piotrrr.mapcreating;
 
 import java.util.Vector;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.common.CommFun;
-import piotrrr.bot.common.Dbg;
-import piotrrr.bot.movement.MoveInstructions;
-import piotrrr.bot.movement.MovePlan;
+import piotrrr.common.CommFun;
+import piotrrr.common.Dbg;
+import piotrrr.movement.MoveInstructions;
+import piotrrr.movement.MovePlan;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
@@ -39,7 +39,7 @@ public class MapLearningBot extends BotBase {
 	public MapLearningBot(String arg0, String arg1) {
 		super(arg0, arg1);
 		Dbg.prn("Created!");
-		addBotJob(new piotrrr.bot.misc.jobs.DebugTalk((BotBase)this, 100));
+		addBotJob(new piotrrr.misc.jobs.DebugTalk((BotBase)this, 100));
 	}
 
 	@Override

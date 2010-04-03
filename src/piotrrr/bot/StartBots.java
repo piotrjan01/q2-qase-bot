@@ -1,8 +1,8 @@
 package piotrrr.bot;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.misc.jobs.ShutdownJob;
 import piotrrr.bot.simplebot.SimpleBot;
+import piotrrr.misc.jobs.ShutdownJob;
 
 /**
  * 

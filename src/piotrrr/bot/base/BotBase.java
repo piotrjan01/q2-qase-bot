@@ -3,7 +3,7 @@ package piotrrr.bot.base;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import piotrrr.bot.misc.jobs.Job;
+import piotrrr.misc.jobs.Job;
 import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;

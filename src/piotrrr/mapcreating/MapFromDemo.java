@@ -1,4 +1,4 @@
-package piotrrr.bot.mapcreating;
+package piotrrr.mapcreating;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

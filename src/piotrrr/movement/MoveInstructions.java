@@ -1,4 +1,4 @@
-package piotrrr.bot.movement;
+package piotrrr.movement;
 
 import soc.qase.tools.vecmath.Vector3f;
 
