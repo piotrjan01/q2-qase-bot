@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot.knowledge;
+package piotrrr.thesis.bots.simplebot.navigation.knowledge;
 
 import java.util.HashMap;
 import java.util.LinkedList;
