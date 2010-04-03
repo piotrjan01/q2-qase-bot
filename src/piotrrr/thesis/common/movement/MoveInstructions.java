@@ -1,4 +1,4 @@
-package piotrrr.thesis.movement;
+package piotrrr.thesis.common.movement;
 
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
