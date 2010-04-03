@@ -1,4 +1,4 @@
-package piotrrr.thesis.movement;
+package piotrrr.thesis.common.movement;
 
 import soc.qase.ai.waypoint.Waypoint;
 
