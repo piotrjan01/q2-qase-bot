@@ -1,4 +1,4 @@
-package piotrrr.thesis.common.movement;
+package piotrrr.thesis.common.navigation;
 
 import soc.qase.ai.waypoint.Waypoint;
 
