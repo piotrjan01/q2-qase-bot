@@ -1,13 +1,13 @@
 package piotrrr.bot.basicbot;
 
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 import piotrrr.bot.misc.fsm.needs.NeedsFSM;
 import piotrrr.bot.misc.jobs.BasicCommands;
 import piotrrr.bot.misc.jobs.DebugTalk;
 import piotrrr.bot.misc.jobs.StateReporter;
 import soc.qase.ai.waypoint.WaypointMap;
 
-public class SimpleBot extends GenericBot {
+public class SimpleBot extends BotBase {
 	
 	public static final String MAPS_DIR = "botmaps\\from-demo\\";
 
