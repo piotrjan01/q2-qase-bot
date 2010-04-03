@@ -6,7 +6,7 @@ import soc.qase.ai.waypoint.Waypoint;
  * This class encapsulates the path that the bot has planned to move along.
  * @author Piotr Gwizda³a
  */
-public class MovePath {
+public class NavPlan {
 
 	/**
 	 * The destination waypoint
@@ -19,7 +19,7 @@ public class MovePath {
 	 */
 	public Waypoint [] path;
 	
-	public MovePath(Waypoint dest) {
+	public NavPlan(Waypoint dest) {
 		this.dest = dest;
 	}
 	
