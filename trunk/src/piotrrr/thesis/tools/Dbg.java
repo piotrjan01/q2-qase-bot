@@ -1,4 +1,4 @@
-package piotrrr.thesis.common;
+package piotrrr.thesis.tools;
 
 /**
  * Some static debug methods
