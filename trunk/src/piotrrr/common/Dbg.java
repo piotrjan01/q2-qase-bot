@@ -1,4 +1,4 @@
-package piotrrr.bot.common;
+package piotrrr.common;
 
 /**
  * Some static debug methods

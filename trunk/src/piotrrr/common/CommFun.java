@@ -1,4 +1,4 @@
-package piotrrr.bot.common;
+package piotrrr.common;
 
 import soc.qase.tools.vecmath.Vector3f;
 

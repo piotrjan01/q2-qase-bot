@@ -3,11 +3,11 @@ package piotrrr.bot.mapbot;
 import java.util.Vector;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.common.CommFun;
-import piotrrr.bot.common.Dbg;
-import piotrrr.bot.misc.jobs.DebugTalk;
-import piotrrr.bot.movement.MoveInstructions;
-import piotrrr.bot.movement.MovePlan;
+import piotrrr.common.CommFun;
+import piotrrr.common.Dbg;
+import piotrrr.misc.jobs.DebugTalk;
+import piotrrr.movement.MoveInstructions;
+import piotrrr.movement.MovePlan;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;

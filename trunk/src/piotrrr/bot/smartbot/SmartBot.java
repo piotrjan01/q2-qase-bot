@@ -1,7 +1,7 @@
 package piotrrr.bot.smartbot;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.misc.jobs.DebugTalk;
+import piotrrr.misc.jobs.DebugTalk;
 
 public class SmartBot extends BotBase {
 

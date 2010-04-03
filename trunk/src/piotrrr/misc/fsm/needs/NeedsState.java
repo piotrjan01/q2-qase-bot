@@ -1,7 +1,7 @@
-package piotrrr.bot.misc.fsm.needs;
+package piotrrr.misc.fsm.needs;
 
 
-import piotrrr.bot.misc.EntityWrapper;
+import piotrrr.misc.EntityWrapper;
 
 public interface NeedsState {
 	

@@ -1,4 +1,4 @@
-package piotrrr.bot.testing;
+package piotrrr.testing;
 
 public interface TestCase {
 	

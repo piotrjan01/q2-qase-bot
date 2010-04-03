@@ -1,4 +1,4 @@
-package piotrrr.bot.misc.fsm.needs;
+package piotrrr.misc.fsm.needs;
 
 /**
  * FIXME: u¿ycie par, rozdzielenie na encje po¿¹dane i unikane
@@ -7,7 +7,7 @@ package piotrrr.bot.misc.fsm.needs;
 import java.util.LinkedList;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.misc.EntityWrapper;
+import piotrrr.misc.EntityWrapper;
 
 public class NeedsFSM {
 	

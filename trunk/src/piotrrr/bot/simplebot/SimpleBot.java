@@ -1,10 +1,10 @@
 package piotrrr.bot.simplebot;
 
 import piotrrr.bot.base.BotBase;
-import piotrrr.bot.misc.fsm.needs.NeedsFSM;
-import piotrrr.bot.misc.jobs.BasicCommands;
-import piotrrr.bot.misc.jobs.DebugTalk;
-import piotrrr.bot.misc.jobs.StateReporter;
+import piotrrr.misc.fsm.needs.NeedsFSM;
+import piotrrr.misc.jobs.BasicCommands;
+import piotrrr.misc.jobs.DebugTalk;
+import piotrrr.misc.jobs.StateReporter;
 import soc.qase.ai.waypoint.WaypointMap;
 
 public class SimpleBot extends BotBase {

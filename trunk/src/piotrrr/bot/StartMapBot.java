@@ -1,7 +1,7 @@
 package piotrrr.bot;
 
 import piotrrr.bot.mapbot.MapLearningBot;
-import piotrrr.bot.misc.jobs.ShutdownJob;
+import piotrrr.misc.jobs.ShutdownJob;
 
 /**
  * 

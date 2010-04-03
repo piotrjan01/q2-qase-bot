@@ -1,4 +1,4 @@
-package piotrrr.bot.misc.jobs;
+package piotrrr.misc.jobs;
 
 import piotrrr.bot.base.BotBase;
 import piotrrr.bot.simplebot.SimpleBot;
