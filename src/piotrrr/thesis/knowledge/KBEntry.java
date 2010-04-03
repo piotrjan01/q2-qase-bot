@@ -1,6 +1,6 @@
 package piotrrr.thesis.knowledge;
 
-import piotrrr.thesis.misc.entities.EntityType;
+import piotrrr.thesis.common.entities.EntityType;
 import soc.qase.ai.waypoint.Waypoint;
 
 /**

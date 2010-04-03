@@ -1,8 +1,8 @@
 package piotrrr.thesis.misc.fsm.needs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.misc.entities.EntityType;
-import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
+import piotrrr.thesis.common.entities.EntityType;
+import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 
 /**
  * This state should be used by bot when it searches from guns and ammo.

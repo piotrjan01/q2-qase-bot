@@ -1,4 +1,4 @@
-package piotrrr.thesis.misc.entities;
+package piotrrr.thesis.common.entities;
 
 /**
  * Class that encapsulates EntityType 

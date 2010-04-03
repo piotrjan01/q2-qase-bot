@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import piotrrr.thesis.misc.entities.EntityType;
+import piotrrr.thesis.common.entities.EntityType;
 import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Entity;
