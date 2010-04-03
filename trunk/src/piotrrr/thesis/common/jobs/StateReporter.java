@@ -22,7 +22,13 @@ public class StateReporter extends Job {
 	@Override
 	public void run() {
 		String stateName = ((SimpleBot)bot).getCurrentStateName();
-		if (stateName.equals(lastStateName)) return;
+		if (stateName.equals(lastStateName)) {
+			((SimpleBot)bot).stateChanged = false;
+			return;
+		}
+		
+		((SimpleBot)bot).stateChanged = true;
+		
 		bot.say("State changed: "+lastStateName+" -> "+stateName);
 		lastStateName = stateName;
 	}

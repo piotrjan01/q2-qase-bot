@@ -6,6 +6,7 @@ import piotrrr.thesis.bots.simplebot.navigation.knowledge.SimpleKB;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
+import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.WaypointMap;
 
 /**
@@ -18,7 +19,7 @@ public class SimpleBot extends BotBase {
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	public static final String MAPS_DIR = ".\\botmaps\\from-demo\\";
+	static final String MAPS_DIR = ".\\botmaps\\from-demo\\";
 
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -34,6 +35,17 @@ public class SimpleBot extends BotBase {
 	 * Bot's Knowledge Base
 	 */
 	SimpleKB kb = null;
+	
+	/**
+	 * Bot's current navigation plan
+	 */
+	NavPlan plan = null;
+
+	/**
+	 * Is being set to true when the state have been changed by StateReporter.
+	 * @see StateReporter
+	 */
+	public boolean stateChanged;
 
 	/**
 	 * Basic constructor.
@@ -85,6 +97,12 @@ public class SimpleBot extends BotBase {
 	public String getCurrentStateName() {
 		String stateName =  fsm.getCurrentStateName();
 		return stateName.substring(stateName.lastIndexOf(".")+1);
+	}
+	
+	@Override
+	public void respawn() {
+		super.respawn();
+		plan = null;
 	}
 	
 	
