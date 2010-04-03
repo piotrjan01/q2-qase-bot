@@ -1,4 +1,4 @@
-package piotrrr.thesis.misc.jobs;
+package piotrrr.thesis.common.jobs;
 
 import java.util.Vector;
 

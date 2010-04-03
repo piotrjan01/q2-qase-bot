@@ -1,4 +1,4 @@
-package piotrrr.thesis.misc.jobs;
+package piotrrr.thesis.common.jobs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;

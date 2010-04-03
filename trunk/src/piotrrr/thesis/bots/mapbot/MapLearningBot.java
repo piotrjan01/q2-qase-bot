@@ -4,9 +4,9 @@ import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.movement.MoveInstructions;
 import piotrrr.thesis.common.movement.MovePath;
-import piotrrr.thesis.misc.jobs.DebugTalk;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;

@@ -1,7 +1,7 @@
 package piotrrr.thesis.bots.smartbot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.misc.jobs.DebugTalk;
+import piotrrr.thesis.common.jobs.DebugTalk;
 
 /**
  * This is one of the versions of the bots.
