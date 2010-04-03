@@ -1,7 +1,7 @@
 package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.basicbot.SimpleBot;
 import piotrrr.bot.misc.BotBase;
+import piotrrr.bot.simplebot.SimpleBot;
 
 /**
  * Dummy job, that repeats a phrase with given period.
