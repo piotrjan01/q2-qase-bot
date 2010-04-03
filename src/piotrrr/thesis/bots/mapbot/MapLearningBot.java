@@ -5,8 +5,8 @@ import java.util.Vector;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.jobs.DebugTalk;
-import piotrrr.thesis.common.navigation.MoveInstructions;
-import piotrrr.thesis.common.navigation.MovePath;
+import piotrrr.thesis.common.navigation.NavInstructions;
+import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
@@ -40,7 +40,7 @@ public class MapLearningBot extends BotBase {
 	
 	int reachedDistance = 50;
 	
-	MovePath plan = null;
+	NavPlan plan = null;
 
 	public MapLearningBot(String arg0, String arg1) {
 		super(arg0, arg1);
@@ -51,7 +51,7 @@ public class MapLearningBot extends BotBase {
 	@Override
 	public void botLogic() {
 		processCommand();
-		MoveInstructions instr = null;
+		NavInstructions instr = null;
 		
 		switch (state) {
 			case LEARN:
@@ -83,19 +83,19 @@ public class MapLearningBot extends BotBase {
 		
 	}
 
-	MovePath getPlanForObserving() {
+	NavPlan getPlanForObserving() {
 		Entity commander = world.getOpponentByName(commanderName);
 		if (commander == null) { 
 			say("I can't see you!"); 
 			return null; 
 		}
-		MovePath plan = new MovePath(new Waypoint(commander.getOrigin()));
+		NavPlan plan = new NavPlan(new Waypoint(commander.getOrigin()));
 		if (isPositionReached(plan.dest.getPosition())) return null;
 		say("Got new plan...");
 		return plan;
 	}
 	
-	private MoveInstructions getInstructions(MovePath plan) {
+	private NavInstructions getInstructions(NavPlan plan) {
 		if (plan == null) return null;
 		Vector3f playerPos = new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 		if (isPositionReached(plan.dest.getPosition())) {
@@ -105,11 +105,11 @@ public class MapLearningBot extends BotBase {
 		//else go to the direction of the goal.
 		Vector3f movDir = CommFun.getNormalizedDirectionVector(playerPos, plan.dest.getPosition());	
 		//Return the instructions
-		return new MoveInstructions(movDir, movDir, 0.0f, 
+		return new NavInstructions(movDir, movDir, 0.0f, 
 				PlayerMove.POSTURE_NORMAL, PlayerMove.WALK_RUN);
 	}
 	
-	private void executeInstructions(MoveInstructions mi) {
+	private void executeInstructions(NavInstructions mi) {
 		//Do the navigation and look ad good direction 
 		if (mi != null) {
 			this.setBotMovement(mi.moveDir, mi.aimDir, mi.walkState, mi.postureState);
