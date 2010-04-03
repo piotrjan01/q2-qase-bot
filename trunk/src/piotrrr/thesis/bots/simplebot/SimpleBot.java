@@ -1,6 +1,7 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.knowledge.SimpleKB;
 import piotrrr.thesis.misc.fsm.needs.NeedsFSM;
 import piotrrr.thesis.misc.jobs.BasicCommands;
 import piotrrr.thesis.misc.jobs.DebugTalk;
@@ -9,7 +10,7 @@ import soc.qase.ai.waypoint.WaypointMap;
 
 public class SimpleBot extends BotBase {
 	
-	public static final String MAPS_DIR = "botmaps\\from-demo\\";
+	public static final String MAPS_DIR = ".\\botmaps\\from-demo\\";
 
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -20,6 +21,11 @@ public class SimpleBot extends BotBase {
 	 * The map that bot uses to navigate.
 	 */
 	WaypointMap map = null;
+	
+	/**
+	 * Bot's Knowledge Base
+	 */
+	SimpleKB kb = null;
 
 	public SimpleBot(String botName, String skinName) {
 		super(botName, skinName);
@@ -36,8 +42,10 @@ public class SimpleBot extends BotBase {
 		
 		if (map == null) { 
 			map = WaypointMap.loadMap(MAPS_DIR+getMapName());
-			assert map!=null;
-//			buildKnowledgeBase(); 
+			assert map != null;
+			kb = SimpleKB.createKB(map);
+			assert kb != null;
+			say("KB built. Size: "+kb.getKBSize());
 		}
 		
 		//Dbg.prn("Item nodes: "+map.getItemNodeWaypoints().length);
