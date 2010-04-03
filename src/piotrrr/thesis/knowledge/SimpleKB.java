@@ -1,6 +1,7 @@
 package piotrrr.thesis.knowledge;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Vector;
 
 import piotrrr.thesis.misc.entities.EntityType;
@@ -9,10 +10,10 @@ import soc.qase.ai.waypoint.WaypointMap;
 
 public class SimpleKB {
 	
-	HashMap<EntityType, KBEntry> kb;
+	HashMap<EntityType, LinkedList<KBEntry>> kb;
 	
 	private SimpleKB() {
-		kb = new HashMap<EntityType, KBEntry>();
+		kb = new HashMap<EntityType, LinkedList<KBEntry>>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -23,9 +24,24 @@ public class SimpleKB {
 		for (Object o : wps) {
 			WaypointItem wi = (WaypointItem) o;
 			EntityType et = EntityType.getEntityType(wi.getCategory(), wi.getType(), wi.getSubType());
-			ret.kb.put(et, new KBEntry(wi.getNode(), et, 0));
+			LinkedList<KBEntry> list = ret.kb.get(et);
+			if (list == null) {
+				list = new LinkedList<KBEntry>();
+				ret.kb.put(et, list);
+			}
+			else {
+				list.add(new KBEntry(wi.getNode(), et, 0));
+			}
 		}
 		return ret;
+	}
+	
+	public int getKBSize() {
+		int size = 0;
+		for (LinkedList<KBEntry> l : kb.values()) {
+			size += l.size();
+		}
+		return size;
 	}
 
 }
