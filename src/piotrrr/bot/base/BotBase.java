@@ -1,4 +1,4 @@
-package piotrrr.bot.misc;
+package piotrrr.bot.base;
 
 import java.util.LinkedList;
 import java.util.Vector;

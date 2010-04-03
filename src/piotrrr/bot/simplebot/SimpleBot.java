@@ -1,6 +1,6 @@
 package piotrrr.bot.simplebot;
 
-import piotrrr.bot.misc.BotBase;
+import piotrrr.bot.base.BotBase;
 import piotrrr.bot.misc.fsm.needs.NeedsFSM;
 import piotrrr.bot.misc.jobs.BasicCommands;
 import piotrrr.bot.misc.jobs.DebugTalk;

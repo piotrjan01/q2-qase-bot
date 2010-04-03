@@ -1,6 +1,6 @@
 package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.misc.BotBase;
+import piotrrr.bot.base.BotBase;
 
 /**
  * Used to call some methods, when the application is interrupted by 
