@@ -1,4 +1,4 @@
-package piotrrr.bot.smart;
+package piotrrr.bot.smartbot;
 
 import piotrrr.bot.misc.BotBase;
 import piotrrr.bot.misc.jobs.DebugTalk;
