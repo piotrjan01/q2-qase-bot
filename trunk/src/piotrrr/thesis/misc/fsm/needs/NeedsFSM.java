@@ -6,7 +6,7 @@ package piotrrr.thesis.misc.fsm.needs;
 
 import java.util.LinkedList;
 
-import piotrrr.thesis.bot.botbase.BotBase;
+import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.EntityWrapper;
 
 public class NeedsFSM {

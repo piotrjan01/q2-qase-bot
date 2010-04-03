@@ -1,8 +1,8 @@
-package piotrrr.thesis.bot.mapbot;
+package piotrrr.thesis.bots.mapbot;
 
 import java.util.Vector;
 
-import piotrrr.thesis.bot.botbase.BotBase;
+import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.Dbg;
 import piotrrr.thesis.misc.jobs.DebugTalk;
