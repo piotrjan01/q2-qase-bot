@@ -1,6 +1,6 @@
-package piotrrr.thesis.bot.smartbot;
+package piotrrr.thesis.bots.smartbot;
 
-import piotrrr.thesis.bot.botbase.BotBase;
+import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.jobs.DebugTalk;
 
 public class SmartBot extends BotBase {

@@ -1,7 +1,7 @@
 package piotrrr.thesis.misc.fsm.needs;
 
 
-import piotrrr.thesis.bot.botbase.BotBase;
+import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.EntityWrapper;
 import soc.qase.state.Entity;
 

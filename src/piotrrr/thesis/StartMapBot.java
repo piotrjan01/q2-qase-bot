@@ -1,6 +1,6 @@
 package piotrrr.thesis;
 
-import piotrrr.thesis.bot.mapbot.MapLearningBot;
+import piotrrr.thesis.bots.mapbot.MapLearningBot;
 import piotrrr.thesis.misc.jobs.ShutdownJob;
 
 /**

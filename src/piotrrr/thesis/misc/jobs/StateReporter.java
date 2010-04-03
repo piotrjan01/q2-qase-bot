@@ -1,7 +1,7 @@
 package piotrrr.thesis.misc.jobs;
 
-import piotrrr.thesis.bot.botbase.BotBase;
-import piotrrr.thesis.bot.simplebot.SimpleBot;
+import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.bots.simplebot.SimpleBot;
 
 /**
  * Dummy job, that repeats a phrase with given period.
