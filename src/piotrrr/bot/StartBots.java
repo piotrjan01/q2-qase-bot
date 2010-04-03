@@ -1,7 +1,7 @@
 package piotrrr.bot;
 
 import piotrrr.bot.basicbot.SimpleBot;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 import piotrrr.bot.misc.jobs.ShutdownJob;
 
 /**
@@ -20,7 +20,7 @@ public class StartBots {
 	
 	public static void main(String[] args) {
 		System.setProperty("QUAKE2", quakePath);
-		GenericBot bot = new SimpleBot(botName, skinName);
+		BotBase bot = new SimpleBot(botName, skinName);
 		Runtime.getRuntime().addShutdownHook(new ShutdownJob(bot));
 		bot.connect(serverIP, serverPort);
 	}

@@ -2,14 +2,14 @@ package piotrrr.bot.misc.fsm.needs;
 
 
 import piotrrr.bot.misc.EntityWrapper;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 import soc.qase.state.Entity;
 
 public class FightingState implements NeedsState {
 	
-	GenericBot bot;
+	BotBase bot;
 	
-	public FightingState(GenericBot bot) {
+	public FightingState(BotBase bot) {
 		this.bot = bot;
 	}
 

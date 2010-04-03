@@ -13,7 +13,7 @@ import soc.qase.state.World;
  * @author Piotr Gwizda³a
  *
  */
-public class GenericBot extends ObserverBot {
+public class BotBase extends ObserverBot {
 	
 	/**
 	 * Stores all the jobs of the bot, that he runs every frame.
@@ -33,7 +33,7 @@ public class GenericBot extends ObserverBot {
 
 	private String lastMessage = "";
 
-	public GenericBot(String botName, String skinName) {
+	public BotBase(String botName, String skinName) {
 		super(botName, skinName);
 	}
 
