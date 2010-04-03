@@ -1,6 +1,6 @@
 package piotrrr.misc.jobs;
 
-import piotrrr.bot.base.BotBase;
+import piotrrr.bot.botbase.BotBase;
 
 /**
  * The Job is a job, usually run periodically by the bot.

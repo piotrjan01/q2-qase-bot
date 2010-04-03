@@ -2,7 +2,7 @@ package piotrrr.bot.mapbot;
 
 import java.util.Vector;
 
-import piotrrr.bot.base.BotBase;
+import piotrrr.bot.botbase.BotBase;
 import piotrrr.common.CommFun;
 import piotrrr.common.Dbg;
 import piotrrr.misc.jobs.DebugTalk;

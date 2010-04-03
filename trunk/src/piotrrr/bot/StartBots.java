@@ -1,6 +1,6 @@
 package piotrrr.bot;
 
-import piotrrr.bot.base.BotBase;
+import piotrrr.bot.botbase.BotBase;
 import piotrrr.bot.simplebot.SimpleBot;
 import piotrrr.misc.jobs.ShutdownJob;
 
