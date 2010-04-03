@@ -3,7 +3,7 @@ package piotrrr.thesis.misc.fsm.needs;
 import java.util.LinkedList;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.misc.entities.EntityWrapper;
+import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 
 public class NeedsFSM {
 	
@@ -24,7 +24,7 @@ public class NeedsFSM {
 		this.state = new HealingState(bot);
 	}
 	
-	public EntityWrapper [] getDesiredEntities() {
+	public EntityTypeDoublePair [] getDesiredEntities() {
 		state = state.getNextState();
 		return state.getDesiredEntities();
 	}
