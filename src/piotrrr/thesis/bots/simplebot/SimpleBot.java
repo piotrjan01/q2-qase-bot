@@ -1,11 +1,11 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.bots.simplebot.knowledge.SimpleKB;
 import piotrrr.thesis.bots.simplebot.states.NeedsFSM;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
-import piotrrr.thesis.knowledge.SimpleKB;
 import soc.qase.ai.waypoint.WaypointMap;
 
 /**
