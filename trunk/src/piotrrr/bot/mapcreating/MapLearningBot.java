@@ -172,7 +172,7 @@ public class MapLearningBot extends GenericBot {
 	}
 	
 	@Override
-	protected void respawn() {
+	public void respawn() {
 		super.respawn();
 		noclip = false;
 		plan = null;

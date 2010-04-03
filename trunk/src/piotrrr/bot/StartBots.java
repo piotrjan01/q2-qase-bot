@@ -11,7 +11,7 @@ import piotrrr.bot.misc.jobs.ShutdownJob;
  */
 public class StartBots {
 	
-	static String quakePath = "H:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2";
+	static String quakePath = "C:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2";
 	static String botName = "SimpleBot";
 	static String skinName = "female/voodoo";
 	static String serverIP = "127.0.0.1";
