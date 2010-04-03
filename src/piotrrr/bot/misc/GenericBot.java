@@ -1,10 +1,9 @@
 package piotrrr.bot.misc;
 
 import java.util.LinkedList;
+import java.util.Vector;
 
 import piotrrr.bot.misc.jobs.Job;
-
-
 import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
@@ -32,16 +31,18 @@ public class GenericBot extends ObserverBot {
 	
 	protected BSPParser bsp;
 
+	private String lastMessage = "";
+
 	public GenericBot(String botName, String skinName) {
 		super(botName, skinName);
 	}
 
 	@Override
 	public void runAI(World world) {
-		this.world = world;
-		updateFrameNumber();
-		runBotJobs();
 		try {
+			this.world = world;
+			updateFrameNumber();
+			runBotJobs();
 			botLogic();
 		}
 		catch (Exception e) {
@@ -144,7 +145,7 @@ public class GenericBot extends ObserverBot {
 	}
 	
 	@Override
-	protected void respawn() {
+	public void respawn() {
 		super.respawn();
 		deathsNumber++;
 		say("I came back after dieing for "+deathsNumber+" times.");
@@ -173,6 +174,29 @@ public class GenericBot extends ObserverBot {
 		if (bsp != null) return bsp;
 		bsp = this.getBSPParser();
 		return bsp;
+	}
+	
+	/**
+	 * Gets the world's messages that are having given prefix.
+	 * @return the messages that appeared in the world 
+	 * with given prefix, but without it.
+	 */
+	@SuppressWarnings("unchecked")
+	public Vector<String> getMessages(String prefix) {
+		Vector<String> ret = new Vector<String>();
+		Vector<String> msgs = world.getMessages();
+		if (msgs == null) return null;
+		for (String s : msgs) {
+			if (s.startsWith(prefix)) {
+				//Avoid reading the same message twice.
+				if ( ! s.equals(lastMessage)) {
+					ret.add(s.substring(prefix.length()));
+					lastMessage = s;
+				}
+					
+			}
+		}
+		return ret;
 	}
 	
 
