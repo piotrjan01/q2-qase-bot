@@ -1,4 +1,4 @@
-package piotrrr.thesis.mapcreating;
+package piotrrr.thesis.tools;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

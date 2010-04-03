@@ -4,10 +4,10 @@ import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.CommFun;
-import piotrrr.thesis.common.Dbg;
 import piotrrr.thesis.misc.jobs.DebugTalk;
 import piotrrr.thesis.movement.MoveInstructions;
 import piotrrr.thesis.movement.MovePath;
+import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
