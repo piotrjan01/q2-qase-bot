@@ -1,7 +1,7 @@
 package piotrrr.thesis.bots;
 
 import piotrrr.thesis.bots.mapbot.MapLearningBot;
-import piotrrr.thesis.misc.jobs.ShutdownJob;
+import piotrrr.thesis.common.jobs.ShutdownJob;
 
 /**
  * This class is used as a starter of the map learning bots.

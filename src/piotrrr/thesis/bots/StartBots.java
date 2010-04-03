@@ -2,7 +2,7 @@ package piotrrr.thesis.bots;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
-import piotrrr.thesis.misc.jobs.ShutdownJob;
+import piotrrr.thesis.common.jobs.ShutdownJob;
 
 /**
  * This class is used as a starter of the bots.
