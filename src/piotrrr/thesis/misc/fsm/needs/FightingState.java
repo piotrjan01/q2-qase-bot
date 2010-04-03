@@ -5,7 +5,11 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.entities.EntityType;
 import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 
-public class FightingState implements State {
+/**
+ * This state should be used by bot when it is searching for enemies to fight.
+ * @author Piotr Gwizda³a
+ */
+public class FightingState extends State {
 	
 	BotBase bot;
 	

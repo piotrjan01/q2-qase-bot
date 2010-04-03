@@ -9,9 +9,8 @@ import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
 import soc.qase.state.World;
 /**
- * 
+ * The bot that is used as super class for all the other bots.
  * @author Piotr Gwizda³a
- *
  */
 public class BotBase extends ObserverBot {
 	
@@ -25,14 +24,26 @@ public class BotBase extends ObserverBot {
 	 */
 	private long frameNumber = 0;
 	
+	/**
+	 * Counts the deaths of the bot.
+	 */
 	private int deathsNumber = 0;
 	
+	/**
+	 * Stores information about the world from QASE
+	 */
 	protected World world;
 	
+	/**
+	 * BSPParser from QASE
+	 */
 	protected BSPParser bsp;
 
-	private String lastMessage = "";
-
+	/**
+	 * Basic constructor
+	 * @param botName name of the bot to be created.
+	 * @param skinName the name of the skin to be used with the bot.
+	 */
 	public BotBase(String botName, String skinName) {
 		super(botName, skinName);
 	}
@@ -53,14 +64,26 @@ public class BotBase extends ObserverBot {
 		}
 	}	
 	
+	/**
+	 * In this method all the bot's logic is implemented.
+	 * Extending classes should override it.
+	 */
 	public void botLogic() {
 		
 	}
 	
+	/**
+	 * Sends the given command as a console command.
+	 * @param cmd the string of console command.
+	 */
 	public void consoleCommand(String cmd) {
 		this.sendConsoleCommand(cmd);
 	}
 	
+	/**
+	 * Sends given string as in-game chat message.
+	 * @param txt the text to be sent.
+	 */
 	public void say(String txt) {
 		this.sendConsoleCommand("\""+txt+"\"");
 	}
@@ -80,20 +103,36 @@ public class BotBase extends ObserverBot {
 		for (Job j : botJobs) j.run();
 	}
 	
+	/**
+	 * @return current frame number
+	 */
 	public long getFrameNumber() {
 		return frameNumber;
 	}
 	
+	/**
+	 * Adds job to bot's job list.
+	 * @param j the job.
+	 * @return true if successful.
+	 */
 	public boolean addBotJob(Job j) {
 		return botJobs.add(j);
 	}
 	
+	/**
+	 * Returns bot's current health.
+	 * @return health in float type - number between 0 and 100.
+	 */
 	public float getBotHealth() {
 		float h = getHealth();
 		if (h<0) h = 100.0f;
 		return h;
 	}
 	
+	/**
+	 * Returns bot's armor state.
+	 * @return The amount of armor that bot has. Between 0 and 100.
+	 */
 	public float getBotArmor() {
 		float a = getArmor();
 		if (a<0) a = 0.0f;
@@ -101,7 +140,7 @@ public class BotBase extends ObserverBot {
 	}
 	
 	/**
-	 * Get owned guns
+	 * Get list of guns owned by bot.
 	 * @return the indexes of the owned guns only if there is also some ammo available.
 	 */
 	public LinkedList<Integer> getIndexesOfOwnedGunsWithAmmo() {
@@ -173,6 +212,7 @@ public class BotBase extends ObserverBot {
 	private BSPParser getBsp() {
 		if (bsp != null) return bsp;
 		bsp = this.getBSPParser();
+		assert bsp != null;
 		return bsp;
 	}
 	
@@ -188,12 +228,7 @@ public class BotBase extends ObserverBot {
 		if (msgs == null) return null;
 		for (String s : msgs) {
 			if (s.startsWith(prefix)) {
-				//Avoid reading the same message twice.
-				if ( ! s.equals(lastMessage)) {
-					ret.add(s.substring(prefix.length()));
-					lastMessage = s;
-				}
-					
+				ret.add(s.substring(prefix.length()));
 			}
 		}
 		return ret;

@@ -5,9 +5,13 @@ import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.misc.jobs.ShutdownJob;
 
 /**
+ * This class is used as a starter of the bots.
+ * It starts the bots programs and tells them where to connect basing
+ * on given configuration.
+ * 
+ * TODO: create better service, that can be used by GUI.
  * 
  * @author Piotr Gwizda³a
- *
  */
 public class StartBots {
 	

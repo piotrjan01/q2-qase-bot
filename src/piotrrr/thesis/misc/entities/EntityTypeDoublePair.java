@@ -1,5 +1,10 @@
 package piotrrr.thesis.misc.entities;
 
+/**
+ * Class that encapsulates EntityType 
+ * and double precision floating point number.
+ * @author Piotr Gwizda³a
+ */
 public class EntityTypeDoublePair {
 	
 	public double d;
@@ -7,7 +12,8 @@ public class EntityTypeDoublePair {
 	public EntityType t;
 	
 	public EntityTypeDoublePair(EntityType type, double d) {
-		// TODO Auto-generated constructor stub
+		t = type;
+		this.d = d;
 	}
 
 }

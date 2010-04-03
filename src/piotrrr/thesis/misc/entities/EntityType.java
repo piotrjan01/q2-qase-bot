@@ -2,41 +2,52 @@ package piotrrr.thesis.misc.entities;
 
 import soc.qase.state.Entity;
 
+/**
+ * Enumerates entity types recognized by program.
+ * @author Piotr Gwizda³a
+ */
 public enum EntityType {
-	WEAPON, HEALTH, ARMOR, PLAYER, AMMO;
 	
+	WEAPON, HEALTH, ARMOR, PLAYER, AMMO, UNKNOWN;
 	
-	public static EntityType getEntityType(Entity entity) {
-		if (entity.getCategory().equals(Entity.CAT_WEAPONS)) return EntityType.WEAPON;
-		
-		if (entity.getType().equals(Entity.TYPE_HEALTH)
-				|| entity.getType().equals(Entity.TYPE_INVULNERABILITY) || entity
-				.getType().equals(Entity.TYPE_MEGAHEALTH)) return EntityType.HEALTH;
-		
-		if (entity.getType().equals(Entity.TYPE_ARMOR)) return EntityType.ARMOR;
-		
-		if ((entity.getType().equals(Entity.TYPE_AMMO) || entity
-						.getType().equals(Entity.TYPE_AMMOPACK))) return EntityType.AMMO;
-		
-		if (entity.getCategory().equals(Entity.CAT_PLAYERS)) return EntityType.PLAYER;
-		
-		return null;
+	/**
+	 * Returns the entity type of the given entity.
+	 * @param e entity
+	 * @return e's type.
+	 */
+	public static EntityType getEntityType(Entity e) {
+		return getEntityType(e.getCategory(), e.getType(), e.getSubType());
 	}
 	
+	/**
+	 * Returns the entity type of the given characterizing strings.
+	 * @param cat the category like in QASE
+	 * @param type type of entity like in QASE 
+	 * @param subtype subtype of entity like in QASE
+	 * @return
+	 * 
+	 * @see Entity
+	 */
 	public static EntityType getEntityType(String cat, String type, String subtype) {
-		if (cat.equals(Entity.CAT_WEAPONS)) return EntityType.WEAPON;
+		try {
+			if (cat.equals(Entity.CAT_PLAYERS)) return EntityType.PLAYER;
+			
+			if (cat.equals(Entity.CAT_WEAPONS)) return EntityType.WEAPON;
+			
+			if (type.equals(Entity.TYPE_HEALTH)
+					|| type.equals(Entity.TYPE_INVULNERABILITY) || 
+					type.equals(Entity.TYPE_MEGAHEALTH)) return EntityType.HEALTH;
+			
+			if (type.equals(Entity.TYPE_ARMOR)) return EntityType.ARMOR;
+			
+			if ((type.equals(Entity.TYPE_AMMO) || type.equals(Entity.TYPE_AMMOPACK))) return EntityType.AMMO;
+			
+		}
+		catch (NullPointerException e) {
+			return UNKNOWN;
+		}
 		
-		if (type.equals(Entity.TYPE_HEALTH)
-				|| type.equals(Entity.TYPE_INVULNERABILITY) || 
-				type.equals(Entity.TYPE_MEGAHEALTH)) return EntityType.HEALTH;
-		
-		if (type.equals(Entity.TYPE_ARMOR)) return EntityType.ARMOR;
-		
-		if ((type.equals(Entity.TYPE_AMMO) || type.equals(Entity.TYPE_AMMOPACK))) return EntityType.AMMO;
-		
-		if (cat.equals(Entity.CAT_PLAYERS)) return EntityType.PLAYER;
-		
-		return null;
+		return UNKNOWN;
 	}
 	
 	

@@ -4,7 +4,11 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.entities.EntityType;
 import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 
-public class ArmingState implements State {
+/**
+ * This state should be used by bot when it searches from guns and ammo.
+ * @author Piotr Gwizda³a
+ */
+public class ArmingState extends State {
 
 	BotBase bot;
 

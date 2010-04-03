@@ -8,8 +8,16 @@ import piotrrr.thesis.misc.jobs.DebugTalk;
 import piotrrr.thesis.misc.jobs.StateReporter;
 import soc.qase.ai.waypoint.WaypointMap;
 
+/**
+ * This is a simple bot that will be used as a base of other bots as well as 
+ * reference in comparative study.
+ * @author Piotr Gwizda³a
+ */
 public class SimpleBot extends BotBase {
 	
+	/**
+	 * The directory where bot's maps are stored. Relative to main directory.
+	 */
 	public static final String MAPS_DIR = ".\\botmaps\\from-demo\\";
 
 	/**
@@ -27,6 +35,11 @@ public class SimpleBot extends BotBase {
 	 */
 	SimpleKB kb = null;
 
+	/**
+	 * Basic constructor.
+	 * @param botName the name of the bot to be created
+	 * @param skinName the name of the skin to be used
+	 */
 	public SimpleBot(String botName, String skinName) {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
@@ -45,8 +58,10 @@ public class SimpleBot extends BotBase {
 			assert map != null;
 			kb = SimpleKB.createKB(map);
 			assert kb != null;
-			say("KB built. Size: "+kb.getKBSize());
+			say("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
 		}
+		
+		kb.updateKB(world.getEntities(false), getFrameNumber());
 		
 		//Dbg.prn("Item nodes: "+map.getItemNodeWaypoints().length);
 		
@@ -63,6 +78,10 @@ public class SimpleBot extends BotBase {
 		
 	}
 	
+	/**
+	 * Returns the current name of the state of bot's finite state machine.
+	 * @return state name
+	 */
 	public String getCurrentStateName() {
 		String stateName =  fsm.getCurrentStateName();
 		return stateName.substring(stateName.lastIndexOf(".")+1);

@@ -6,8 +6,17 @@ import java.io.InputStreamReader;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.ai.waypoint.WaypointMapGenerator;
 
+/**
+ * This is a simple tool that facilitates creating WaypointMaps from recorded demos
+ * in DM2 format.
+ * @author Piotr Gwizda³a
+ */
 public class MapFromDemo {
 
+	/**
+	 * Main method of the tool. Starts interactive command-line dialog.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		prn("Current directory: "+System.getProperty("user.dir"));
 		prn("Please enter a path\\name of the DM2 file: ");
@@ -22,10 +31,18 @@ public class MapFromDemo {
 		prn("Done!");
 	}
 	
+	/**
+	 * Used to print the requests on the screen.
+	 * @param s
+	 */
 	static void prn(Object s) {
 		System.out.println(s.toString());
 	}
 	
+	/**
+	 * Used to read the string from standard input.
+	 * @return
+	 */
 	static String readString() {
 		String s;
 		InputStreamReader isr = new InputStreamReader(System.in);

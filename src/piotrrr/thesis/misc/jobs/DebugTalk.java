@@ -4,7 +4,7 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
 
 /**
- * Dummy job, that repeats a phrase with given period.
+ * Dummy job, that repeats some debug info with given period.
  * @author Piotr Gwizda³a
  */
 public class DebugTalk extends Job {

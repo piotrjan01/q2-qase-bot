@@ -5,35 +5,80 @@ import java.util.LinkedList;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.misc.entities.EntityTypeDoublePair;
 
+/**
+ * The Finite State Machine that is used to determine how much the bot 
+ * wants each type of entity in its current state.
+ * @author Piotr Gwizda³a
+ */
 public class NeedsFSM {
 	
 	//TODO: values to adjust:
+	/**
+	 * The wellness that is considered to be good.
+	 */
 	static final float GOOD_WELLNESS = 60f;
+	/**
+	 * Wellness considered to be bad.
+	 */
 	static final float BAD_WELLNESS = 40f;
+	/**
+	 * The importance of the health in wellness calculation.
+	 */
 	static final float HEALTH_WEIGHT = 0.6f;
+	/**
+	 * The importance of armor in wellness calculation.
+	 */
 	static final float ARMOR_WEIGHT = 0.4f;
+	/**
+	 * The fire power that is considered to be good.
+	 */
 	static final float GOOD_FIRE_POWER = 0.0035f;
+	/**
+	 * The bad fire power that is considered to be insufficient.
+	 */
 	static final float BAD_FIRE_POWER = GOOD_FIRE_POWER*0.8f;
 	
+	/**
+	 * The bot which uses the FSM.
+	 */
 	BotBase bot;
 	
+	/**
+	 * The current state.
+	 */
 	State state;
 	
+	/**
+	 * Basic constructor
+	 * @param bot the bot that uses FSM
+	 */
 	public NeedsFSM(BotBase bot) {
 		this.bot = bot;
 		this.state = new HealingState(bot);
 	}
 	
+	/**
+	 * Returns the array of entity types that bot desires in current state
+	 * along with a value indicating how much it desires them.
+	 * @return
+	 */
 	public EntityTypeDoublePair [] getDesiredEntities() {
 		state = state.getNextState();
 		return state.getDesiredEntities();
 	}
 	
+	/**
+	 * @return the current state's name.
+	 */
 	public String getCurrentStateName() {
 		return state.getClass().toString();
 	}
 	
-	
+	/**
+	 * Returns the bot's wellness value.
+	 * @param bot the bot whose wellness we want to calculate
+	 * @return the wellness.
+	 */
 	static float getBotWellness(BotBase bot) {
 		return HEALTH_WEIGHT*bot.getBotHealth()+ARMOR_WEIGHT*bot.getBotArmor();
 	}
