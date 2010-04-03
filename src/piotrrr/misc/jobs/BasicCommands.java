@@ -2,7 +2,7 @@ package piotrrr.misc.jobs;
 
 import java.util.Vector;
 
-import piotrrr.bot.base.BotBase;
+import piotrrr.bot.botbase.BotBase;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package piotrrr.misc.fsm.needs;
 
-import piotrrr.bot.base.BotBase;
+import piotrrr.bot.botbase.BotBase;
 import piotrrr.misc.EntityWrapper;
 import soc.qase.state.Entity;
 
