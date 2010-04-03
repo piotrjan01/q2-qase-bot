@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import piotrrr.bot.common.CommFun;
 import piotrrr.bot.common.Dbg;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 import piotrrr.bot.movement.MoveInstructions;
 import piotrrr.bot.movement.MovePlan;
 import soc.qase.ai.waypoint.Waypoint;
@@ -12,7 +12,7 @@ import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class MapLearningBot extends GenericBot {
+public class MapLearningBot extends BotBase {
 	
 	Vector<Waypoint> observed = new Vector<Waypoint>();
 	Vector3f lastCommanderPos = null;
@@ -39,7 +39,7 @@ public class MapLearningBot extends GenericBot {
 	public MapLearningBot(String arg0, String arg1) {
 		super(arg0, arg1);
 		Dbg.prn("Created!");
-		addBotJob(new piotrrr.bot.misc.jobs.DebugTalk((GenericBot)this, 100));
+		addBotJob(new piotrrr.bot.misc.jobs.DebugTalk((BotBase)this, 100));
 	}
 
 	@Override

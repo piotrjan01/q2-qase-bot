@@ -1,7 +1,7 @@
 package piotrrr.bot.misc.jobs;
 
 import piotrrr.bot.basicbot.SimpleBot;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 
 /**
  * Dummy job, that repeats a phrase with given period.
@@ -13,7 +13,7 @@ public class DebugTalk extends Job {
 	
 	int period;
 
-	public DebugTalk(GenericBot bot, int period) {
+	public DebugTalk(BotBase bot, int period) {
 		super(bot);
 		this.period = period;
 		lastFrame = bot.getFrameNumber();

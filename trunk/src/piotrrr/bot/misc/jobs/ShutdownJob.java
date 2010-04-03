@@ -1,6 +1,6 @@
 package piotrrr.bot.misc.jobs;
 
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 
 /**
  * Used to call some methods, when the application is interrupted by 
@@ -9,7 +9,7 @@ import piotrrr.bot.misc.GenericBot;
  */
 public class ShutdownJob extends Job {
 
-	public ShutdownJob(GenericBot bot) {
+	public ShutdownJob(BotBase bot) {
 		super(bot);
 	}
 	

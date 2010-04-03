@@ -1,7 +1,7 @@
 package piotrrr.bot.misc.jobs;
 
 import piotrrr.bot.basicbot.SimpleBot;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 
 /**
  * Dummy job, that repeats a phrase with given period.
@@ -14,7 +14,7 @@ public class StateReporter extends Job {
 	 */
 	String lastStateName = "";
 	
-	public StateReporter(GenericBot bot) {
+	public StateReporter(BotBase bot) {
 		super(bot);
 		lastStateName = ((SimpleBot)bot).getCurrentStateName();
 	}

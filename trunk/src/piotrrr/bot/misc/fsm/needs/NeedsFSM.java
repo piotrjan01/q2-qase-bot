@@ -7,7 +7,7 @@ package piotrrr.bot.misc.fsm.needs;
 import java.util.LinkedList;
 
 import piotrrr.bot.misc.EntityWrapper;
-import piotrrr.bot.misc.GenericBot;
+import piotrrr.bot.misc.BotBase;
 
 public class NeedsFSM {
 	
@@ -18,11 +18,11 @@ public class NeedsFSM {
 	static final float GOOD_FIRE_POWER = 0.0035f;
 	static final float BAD_FIRE_POWER = GOOD_FIRE_POWER*0.8f;
 	
-	GenericBot bot;
+	BotBase bot;
 	
 	NeedsState state;
 	
-	public NeedsFSM(GenericBot bot) {
+	public NeedsFSM(BotBase bot) {
 		this.bot = bot;
 		this.state = new HealingState(bot);
 	}
@@ -37,7 +37,7 @@ public class NeedsFSM {
 	}
 	
 	
-	static float getBotWellness(GenericBot bot) {
+	static float getBotWellness(BotBase bot) {
 		return HEALTH_WEIGHT*bot.getBotHealth()+ARMOR_WEIGHT*bot.getBotArmor();
 	}
 	
@@ -45,7 +45,7 @@ public class NeedsFSM {
 	 * Returns the bot's firepower according to the scores table of each weapon.
 	 * @return the number between 0 and 1.
 	 */
-	static float getBotFirePower(GenericBot bot) {
+	static float getBotFirePower(BotBase bot) {
 		/**
 		int BLASTER = 7, SHOTGUN = 8,
 		SUPER_SHOTGUN = 9, MACHINEGUN = 10, CHAINGUN = 11, GRENADES = 12,
