@@ -89,7 +89,7 @@ public class MapLearningBot extends BotBase {
 			say("I can't see you!"); 
 			return null; 
 		}
-		NavPlan plan = new NavPlan(new Waypoint(commander.getOrigin()));
+		NavPlan plan = new NavPlan(new Waypoint(commander.getOrigin()), getFrameNumber()+300);
 		if (isPositionReached(plan.dest.getPosition())) return null;
 		say("Got new plan...");
 		return plan;
