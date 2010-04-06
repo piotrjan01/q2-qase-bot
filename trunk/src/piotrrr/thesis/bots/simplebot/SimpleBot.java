@@ -4,6 +4,7 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
+import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.WaypointMap;
@@ -48,7 +49,12 @@ public class SimpleBot extends BotBase {
 	 */
 	boolean stateChanged;
 	
-	DebugTalk dtalk;
+	/**
+	 * Is being set to true, when the bot is suspected to be stuck.
+	 */
+	boolean isStuck;
+	
+	public DebugTalk dtalk;
 
 	/**
 	 * Basic constructor.
@@ -59,10 +65,11 @@ public class SimpleBot extends BotBase {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
 		//TODO:
-		dtalk = new DebugTalk(this, 50);
+		dtalk = new DebugTalk(this, 30);
 		addBotJob(dtalk);
 		addBotJob(new StateReporter(this));
 		addBotJob(new BasicCommands(this, "Player"));
+		addBotJob(new StuckDetector(this, 5));
 	}
 
 	@Override
@@ -74,7 +81,7 @@ public class SimpleBot extends BotBase {
 			assert map != null;
 			kb = SimpleKB.createKB(map);
 			assert kb != null;
-			say("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
+			dtalk.addToLog("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
 		}
 		
 		kb.updateKB(world.getEntities(false), getFrameNumber());
@@ -89,6 +96,10 @@ public class SimpleBot extends BotBase {
 		 */
 		
 		plan = GlobalNav.establishNewPlan(this, plan);
+		if (plan == null) {
+			// ??
+			return;
+		}
 		assert plan != null;
 		
 		executeInstructions(LocalNav.getNavigationInstructions(this));
@@ -134,6 +145,10 @@ public class SimpleBot extends BotBase {
 
 	public void setStateChanged(boolean stateChanged) {
 		this.stateChanged = stateChanged;
+	}
+
+	public void setStuck(boolean isStuck) {
+		this.isStuck = isStuck;
 	}
 
 }

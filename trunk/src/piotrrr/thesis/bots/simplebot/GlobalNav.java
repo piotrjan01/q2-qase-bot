@@ -27,7 +27,7 @@ class GlobalNav {
 		 * + when we don't have plan
 		 * + when we accomplish the old one
 		 * + when the state was changed
-		 * - when the bot is stuck
+		 * + when the bot is stuck
 		 * + when the decision times out....?
 		 * - when the enemy appears
 		 * - when the bot has good pickup opportunity
@@ -36,11 +36,14 @@ class GlobalNav {
 		
 		boolean changePlan = false;
 		
-		if (oldPlan == null || oldPlan.done || bot.stateChanged) changePlan = true;
+		if (oldPlan == null || oldPlan.done || bot.stateChanged
+				|| bot.isStuck) changePlan = true;
 		
 		else if (oldPlan.deadline <= bot.getFrameNumber()) changePlan = true;
 		
 		if (! changePlan) return oldPlan;
+		
+		bot.dtalk.addToLog("Changing the plan...");
 		
 		/**
 		 * What do we do when we decide to change the plan?
@@ -62,6 +65,11 @@ class GlobalNav {
 				ranking.add(new KBEntryDoublePair(entry, rank));
 			}
 		}
+		if (ranking.size() == 0) {
+			bot.dtalk.addToLog("Nothing left to do...");
+			return null;
+		}
+		bot.dtalk.addToLog("new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name());
 		
 		NavPlan plan = new NavPlan(ranking.last().kbe.wp, bot.getFrameNumber()+PLAN_TIME);
 		plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
