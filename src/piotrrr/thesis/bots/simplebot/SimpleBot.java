@@ -21,7 +21,7 @@ public class SimpleBot extends BotBase {
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	static final String MAPS_DIR = ".\\botmaps\\from-demo\\";
+	static final String MAPS_DIR = "C:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
 
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -54,6 +54,10 @@ public class SimpleBot extends BotBase {
 	 */
 	boolean isStuck;
 	
+	/**
+	 * Bot's job that is used to periodically say 
+	 * some debug information in the game.
+	 */
 	public DebugTalk dtalk;
 
 	/**

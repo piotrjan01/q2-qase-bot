@@ -35,7 +35,10 @@ public class StuckDetector extends Job {
 	
 	@Override
 	public void run() {
-		if (bot.getFrameNumber() - lastFrame < period ) return;
+		if (bot.getFrameNumber() - lastFrame < period ) {
+			((SimpleBot)bot).setStuck(false);
+			return;
+		}
 		lastFrame = bot.getFrameNumber();
 		
 		Vector3f pos;
