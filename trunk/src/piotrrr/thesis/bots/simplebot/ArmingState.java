@@ -8,16 +8,16 @@ import piotrrr.thesis.common.entities.EntityTypeDoublePair;
  * This state should be used by bot when it searches from guns and ammo.
  * @author Piotr Gwizda³a
  */
-public class ArmingState extends State {
+class ArmingState extends State {
 
 	BotBase bot;
 
-	public ArmingState(BotBase bot) {
+	ArmingState(BotBase bot) {
 		this.bot = bot;
 	}
 
 	@Override
-	public EntityTypeDoublePair[] getDesiredEntities() {
+	EntityTypeDoublePair[] getDesiredEntities() {
 		EntityTypeDoublePair[] ret = { 
 				new EntityTypeDoublePair(EntityType.WEAPON, 0.9),
 				new EntityTypeDoublePair(EntityType.AMMO, 0.7),
@@ -28,7 +28,7 @@ public class ArmingState extends State {
 	}
 
 	@Override
-	public State getNextState() {
+	State getNextState() {
 		float wellness = NeedsFSM.getBotWellness(bot);
 		float firepower = NeedsFSM.getBotFirePower(bot);
 		if (wellness <= NeedsFSM.BAD_WELLNESS) return new HealingState(bot);

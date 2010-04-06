@@ -8,18 +8,18 @@ import piotrrr.thesis.common.entities.EntityTypeDoublePair;
  * This state should be used by bot when it searches for some health packages.
  * @author Piotr Gwizda³a
  */
-public class HealingState extends State {
+class HealingState extends State {
 	
 	BotBase bot;
 	
 	
 	
-	public HealingState(BotBase bot) {
+	HealingState(BotBase bot) {
 		this.bot = bot;
 	}
 
 	@Override
-	public EntityTypeDoublePair []  getDesiredEntities() {
+	EntityTypeDoublePair []  getDesiredEntities() {
 		EntityTypeDoublePair []  ret = { 
 				new EntityTypeDoublePair(EntityType.HEALTH, 0.9),
 				new EntityTypeDoublePair(EntityType.ARMOR, 0.6),
@@ -30,7 +30,7 @@ public class HealingState extends State {
 	}
 
 	@Override
-	public State getNextState() {
+	State getNextState() {
 		float wellness = NeedsFSM.getBotWellness(bot);
 		float firepower = NeedsFSM.getBotFirePower(bot);
 		if (wellness >= NeedsFSM.GOOD_WELLNESS 

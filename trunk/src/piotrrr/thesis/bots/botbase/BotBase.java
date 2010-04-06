@@ -68,7 +68,7 @@ public class BotBase extends ObserverBot {
 	 * In this method all the bot's logic is implemented.
 	 * Extending classes should override it.
 	 */
-	public void botLogic() {
+	protected void botLogic() {
 		
 	}
 	
@@ -76,7 +76,7 @@ public class BotBase extends ObserverBot {
 	 * Sends the given command as a console command.
 	 * @param cmd the string of console command.
 	 */
-	public void consoleCommand(String cmd) {
+	protected void consoleCommand(String cmd) {
 		this.sendConsoleCommand(cmd);
 	}
 	
@@ -115,7 +115,7 @@ public class BotBase extends ObserverBot {
 	 * @param j the job.
 	 * @return true if successful.
 	 */
-	public boolean addBotJob(Job j) {
+	protected boolean addBotJob(Job j) {
 		return botJobs.add(j);
 	}
 	
@@ -184,7 +184,7 @@ public class BotBase extends ObserverBot {
 	}
 	
 	@Override
-	public void respawn() {
+	protected void respawn() {
 		super.respawn();
 		deathsNumber++;
 		say("I came back after dieing for "+deathsNumber+" times.");
@@ -194,7 +194,7 @@ public class BotBase extends ObserverBot {
 	 * Gets the name of the current server map.
 	 * @return
 	 */
-	public String getMapName() {
+	protected String getMapName() {
 		if (getBsp() == null) {
 			say("BSPParser is not availible!");
 			return null;

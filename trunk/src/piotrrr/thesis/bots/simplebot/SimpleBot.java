@@ -43,7 +43,7 @@ public class SimpleBot extends BotBase {
 	 * Is being set to true when the state have been changed by StateReporter.
 	 * @see StateReporter
 	 */
-	public boolean stateChanged;
+	boolean stateChanged;
 
 	/**
 	 * Basic constructor.
@@ -60,7 +60,7 @@ public class SimpleBot extends BotBase {
 	}
 
 	@Override
-	public void botLogic() {
+	protected void botLogic() {
 		super.botLogic();
 		
 		if (map == null) { 
@@ -98,12 +98,17 @@ public class SimpleBot extends BotBase {
 	}
 	
 	@Override
-	public void respawn() {
+	protected void respawn() {
 		super.respawn();
 		plan = null;
 	}
-	
-	
-	
+
+	public boolean isStateChanged() {
+		return stateChanged;
+	}
+
+	public void setStateChanged(boolean stateChanged) {
+		this.stateChanged = stateChanged;
+	}
 
 }
