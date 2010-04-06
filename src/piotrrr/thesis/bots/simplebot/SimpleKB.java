@@ -97,9 +97,26 @@ class SimpleKB {
 		}
 	}
 	
-	LinkedList<KBEntry> getCloseAndActiveByType(EntityType [] ets, int count) {
+	/**
+	 * Reads from database all known entries that are of specified
+	 * EntityType and will should be active at specified frame.
+	 * @param et entity type that we are interested in
+	 * @param frameNumber the frame at which the entity should be 
+	 * active in the world.
+	 * @return the list of KBEntries that are of specified type and
+	 * should be active at specified frameNumber.
+	 * 
+	 * @see KBEntry
+	 */
+	LinkedList<KBEntry> getActiveEntitiesByType(EntityType et, long frameNumber) {
 		LinkedList<KBEntry> ret = new LinkedList<KBEntry>();
-		//FIXME: last edit here
+		LinkedList<KBEntry> part = kb.get(et);
+		if (part == null) return ret;
+		for (KBEntry en : part) {
+			if (en.ert <= frameNumber) {
+				ret.add(en);
+			}
+		}
 		return ret;
 	}
 	

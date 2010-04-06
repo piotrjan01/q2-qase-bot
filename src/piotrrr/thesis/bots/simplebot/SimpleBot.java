@@ -4,8 +4,11 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.DebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
+import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.WaypointMap;
+import soc.qase.state.PlayerMove;
+import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * This is a simple bot that will be used as a base of other bots as well as 
@@ -44,6 +47,8 @@ public class SimpleBot extends BotBase {
 	 * @see StateReporter
 	 */
 	boolean stateChanged;
+	
+	DebugTalk dtalk;
 
 	/**
 	 * Basic constructor.
@@ -54,7 +59,8 @@ public class SimpleBot extends BotBase {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
 		//TODO:
-		addBotJob(new DebugTalk(this, 50));
+		dtalk = new DebugTalk(this, 50);
+		addBotJob(dtalk);
 		addBotJob(new StateReporter(this));
 		addBotJob(new BasicCommands(this, "Player"));
 	}
@@ -73,8 +79,6 @@ public class SimpleBot extends BotBase {
 		
 		kb.updateKB(world.getEntities(false), getFrameNumber());
 		
-		//Dbg.prn("Item nodes: "+map.getItemNodeWaypoints().length);
-		
 		/**
 		 * This is how we do:
 		 * 1. Find where to go - get plan
@@ -84,9 +88,30 @@ public class SimpleBot extends BotBase {
 		 * 5. Execute firing
 		 */
 		
-		fsm.getDesiredEntities();
+		plan = GlobalNav.establishNewPlan(this, plan);
+		assert plan != null;
+		
+		executeInstructions(LocalNav.getNavigationInstructions(this));
 		
 	}
+	
+	
+	/**
+	 * Executes the instructions got from the plan.
+	 * @param ni - navigation instructions.
+	 */
+	private void executeInstructions(NavInstructions ni) {
+		//Do the navigation and look ad good direction	
+		if (ni != null) {
+			setBotMovement(ni.moveDir, ni.aimDir, 
+					ni.walkState, ni.postureState);
+		}
+		else {
+			setBotMovement(new Vector3f(0,0,0), null, 
+					PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
+		}
+	}
+	
 	
 	/**
 	 * Returns the current name of the state of bot's finite state machine.

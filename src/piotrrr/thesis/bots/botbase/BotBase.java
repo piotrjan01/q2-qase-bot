@@ -8,6 +8,7 @@ import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
 import soc.qase.state.World;
+import soc.qase.tools.vecmath.Vector3f;
 /**
  * The bot that is used as super class for all the other bots.
  * @author Piotr Gwizda³a
@@ -232,6 +233,10 @@ public class BotBase extends ObserverBot {
 			}
 		}
 		return ret;
+	}
+	
+	public Vector3f getBotPosition() {
+		return new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 	}
 	
 
