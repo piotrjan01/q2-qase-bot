@@ -19,10 +19,6 @@ public class NavInstructions {
 	 * The aiming direction.
 	 */
 	public Vector3f aimDir;
-	/**
-	 * The movement speed.
-	 */
-	public float velocity;
 	
 	/**
 	 * The following field is set according to PlayerMove 
@@ -46,10 +42,9 @@ public class NavInstructions {
 	 * @see PlayerMove
 	 */
 	public NavInstructions(Vector3f movDir, Vector3f aimDir,
-			float velocity, int postureState, int walkState) {
+			int postureState, int walkState) {
 		this.moveDir = movDir;
 		this.aimDir = aimDir;
-		this.velocity = velocity;
 		this.postureState = postureState;
 		this.walkState = walkState;
 	}	

@@ -12,6 +12,8 @@ public class DebugTalk extends Job {
 	long lastFrame;
 	
 	int period;
+	
+	String toSay = "";
 
 	public DebugTalk(BotBase bot, int period) {
 		super(bot);
@@ -23,11 +25,19 @@ public class DebugTalk extends Job {
 	public void run() {
 		if (bot.getFrameNumber() - lastFrame < period ) return;
 		lastFrame = bot.getFrameNumber();
+		
 		float h = bot.getBotHealth();
 		float a = bot.getBotArmor();
 		String st = ((SimpleBot)bot).getCurrentStateName();
-		bot.say("I'm alive! H="+h+" A="+a+" St="+st);
 		
+		String say = toSay+"  H="+h+" A="+a+" St="+st;
+		bot.say(say);
+		toSay = "";
+		
+	}
+	
+	public void addToLog(String s) {
+		toSay += s+" :: ";
 	}
 
 }

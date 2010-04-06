@@ -5,6 +5,9 @@ import soc.qase.state.Entity;
 /**
  * Wraps the Entity class from QASE with some additional functionality.
  * @author Piotr Gwizda³a
+ * 
+ * TODO: unused class?
+ * 
  */
 public class EntityWrapper {
 

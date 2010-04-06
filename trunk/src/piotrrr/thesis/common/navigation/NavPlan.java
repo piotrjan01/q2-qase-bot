@@ -22,6 +22,8 @@ public class NavPlan {
 	
 	public NavPlan parentPlan = null;
 	
+	public int pathIndex = 0;
+	
 	/**
 	 * The array that represents the path chosen. The first element is the source
 	 * the last element is the destination.

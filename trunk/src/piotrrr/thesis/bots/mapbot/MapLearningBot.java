@@ -105,7 +105,7 @@ public class MapLearningBot extends BotBase {
 		//else go to the direction of the goal.
 		Vector3f movDir = CommFun.getNormalizedDirectionVector(playerPos, plan.dest.getPosition());	
 		//Return the instructions
-		return new NavInstructions(movDir, movDir, 0.0f, 
+		return new NavInstructions(movDir, movDir, 
 				PlayerMove.POSTURE_NORMAL, PlayerMove.WALK_RUN);
 	}
 	
