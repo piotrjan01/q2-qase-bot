@@ -2,6 +2,7 @@ package piotrrr.thesis.common.jobs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.tools.Dbg;
 
 /**
  * Dummy job, that repeats some debug info with given period.
@@ -31,6 +32,7 @@ public class DebugTalk extends Job {
 		String st = ((SimpleBot)bot).getCurrentStateName();
 		
 		String say = toSay+"  H="+h+" A="+a+" St="+st;
+		Dbg.prn("BOT SAYS: "+say);
 		bot.say(say);
 		toSay = "";
 		
