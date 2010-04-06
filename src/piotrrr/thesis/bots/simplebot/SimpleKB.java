@@ -14,7 +14,7 @@ import soc.qase.state.Entity;
  * and being updated basing on seen entities list.
  * @author Piotr Gwizda³a
  */
-public class SimpleKB {
+class SimpleKB {
 	
 	/**
 	 * The map containing Knowledge base entries organized by 
@@ -33,7 +33,7 @@ public class SimpleKB {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static SimpleKB createKB(WaypointMap map) {
+	static SimpleKB createKB(WaypointMap map) {
 		SimpleKB ret = new SimpleKB();
 		Vector wps = map.getItemNodes();
 		if (wps == null || wps.size() == 0) return ret;
@@ -49,7 +49,7 @@ public class SimpleKB {
 	 * Returns the number of Entities being stored in KB.
 	 * @return
 	 */
-	public int getKBSize() {
+	int getKBSize() {
 		int size = 0;
 		for (LinkedList<KBEntry> l : kb.values()) {
 			size += l.size();
@@ -72,7 +72,7 @@ public class SimpleKB {
 	 * @see KBEntry
 	 */
 	@SuppressWarnings("unchecked")
-	public void updateKB(Vector entities, long currentFrame) {
+	void updateKB(Vector entities, long currentFrame) {
 		//FIXME: more optimal searching
 		Vector<Entity> ents = (Vector<Entity>) entities;
 		for (Entity e : ents) {
@@ -95,6 +95,12 @@ public class SimpleKB {
 				}
 			}
 		}
+	}
+	
+	LinkedList<KBEntry> getCloseAndActiveByType(EntityType [] ets, int count) {
+		LinkedList<KBEntry> ret = new LinkedList<KBEntry>();
+		//FIXME: last edit here
+		return ret;
 	}
 	
 	/**

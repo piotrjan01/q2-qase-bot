@@ -10,7 +10,7 @@ import piotrrr.thesis.common.entities.EntityTypeDoublePair;
  * wants each type of entity in its current state.
  * @author Piotr Gwizda³a
  */
-public class NeedsFSM {
+class NeedsFSM {
 	
 	//TODO: values to adjust:
 	/**
@@ -52,7 +52,7 @@ public class NeedsFSM {
 	 * Basic constructor
 	 * @param bot the bot that uses FSM
 	 */
-	public NeedsFSM(BotBase bot) {
+	NeedsFSM(BotBase bot) {
 		this.bot = bot;
 		this.state = new HealingState(bot);
 	}
@@ -62,7 +62,7 @@ public class NeedsFSM {
 	 * along with a value indicating how much it desires them.
 	 * @return
 	 */
-	public EntityTypeDoublePair [] getDesiredEntities() {
+	EntityTypeDoublePair [] getDesiredEntities() {
 		state = state.getNextState();
 		return state.getDesiredEntities();
 	}
@@ -70,7 +70,7 @@ public class NeedsFSM {
 	/**
 	 * @return the current state's name.
 	 */
-	public String getCurrentStateName() {
+	String getCurrentStateName() {
 		return state.getClass().toString();
 	}
 	

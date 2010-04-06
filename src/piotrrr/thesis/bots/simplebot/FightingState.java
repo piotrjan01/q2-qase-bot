@@ -9,16 +9,16 @@ import piotrrr.thesis.common.entities.EntityTypeDoublePair;
  * This state should be used by bot when it is searching for enemies to fight.
  * @author Piotr Gwizda³a
  */
-public class FightingState extends State {
+class FightingState extends State {
 	
 	BotBase bot;
 	
-	public FightingState(BotBase bot) {
+	FightingState(BotBase bot) {
 		this.bot = bot;
 	}
 
 	@Override
-	public EntityTypeDoublePair []  getDesiredEntities() {
+	EntityTypeDoublePair []  getDesiredEntities() {
 		EntityTypeDoublePair []   ret = {
 				new EntityTypeDoublePair(EntityType.PLAYER, 1.0),
 				new EntityTypeDoublePair(EntityType.HEALTH, 0.4),
@@ -30,7 +30,7 @@ public class FightingState extends State {
 	}
 
 	@Override
-	public State getNextState() {
+	State getNextState() {
 		float wellness = NeedsFSM.getBotWellness(bot);
 		float firepower = NeedsFSM.getBotFirePower(bot);
 		if (wellness <= NeedsFSM.BAD_WELLNESS) return new HealingState(bot);

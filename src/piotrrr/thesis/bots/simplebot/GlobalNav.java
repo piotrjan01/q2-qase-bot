@@ -1,5 +1,6 @@
 package piotrrr.thesis.bots.simplebot;
 
+import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 import piotrrr.thesis.common.navigation.NavPlan;
 
 /**
@@ -7,9 +8,9 @@ import piotrrr.thesis.common.navigation.NavPlan;
  * @author Piotr Gwizda³a
  * @see SimpleBot
  */
-public class GlobalNav {
+class GlobalNav {
 	
-	public static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
+	static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
 	
 		/**
 		 * When do we change the plan?
@@ -40,6 +41,10 @@ public class GlobalNav {
 		
 		if (oldPlan.parentPlan != null) return oldPlan.parentPlan;
 		
+		EntityTypeDoublePair [] ents = bot.fsm.getDesiredEntities();
+		for (EntityTypeDoublePair etdp : ents) {
+			//TODO: consult the KB
+		}
 		
 		
 		return null;

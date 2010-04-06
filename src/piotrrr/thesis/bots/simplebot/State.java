@@ -15,7 +15,7 @@ public class State {
 	 * along with how much the bot desires those entities.
 	 * @return
 	 */
-	public EntityTypeDoublePair [] getDesiredEntities() {
+	EntityTypeDoublePair [] getDesiredEntities() {
 		return null;
 	}
 	
@@ -23,7 +23,7 @@ public class State {
 	 * Returns the next state basing on some values.
 	 * @return
 	 */
-	public State getNextState() {
+	State getNextState() {
 		return null;
 	}
 
