@@ -77,7 +77,7 @@ public class BotBase extends ObserverBot {
 	 * Sends the given command as a console command.
 	 * @param cmd the string of console command.
 	 */
-	protected void consoleCommand(String cmd) {
+	public void consoleCommand(String cmd) {
 		this.sendConsoleCommand(cmd);
 	}
 	
@@ -185,7 +185,7 @@ public class BotBase extends ObserverBot {
 	}
 	
 	@Override
-	protected void respawn() {
+	public void respawn() {
 		super.respawn();
 		deathsNumber++;
 		say("I came back after dieing for "+deathsNumber+" times.");
