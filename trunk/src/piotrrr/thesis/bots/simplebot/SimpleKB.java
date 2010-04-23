@@ -66,7 +66,7 @@ class SimpleKB {
 	 * 1.2. if we didn't expect it to be there, we continue.
 	 * 2. If the entity is active
 	 * 2.1. if we expected it to be there (ert < current), we continue.
-	 * 2.2. if we didn't expect it to be there, we set erp to current-1.
+	 * 2.2. if we didn't expect it to be there, we set ert to current-1.
 	 * @param entities
 	 * @param currentFrame
 	 * @see KBEntry

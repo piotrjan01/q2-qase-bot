@@ -138,7 +138,7 @@ public class SimpleBot extends BotBase {
 	}
 	
 	@Override
-	protected void respawn() {
+	public void respawn() {
 		super.respawn();
 		plan = null;
 	}

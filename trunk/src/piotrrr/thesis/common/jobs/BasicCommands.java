@@ -53,6 +53,9 @@ public class BasicCommands extends Job {
 				bot.say("Bye, bye!");
 				bot.disconnect();
 			}
+			if (cmd.equals("die")) {
+				bot.consoleCommand("kill");
+			}
 			
 			else {
 				bot.say("Hey "+commanderName+", I don't get it: "+cmd);				
