@@ -210,7 +210,7 @@ public class BotBase extends ObserverBot {
 	 * Convenience method.
 	 * @return
 	 */
-	private BSPParser getBsp() {
+	public BSPParser getBsp() {
 		if (bsp != null) return bsp;
 		bsp = this.getBSPParser();
 		assert bsp != null;

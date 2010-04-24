@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityType;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.ai.waypoint.WaypointMap;
@@ -14,21 +13,26 @@ import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * The simple knowledge base being built basing on the WaypointMap
- * and being updated basing on seen entities list.
  * @author Piotr Gwizda³a
  */
 class SimpleKB {
 	
 	/**
-	 * The map containing Knowledge base entries organized by 
-	 * entity types.
+	 * The map containing the information on entities in the environment
 	 */
 	HashMap<EntityType, LinkedList<KBEntry>> kb;
 	
+	/**
+	 * The black list of pickup things. If the bot decides to pickup something, 
+	 * he shouldn't repeat this decision for some time, in case the thing can not be
+	 * picked up. 
+	 */
 	LinkedList<KBEntry> pickupBlacklist;
 	
-	static final int BLACKLIST_MAX_SIZE = 10;
+	/**
+	 * The maximum size of pickupBlaclist
+	 */
+	static final int PICKUP_BLACKLIST_MAX_SIZE = 10;
 	
 	private SimpleKB() {
 		kb = new HashMap<EntityType, LinkedList<KBEntry>>();
@@ -36,10 +40,9 @@ class SimpleKB {
 	}
 	
 	/**
-	 * Creates the KB basing on the given map.
-	 * @param map the WaypointMap, which's WaypointItems are used to
-	 * collect data on items on the map.
-	 * @return
+	 * Adds all the entities that are on the map to KB.
+	 * @param map - the map
+	 * @return the knowledge base
 	 */
 	@SuppressWarnings("unchecked")
 	static SimpleKB createKB(WaypointMap map) {
@@ -49,7 +52,7 @@ class SimpleKB {
 		for (Object o : wps) {
 			WaypointItem wi = (WaypointItem) o;
 			EntityType et = EntityType.getEntityType(wi.getCategory(), wi.getType(), wi.getSubType());
-			ret.addToKB(et, new KBEntry(wi.getNode(), et, 0));
+			ret.addToKB(et, new KBEntry(wi.getNode(), et, 0, true));
 		}
 		return ret;
 	}
@@ -68,41 +71,35 @@ class SimpleKB {
 
 	
 	/**
-	 * Updates the knowledge base:
-	 * 1. If entity is not active
-	 * 1.1. if we expected it to be there (ert < current)
-	 * we set its ert to current + respawn time (pesimistic).
-	 * 1.2. if we didn't expect it to be there, we continue.
-	 * 2. If the entity is active
-	 * 2.1. if we expected it to be there (ert < current), we continue.
-	 * 2.2. if we didn't expect it to be there, we set ert to current-1.
+	 * Updates the knowledge base with observed entities:
+	 * 
+	 * 1. for each entity we try to find if it is in KB
+	 * 2. if it is, we update the information about it there
+	 * 3. if it's not, we add it as entity not from the map.
+	 * 
 	 * @param entities
 	 * @param currentFrame
+	 * @param botName
 	 * @see KBEntry
 	 */
 	@SuppressWarnings("unchecked")
 	void updateKB(Vector entities, long currentFrame, String botName) {
-		//FIXME: more optimal searching
 		Vector<Entity> ents = (Vector<Entity>) entities;
 		//for all entities that are seen around
-		LinkedList<KBEntry> toRemove = new LinkedList<KBEntry>();
 		for (Entity e : ents) {
 			EntityType et = EntityType.getEntityType(e);
 			LinkedList<KBEntry> l = kb.get(et); //we get the subset of the given ent type
+			LinkedList<KBEntry> toRemove = new LinkedList<KBEntry>(); //the list that will contain entries eligible to be removed.
 			
-			
-			if (et.equals(EntityType.PLAYER) && e.getName().equals(botName)) {
-//				Dbg.prn("Tried to add himself to KB ;)");
-				continue;
-			}
-			
-			boolean updated = false;
+			if (et.equals(EntityType.PLAYER) && e.getName().equals(botName)) continue;
+
+			boolean foundAndUpdated = false;
 			if (l != null) {
 				for (KBEntry kbe : l) { //we search for the ent already in KB
 					if (kbe.wp.getPosition().equals(e.getOrigin().toVector3f())) {
 						//if it is exactly the same ent, we update its info
 						boolean isExpected = (kbe.ert <= currentFrame);
-						if (kbe.isRespawningEntity) { //if it is respawning ent, update it
+						if (kbe.isFromMap) { //if it is respawning ent, update it
 							if (e.getActive() == false && isExpected) 
 								kbe.ert = currentFrame+e.getRespawnTime();
 							if (e.getActive() == true && ! isExpected)
@@ -113,7 +110,7 @@ class SimpleKB {
 								toRemove.add(kbe);
 							}
 						}
-						updated = true;
+						foundAndUpdated = true;
 						break;
 					}
 				}
@@ -121,7 +118,7 @@ class SimpleKB {
 			}
 			
 
-			if (!updated) { //if we didn't find this ent in KB, it is probably new no-respawning entity
+			if (!foundAndUpdated) { //if we didn't find this ent in KB, it is probably new no-respawning entity
 				addToKB(et, new KBEntry(new Waypoint(e.getOrigin()), et, currentFrame-1, false));
 			}
 		}
@@ -145,7 +142,7 @@ class SimpleKB {
 		LinkedList<KBEntry> part = kb.get(et);
 		if (part == null) return ret;
 		for (KBEntry en : part) {
-			if (! en.et.equals(EntityType.UNKNOWN) && en.ert <= frameNumber && en.isRespawningEntity) {
+			if (! en.et.equals(EntityType.UNKNOWN) && en.ert <= frameNumber && en.isFromMap) {
 				ret.add(en);
 			}
 		}
@@ -171,9 +168,9 @@ class SimpleKB {
 		for (LinkedList<KBEntry> l : kb.values()) {
 			for (KBEntry e : l) {
 				if (	! e.et.equals(EntityType.UNKNOWN) &&
-						e.ert <= currentFrame && 
-						CommFun.getDistanceBetweenPositions(pos, e.wp.getPosition()) < maxRange &&
-						! pickupBlacklist.contains(e)) {
+						e.ert <= currentFrame &&
+						! pickupBlacklist.contains(e) && 
+						CommFun.getDistanceBetweenPositions(pos, e.wp.getPosition()) < maxRange) {
 					ret.add(e);
 				}
 			}
@@ -183,7 +180,7 @@ class SimpleKB {
 	
 	void addToBlackList(KBEntry e) {
 		pickupBlacklist.add(e);
-		if (pickupBlacklist.size() > BLACKLIST_MAX_SIZE) pickupBlacklist.pop();
+		if (pickupBlacklist.size() > PICKUP_BLACKLIST_MAX_SIZE) pickupBlacklist.pop();
 	}
 	
 

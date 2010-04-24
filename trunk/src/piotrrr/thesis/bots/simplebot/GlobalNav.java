@@ -51,17 +51,13 @@ class GlobalNav {
 		}
 		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
-			bot.dtalk.addToLog("plan change: bot is stuck");
+			bot.dtalk.addToLog("plan change: bot is stuck <-----------------------------");
 			return getSpontaneousAntiStuckPlan(bot);
 		}
 		else if (oldPlan.deadline <= bot.getFrameNumber()) { 
 			changePlan = true;
 			bot.dtalk.addToLog("plan change: timeout");
 		}
-		
-		if (! changePlan) return oldPlan;
-		
-		
 		
 		/**
 		 * What do we do when we decide to change the plan?
@@ -70,15 +66,24 @@ class GlobalNav {
 		 * - if we don't do spontaneous pickup, we get the entities from KB basing on bot's state and
 		 * choose one of them and create the plan to reach it.
 		 */
+		
 		NavPlan plan = null; // the plan to return
+		
+		if (! changePlan && oldPlan != null && ! oldPlan.isSpontaneos) plan = getSpontaneousPlan(bot, oldPlan);
+		if (plan != null) return plan;
+		
+		if (! changePlan) return oldPlan;
+		
 		
 		if (oldPlan != null && oldPlan.parentPlan != null) {
 			bot.dtalk.addToLog("coming back to parent plan...");
+			plan = oldPlan.parentPlan;
+			plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
+			plan.pathIndex = 0;
 			return oldPlan.parentPlan;
 		}
 		
-		if (oldPlan != null) plan = getSpontaneousPlan(bot, oldPlan);
-		if (plan != null) return plan;
+		
 		
 		TreeSet<KBEntryDoublePair> ranking = new TreeSet<KBEntryDoublePair>();
 		EntityTypeDoublePair [] ents = bot.fsm.getDesiredEntities();
@@ -126,6 +131,7 @@ class GlobalNav {
 		for (KBEntry ent : entries) {
 			if (ent.et.equals(EntityType.PLAYER)) continue;
 			if (! CommFun.areOnTheSameHeight(bot.getBotPosition(), ent.wp.getPosition())) continue;
+			if (! bot.getBsp().isVisible(bot.getBotPosition(), ent.wp.getPosition())) continue;
 			if (chosen != null) {
 				float distOld = CommFun.getDistanceBetweenPositions(chosen.wp.getPosition(), bot.getBotPosition());
 				float distNew = CommFun.getDistanceBetweenPositions(ent.wp.getPosition(), bot.getBotPosition());
@@ -145,6 +151,7 @@ class GlobalNav {
 		newPlan.parentPlan = parentPlan;
 		newPlan.path = new Waypoint[1];
 		newPlan.path[0] = chosen.wp;
+		newPlan.isSpontaneos = true;
 		
 		int wpInd = bot.map.indexOf(chosen.wp);
 		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.wp.getPosition());
@@ -159,6 +166,7 @@ class GlobalNav {
 		NavPlan ret = new NavPlan(random, bot.getFrameNumber()+timeout);
 		ret.path = new Waypoint[1];
 		ret.path[0] = random;
+		ret.isSpontaneos = true;
 		int wpInd = bot.map.indexOf(random);
 		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), random.getPosition());
 		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: @"+wpInd+" dist: "+distance+" timeout: "+timeout);
