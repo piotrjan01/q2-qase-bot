@@ -43,6 +43,7 @@ class GlobalNav {
 		}
 		else if (oldPlan.done) {
 			changePlan = true;
+			oldPlan.dest.ert = bot.getFrameNumber()+600; //60 seconds
 			bot.dtalk.addToLog("plan change: old plan is done!");
 		}
 		else if (bot.stateReporter.stateHasChanged) {
@@ -69,20 +70,12 @@ class GlobalNav {
 		
 		NavPlan plan = null; // the plan to return
 		
-		if (! changePlan && oldPlan != null && ! oldPlan.isSpontaneos) plan = getSpontaneousPlan(bot, oldPlan);
+		//If we didn't want to change the plan, we may still do it if there is some good spontaneous plan.
+		if (! changePlan && oldPlan != null && ! oldPlan.isSpontaneos) plan = getSpontaneousPlan(bot);
 		if (plan != null) return plan;
 		
+		//If no spontaneous plans available, we continue with old one...
 		if (! changePlan) return oldPlan;
-		
-		
-		if (oldPlan != null && oldPlan.parentPlan != null) {
-			bot.dtalk.addToLog("coming back to parent plan...");
-			plan = oldPlan.parentPlan;
-			plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
-			plan.pathIndex = 0;
-			return oldPlan.parentPlan;
-		}
-		
 		
 		
 		TreeSet<KBEntryDoublePair> ranking = new TreeSet<KBEntryDoublePair>();
@@ -103,22 +96,22 @@ class GlobalNav {
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getPosition());
 			int wpInd = bot.map.indexOf(wp);
 			bot.dtalk.addToLog("moving to distant wp: "+wpInd);
-			plan = new NavPlan(wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
+			plan = new NavPlan(new KBEntry(wp, EntityType.UNKNOWN, 0, false), bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		else {
 			//when wpInf is -1 it means that the kbe is added basing on observation, not from the map.
 			int wpInd = bot.map.indexOf(ranking.last().kbe.wp);
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().kbe.wp.getPosition());
 			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
-			plan = new NavPlan(ranking.last().kbe.wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
+			plan = new NavPlan(ranking.last().kbe, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		
-		plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
+		plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.wp.getPosition());
 		
 		return plan;
 	}
 	
-	static NavPlan getSpontaneousPlan(SimpleBot bot, NavPlan parentPlan) {
+	static NavPlan getSpontaneousPlan(SimpleBot bot) {
 		NavPlan newPlan = null;
 		
 		//TODO:
@@ -147,8 +140,7 @@ class GlobalNav {
 		
 		bot.kb.addToBlackList(chosen);
 		
-		newPlan = new NavPlan(chosen.wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*maximalDistance));
-		newPlan.parentPlan = parentPlan;
+		newPlan = new NavPlan(chosen, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*maximalDistance));
 		newPlan.path = new Waypoint[1];
 		newPlan.path[0] = chosen.wp;
 		newPlan.isSpontaneos = true;
@@ -163,7 +155,7 @@ class GlobalNav {
 	static NavPlan getSpontaneousAntiStuckPlan(SimpleBot bot) {
 		Waypoint random = getSomeDistantWaypoint(bot);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
-		NavPlan ret = new NavPlan(random, bot.getFrameNumber()+timeout);
+		NavPlan ret = new NavPlan(new KBEntry(random, EntityType.UNKNOWN, 0, false), bot.getFrameNumber()+timeout);
 		ret.path = new Waypoint[1];
 		ret.path[0] = random;
 		ret.isSpontaneos = true;
