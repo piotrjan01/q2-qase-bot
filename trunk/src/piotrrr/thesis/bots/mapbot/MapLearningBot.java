@@ -89,8 +89,8 @@ public class MapLearningBot extends BotBase {
 			say("I can't see you!"); 
 			return null; 
 		}
-		NavPlan plan = new NavPlan(new Waypoint(commander.getOrigin()), getFrameNumber()+300);
-		if (isPositionReached(plan.dest.getPosition())) return null;
+//		NavPlan plan = new NavPlan(new Waypoint(commander.getOrigin()), getFrameNumber()+300);
+//		if (isPositionReached(plan.dest.getPosition())) return null;
 		say("Got new plan...");
 		return plan;
 	}
@@ -98,15 +98,15 @@ public class MapLearningBot extends BotBase {
 	private NavInstructions getInstructions(NavPlan plan) {
 		if (plan == null) return null;
 		Vector3f playerPos = new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
-		if (isPositionReached(plan.dest.getPosition())) {
+//		if (isPositionReached(plan.dest.getPosition())) {
 //			plan.done = true;
 			return null;
-		}
+//		}
 		//else go to the direction of the goal.
-		Vector3f movDir = CommFun.getNormalizedDirectionVector(playerPos, plan.dest.getPosition());	
+//		Vector3f movDir = CommFun.getNormalizedDirectionVector(playerPos, plan.dest.getPosition());	
 		//Return the instructions
-		return new NavInstructions(movDir, movDir, 
-				PlayerMove.POSTURE_NORMAL, PlayerMove.WALK_RUN);
+//		return new NavInstructions(movDir, movDir, 
+//				PlayerMove.POSTURE_NORMAL, PlayerMove.WALK_RUN);
 	}
 	
 	private void executeInstructions(NavInstructions mi) {

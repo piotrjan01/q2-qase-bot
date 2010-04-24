@@ -1,5 +1,6 @@
 package piotrrr.thesis.common.navigation;
 
+import piotrrr.thesis.bots.simplebot.KBEntry;
 import soc.qase.ai.waypoint.Waypoint;
 
 /**
@@ -11,7 +12,7 @@ public class NavPlan {
 	/**
 	 * The destination waypoint
 	 */
-	public Waypoint dest;
+	public KBEntry dest;
 	
 	/**
 	 * Tells whether the plan is done.
@@ -19,8 +20,6 @@ public class NavPlan {
 	public boolean done = false;
 	
 	public long deadline = 0;
-	
-	public NavPlan parentPlan = null;
 	
 	public int pathIndex = 0;
 	
@@ -32,7 +31,7 @@ public class NavPlan {
 	 */
 	public Waypoint [] path;
 	
-	public NavPlan(Waypoint dest, long deadline) {
+	public NavPlan(KBEntry dest, long deadline) {
 		this.dest = dest;
 		this.deadline = deadline;
 	}

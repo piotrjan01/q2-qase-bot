@@ -7,7 +7,7 @@ import soc.qase.ai.waypoint.Waypoint;
  * The class that encapsulates: Waypoint, EntityType, estimated respawn time.
  * @author Piotr Gwizda³a
  */
-class KBEntry {
+public class KBEntry {
 
 	/**
 	 * Waypoint type of the entry
