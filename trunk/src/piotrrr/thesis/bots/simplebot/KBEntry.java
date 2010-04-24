@@ -53,4 +53,12 @@ class KBEntry {
 		this.isRespawningEntity = respawningEntity;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		KBEntry other = (KBEntry)obj;
+		if (wp.getPosition().equals(other.wp.getPosition()) &&
+				et.equals(other.et)) return true;
+		return false;
+	}
+	
 }

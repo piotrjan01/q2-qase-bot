@@ -12,6 +12,16 @@ import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
+ * FIXME: Global TODO list.
+ * 
+ * Spontaniczne decyzje - w global nav
+ * Jak utknie, to niech robi spontona lepiej
+ * Niech nie robi spontona na przedmioty, które sa nieosiagalne
+ * Niech nie robi planu na przedmioty, które sa nieosiagalne!
+ * 
+ */
+
+/**
  * This is a simple bot that will be used as a base of other bots as well as 
  * reference in comparative study.
  * @author Piotr Gwizda³a
@@ -84,7 +94,7 @@ public class SimpleBot extends BotBase {
 			dtalk.addToLog("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
 		}
 		
-		kb.updateKB(world.getEntities(false), getFrameNumber());
+		kb.updateKB(world.getEntities(false), getFrameNumber(), this.getPlayerInfo().getName());
 		
 		/**
 		 * This is how we do:

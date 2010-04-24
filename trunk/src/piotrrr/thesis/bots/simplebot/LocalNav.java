@@ -17,6 +17,7 @@ public class LocalNav {
 		
 		Vector3f playerPos = bot.getBotPosition();
 		Vector3f movDir = null;
+		Vector3f desiredPos = null;
 		
 		
 		//If we are next to destination.
@@ -35,15 +36,18 @@ public class LocalNav {
 		int posture = PlayerMove.POSTURE_NORMAL;
 		
 		//If we are close enough to waypoint, consider the next one.
-		if (CommFun.getDistanceBetweenPositions(plan.path[plan.pathIndex].getPosition(), playerPos)
+		if (plan.pathIndex < plan.path.length && CommFun.getDistanceBetweenPositions(plan.path[plan.pathIndex].getPosition(), playerPos)
 				<= acceptableDistance) {
 			plan.pathIndex++;
 		}
 		
-		//If its last waypoint, next time we do it direct.
-		//if (nd.getPathIndex() == nd.getPath().length - 1) nd.setDirectDecision(true);
+		if (plan.pathIndex >= plan.path.length) { 
+			//If we have already went through all the path, 
+			//we set ourselves towards destination
+			desiredPos = plan.dest.getPosition();
+		}
+		else desiredPos = plan.path[plan.pathIndex].getPosition();
 		
-		Vector3f desiredPos = plan.path[plan.pathIndex].getPosition();
 		movDir = CommFun.getNormalizedDirectionVector(playerPos, desiredPos);
 		
 		return new NavInstructions(movDir, movDir, posture, PlayerMove.WALK_RUN);

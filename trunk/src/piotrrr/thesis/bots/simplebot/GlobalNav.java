@@ -5,8 +5,10 @@ import java.util.Random;
 import java.util.TreeSet;
 
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 import piotrrr.thesis.common.navigation.NavPlan;
+import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -17,7 +19,7 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 class GlobalNav {
 	
-	public static final long PLAN_TIME_PER_DIST = 5;
+	public static final double PLAN_TIME_PER_DIST = 0.08;
 	
 	static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
 	
@@ -50,6 +52,7 @@ class GlobalNav {
 		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
 			bot.dtalk.addToLog("plan change: bot is stuck");
+			return getSpontaneousAntiStuckPlan(bot);
 		}
 		else if (oldPlan.deadline <= bot.getFrameNumber()) { 
 			changePlan = true;
@@ -67,8 +70,15 @@ class GlobalNav {
 		 * - if we don't do spontaneous pickup, we get the entities from KB basing on bot's state and
 		 * choose one of them and create the plan to reach it.
 		 */
+		NavPlan plan = null; // the plan to return
 		
-		if (oldPlan != null && oldPlan.parentPlan != null) return oldPlan.parentPlan;
+		if (oldPlan != null && oldPlan.parentPlan != null) {
+			bot.dtalk.addToLog("coming back to parent plan...");
+			return oldPlan.parentPlan;
+		}
+		
+		if (oldPlan != null) plan = getSpontaneousPlan(bot, oldPlan);
+		if (plan != null) return plan;
 		
 		TreeSet<KBEntryDoublePair> ranking = new TreeSet<KBEntryDoublePair>();
 		EntityTypeDoublePair [] ents = bot.fsm.getDesiredEntities();
@@ -82,7 +92,7 @@ class GlobalNav {
 			}
 		}
 		
-		NavPlan plan;
+		
 		if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
 			Waypoint wp = getSomeDistantWaypoint(bot);
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getPosition());
@@ -91,9 +101,10 @@ class GlobalNav {
 			plan = new NavPlan(wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		else {
+			//when wpInf is -1 it means that the kbe is added basing on observation, not from the map.
 			int wpInd = bot.map.indexOf(ranking.last().kbe.wp);
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().kbe.wp.getPosition());
-			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd);
+			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
 			plan = new NavPlan(ranking.last().kbe.wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		
@@ -105,28 +116,53 @@ class GlobalNav {
 	static NavPlan getSpontaneousPlan(SimpleBot bot, NavPlan parentPlan) {
 		NavPlan newPlan = null;
 		
-		
+		//TODO:
 		int maximalDistance = 200;
-		float distance = 0.f;
-		Vector3f playerPos = new Vector3f(bot.getWorld().getPlayer().getPlayerMove().getOrigin());
-		/*
-		TreeSet<EntityRecord> ers = new TreeSet<EntityRecord>();
 		
-		for (Entity e : allReadyToPickupItems) {
-			distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(e.getOrigin()));
-			if ( ! e.isPlayerEntity() && isVisible(e) && distance < maximalDistance &&
-					areOnTheSameHeight(new Vector3f(e.getOrigin()), playerPos) 
-					&& ! spontaneousBlackList.contains(e.getNumber()))
-			ers.add(new EntityRecord(distance, e));
-		}	
-		if (ers.isEmpty()) return null;
-		if (debugSD) addToLog("==>"+ers.first().entity.getType()+"<== allEnts:"+allReadyToPickupItems.size());
-		spontaneousBlackList.add(ers.first().entity.getNumber());
-		if (spontaneousBlackList.size()>10) spontaneousBlackList.remove(0);
-		return new NavigationDecision(new Waypoint(ers.first().entity.getOrigin()), 15, parent);	
+		LinkedList<KBEntry> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
+		if (entries.size() == 0) return null;
 		
-		newPlan.parentPlan = parentPlan;*/
+		KBEntry chosen = null;
+		for (KBEntry ent : entries) {
+			if (ent.et.equals(EntityType.PLAYER)) continue;
+			if (! CommFun.areOnTheSameHeight(bot.getBotPosition(), ent.wp.getPosition())) continue;
+			if (chosen != null) {
+				float distOld = CommFun.getDistanceBetweenPositions(chosen.wp.getPosition(), bot.getBotPosition());
+				float distNew = CommFun.getDistanceBetweenPositions(ent.wp.getPosition(), bot.getBotPosition());
+				if (distNew < distOld) chosen = ent;
+			}
+			else chosen = ent;
+		}
+		
+		if (chosen == null) return null;
+		
+//		if ( ! CommFun.areOnTheSameHeight(chosen.wp.getPosition(), bot.getBotPosition())) Dbg.err("not the same height!!!");
+//		else Dbg.prn("bot h: "+bot.getBotPosition().z+" target h: "+chosen.wp.getPosition().z);
+		
+		bot.kb.addToBlackList(chosen);
+		
+		newPlan = new NavPlan(chosen.wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*maximalDistance));
+		newPlan.parentPlan = parentPlan;
+		newPlan.path = new Waypoint[1];
+		newPlan.path[0] = chosen.wp;
+		
+		int wpInd = bot.map.indexOf(chosen.wp);
+		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.wp.getPosition());
+		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
+		
 		return newPlan;
+	}
+	
+	static NavPlan getSpontaneousAntiStuckPlan(SimpleBot bot) {
+		Waypoint random = getSomeDistantWaypoint(bot);
+		int timeout = (int)(80*PLAN_TIME_PER_DIST);
+		NavPlan ret = new NavPlan(random, bot.getFrameNumber()+timeout);
+		ret.path = new Waypoint[1];
+		ret.path[0] = random;
+		int wpInd = bot.map.indexOf(random);
+		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), random.getPosition());
+		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: @"+wpInd+" dist: "+distance+" timeout: "+timeout);
+		return ret;
 	}
 	
 	static double getDistanceFollowingMap(SimpleBot bot, Vector3f from, Vector3f to) {

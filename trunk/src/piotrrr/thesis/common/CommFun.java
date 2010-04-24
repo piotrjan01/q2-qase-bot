@@ -51,5 +51,18 @@ public class CommFun {
 	public static Vector3f getMovementBetweenVectors(Vector3f from, Vector3f to) {
 		return new Vector3f((to.x-from.x), (to.y-from.y), (to.z - from.z));
 	}
+	
+	/**
+	 * Returns true if the given positions are on the same height with predefined tolerance.
+	 * @param pos1
+	 * @param pos2
+	 * @return
+	 */
+	public static boolean areOnTheSameHeight(Vector3f pos1, Vector3f pos2) {
+		float tolerance = 20.0f;
+		if (Math.abs(pos1.z-pos2.z) < tolerance) return true;
+		return false;
+	}
+	
 
 }
