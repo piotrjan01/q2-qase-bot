@@ -12,7 +12,9 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class StuckDetector extends Job {
 	
-	public static final float EPSILON = 20;
+	public static final float EPSILON = 60;
+	
+	public boolean isStuck = false;
 	
 	long lastFrame;
 	
@@ -36,7 +38,7 @@ public class StuckDetector extends Job {
 	@Override
 	public void run() {
 		if (bot.getFrameNumber() - lastFrame < period ) {
-			((SimpleBot)bot).setStuck(false);
+			isStuck = false;
 			return;
 		}
 		lastFrame = bot.getFrameNumber();
@@ -69,9 +71,9 @@ public class StuckDetector extends Job {
 		
 		if (distance <= EPSILON) {
 			((SimpleBot)bot).dtalk.addToLog("I'm stuck!");
-			((SimpleBot)bot).setStuck(true);
+			isStuck = true;
 		}
-		else ((SimpleBot)bot).setStuck(false);
+		else isStuck = false;
 		
 	}
 

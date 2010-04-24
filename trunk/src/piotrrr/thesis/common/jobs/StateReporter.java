@@ -14,6 +14,8 @@ public class StateReporter extends Job {
 	 */
 	String lastStateName = "";
 	
+	public boolean stateHasChanged = false;
+	
 	public StateReporter(BotBase bot) {
 		super(bot);
 		lastStateName = ((SimpleBot)bot).getCurrentStateName();
@@ -23,11 +25,11 @@ public class StateReporter extends Job {
 	public void run() {
 		String stateName = ((SimpleBot)bot).getCurrentStateName();
 		if (stateName.equals(lastStateName)) {
-			((SimpleBot)bot).setStateChanged(false);
+			stateHasChanged = false;
 			return;
 		}
 		
-		((SimpleBot)bot).setStateChanged(true);
+		stateHasChanged = true;
 		
 		bot.say("State changed: "+lastStateName+" -> "+stateName);
 		lastStateName = stateName;

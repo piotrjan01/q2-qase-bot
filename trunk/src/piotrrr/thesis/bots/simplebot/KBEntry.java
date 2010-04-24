@@ -27,15 +27,30 @@ class KBEntry {
 	long ert;
 	
 	/**
+	 * This field is set to true if this item is respawning with some period. If set to false, the item once
+	 * picked up will never respawn again.
+	 */
+	boolean isRespawningEntity;
+	
+	/**
 	 * Creates the KB Entry.
 	 * @param wp - waypoint
 	 * @param et - entity type
 	 * @param ert - estimated respawn time
 	 */
+	
 	KBEntry(Waypoint wp, EntityType et, long ert) {
 		this.wp = wp;
 		this.et = et;
 		this.ert = ert;
+		this.isRespawningEntity = true;
+	}
+	
+	KBEntry(Waypoint wp, EntityType et, long ert, boolean respawningEntity) {
+		this.wp = wp;
+		this.et = et;
+		this.ert = ert;
+		this.isRespawningEntity = respawningEntity;
 	}
 	
 }

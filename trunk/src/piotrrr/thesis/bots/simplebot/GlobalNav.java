@@ -17,7 +17,7 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 class GlobalNav {
 	
-	public static final long PLAN_TIME = 150;
+	public static final long PLAN_TIME_PER_DIST = 5;
 	
 	static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
 	
@@ -43,11 +43,11 @@ class GlobalNav {
 			changePlan = true;
 			bot.dtalk.addToLog("plan change: old plan is done!");
 		}
-		else if (bot.stateChanged) {
+		else if (bot.stateReporter.stateHasChanged) {
 			changePlan = true;
 			bot.dtalk.addToLog("plan change: state changed");
 		}
-		else if (bot.isStuck) {
+		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
 			bot.dtalk.addToLog("plan change: bot is stuck");
 		}
@@ -62,8 +62,8 @@ class GlobalNav {
 		
 		/**
 		 * What do we do when we decide to change the plan?
-		 * - if there was a parent plan - we continue with it
-		 * 
+		 * + if there was a parent plan - we continue with it
+		 * - if we see something that we can pick up in spontaneous decision - we pick it
 		 * - if we don't do spontaneous pickup, we get the entities from KB basing on bot's state and
 		 * choose one of them and create the plan to reach it.
 		 */
@@ -77,27 +77,56 @@ class GlobalNav {
 			for (KBEntry entry : entries) {
 				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), entry.wp.getPosition());
 				if (distance == Double.MAX_VALUE) continue;
-				double rank = etdp.d / distance; //the weight divided by distance
+				double rank = 10000*etdp.d / distance; //the weight divided by distance
 				ranking.add(new KBEntryDoublePair(entry, rank));
 			}
 		}
 		
 		NavPlan plan;
-		if (ranking.size() == 0 || bot.isStuck) {
+		if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
 			Waypoint wp = getSomeDistantWaypoint(bot);
+			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getPosition());
 			int wpInd = bot.map.indexOf(wp);
 			bot.dtalk.addToLog("moving to distant wp: "+wpInd);
-			plan = new NavPlan(wp, bot.getFrameNumber()+PLAN_TIME);
+			plan = new NavPlan(wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		else {
 			int wpInd = bot.map.indexOf(ranking.last().kbe.wp);
+			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().kbe.wp.getPosition());
 			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd);
-			plan = new NavPlan(ranking.last().kbe.wp, bot.getFrameNumber()+PLAN_TIME);
+			plan = new NavPlan(ranking.last().kbe.wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		
 		plan.path = bot.map.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
 		
 		return plan;
+	}
+	
+	static NavPlan getSpontaneousPlan(SimpleBot bot, NavPlan parentPlan) {
+		NavPlan newPlan = null;
+		
+		
+		int maximalDistance = 200;
+		float distance = 0.f;
+		Vector3f playerPos = new Vector3f(bot.getWorld().getPlayer().getPlayerMove().getOrigin());
+		/*
+		TreeSet<EntityRecord> ers = new TreeSet<EntityRecord>();
+		
+		for (Entity e : allReadyToPickupItems) {
+			distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(e.getOrigin()));
+			if ( ! e.isPlayerEntity() && isVisible(e) && distance < maximalDistance &&
+					areOnTheSameHeight(new Vector3f(e.getOrigin()), playerPos) 
+					&& ! spontaneousBlackList.contains(e.getNumber()))
+			ers.add(new EntityRecord(distance, e));
+		}	
+		if (ers.isEmpty()) return null;
+		if (debugSD) addToLog("==>"+ers.first().entity.getType()+"<== allEnts:"+allReadyToPickupItems.size());
+		spontaneousBlackList.add(ers.first().entity.getNumber());
+		if (spontaneousBlackList.size()>10) spontaneousBlackList.remove(0);
+		return new NavigationDecision(new Waypoint(ers.first().entity.getOrigin()), 15, parent);	
+		
+		newPlan.parentPlan = parentPlan;*/
+		return newPlan;
 	}
 	
 	static double getDistanceFollowingMap(SimpleBot bot, Vector3f from, Vector3f to) {
