@@ -24,6 +24,8 @@ public class NavPlan {
 	
 	public int pathIndex = 0;
 	
+	public boolean isSpontaneos = false;
+	
 	/**
 	 * The array that represents the path chosen. The first element is the source
 	 * the last element is the destination.

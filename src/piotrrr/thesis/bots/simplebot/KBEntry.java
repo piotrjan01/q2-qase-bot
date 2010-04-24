@@ -28,29 +28,22 @@ class KBEntry {
 	
 	/**
 	 * This field is set to true if this item is respawning with some period. If set to false, the item once
-	 * picked up will never respawn again.
+	 * picked up will never respawn again. The entities that are on the map should be the ones that respawn.
 	 */
-	boolean isRespawningEntity;
+	boolean isFromMap;
 	
 	/**
 	 * Creates the KB Entry.
 	 * @param wp - waypoint
 	 * @param et - entity type
 	 * @param ert - estimated respawn time
+	 * @param isFromMap - is it from bot's map?
 	 */
-	
-	KBEntry(Waypoint wp, EntityType et, long ert) {
+	KBEntry(Waypoint wp, EntityType et, long ert, boolean isFromMap) {
 		this.wp = wp;
 		this.et = et;
 		this.ert = ert;
-		this.isRespawningEntity = true;
-	}
-	
-	KBEntry(Waypoint wp, EntityType et, long ert, boolean respawningEntity) {
-		this.wp = wp;
-		this.et = et;
-		this.ert = ert;
-		this.isRespawningEntity = respawningEntity;
+		this.isFromMap = isFromMap;
 	}
 	
 	@Override
