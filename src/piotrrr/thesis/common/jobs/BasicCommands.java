@@ -8,8 +8,9 @@ import piotrrr.thesis.bots.botbase.BotBase;
  * The job that implements bot's perception and reaction do basic commands given
  * by defined commander.
  * 
- * Availible commands:
+ * Available commands:
  * disc - tells the bot to disconnect and terminate it's program.
+ * die - tells the bot to respawn.
  * 
  * TODO: list the commands in the comment!
  * 

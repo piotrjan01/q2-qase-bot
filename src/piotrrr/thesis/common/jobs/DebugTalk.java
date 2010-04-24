@@ -32,13 +32,13 @@ public class DebugTalk extends Job {
 		String st = ((SimpleBot)bot).getCurrentStateName();
 		
 		String say = toSay+"  H="+h+" A="+a+" St="+st;
-		Dbg.prn("BOT SAYS: "+say);
 		bot.say(say);
 		toSay = "";
 		
 	}
 	
 	public void addToLog(String s) {
+		Dbg.prn("BOT SAYS: "+s);
 		toSay += s+" :: ";
 	}
 

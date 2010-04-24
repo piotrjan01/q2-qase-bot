@@ -21,7 +21,7 @@ public class SimpleBot extends BotBase {
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	static final String MAPS_DIR = "C:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
+	static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
 
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -42,17 +42,10 @@ public class SimpleBot extends BotBase {
 	 * Bot's current navigation plan
 	 */
 	NavPlan plan = null;
-
-	/**
-	 * Is being set to true when the state have been changed by StateReporter.
-	 * @see StateReporter
-	 */
-	boolean stateChanged;
 	
-	/**
-	 * Is being set to true, when the bot is suspected to be stuck.
-	 */
-	boolean isStuck;
+	StateReporter stateReporter;
+	
+	StuckDetector stuckDetector;
 	
 	/**
 	 * Bot's job that is used to periodically say 
@@ -68,12 +61,15 @@ public class SimpleBot extends BotBase {
 	public SimpleBot(String botName, String skinName) {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
-		//TODO:
+
 		dtalk = new DebugTalk(this, 30);
+		stateReporter = new StateReporter(this);
+		stuckDetector = new StuckDetector(this, 5);
+		
 		addBotJob(dtalk);
-		addBotJob(new StateReporter(this));
+		addBotJob(stateReporter);
 		addBotJob(new BasicCommands(this, "Player"));
-		addBotJob(new StuckDetector(this, 5));
+		addBotJob(stuckDetector);
 	}
 
 	@Override
@@ -141,18 +137,6 @@ public class SimpleBot extends BotBase {
 	public void respawn() {
 		super.respawn();
 		plan = null;
-	}
-
-	public boolean isStateChanged() {
-		return stateChanged;
-	}
-
-	public void setStateChanged(boolean stateChanged) {
-		this.stateChanged = stateChanged;
-	}
-
-	public void setStuck(boolean isStuck) {
-		this.isStuck = isStuck;
 	}
 
 }

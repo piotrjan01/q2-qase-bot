@@ -21,12 +21,24 @@ public class MapFromDemo {
 		prn("Current directory: "+System.getProperty("user.dir"));
 		prn("Please enter a path\\name of the DM2 file: ");
 		String path = readString();
-		prn("Please enter the number of nodes to be generated or \n" +
-				"the percent of nodes to be generated (e.g. 100 for 100 nodes or 0.5 for 50%): ");
-		float nodes = Float.parseFloat(readString());
+		WaypointMap map = WaypointMapGenerator.generate(path, 0.05f);
+		prn("Demo read. There are approximately "+map.getAllNodes().length*20+" nodes in demo.");
 		prn("Enter the filename, where the generated map shall be saved: ");
 		String saveMap = readString();
-		WaypointMap map = WaypointMapGenerator.generate(path, nodes);
+		boolean done = false;
+		while (!done) {
+			prn("Please enter the number of nodes to be generated or \n" +
+					"the percent of nodes to be generated (e.g. 100 for 100 nodes or 0.5 for 50%): ");
+			float nodes = Float.parseFloat(readString());
+			try {
+				map = WaypointMapGenerator.generate(path, nodes);
+				done = true;
+			}
+			catch (Exception e) {
+				prn("Caught exception: "+e.getMessage());
+				done = false;
+			}
+		}
 		map.saveMap(saveMap);
 		prn("Done!");
 	}

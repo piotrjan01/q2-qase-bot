@@ -239,5 +239,9 @@ public class BotBase extends ObserverBot {
 		return new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 	}
 	
+	public World getWorld() {
+		return world;
+	}
+	
 
 }
