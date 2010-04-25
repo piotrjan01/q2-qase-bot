@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.CommFun;
-import piotrrr.thesis.common.jobs.DebugTalk;
+import piotrrr.thesis.common.jobs.GeneraDebugTalk;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.tools.Dbg;
@@ -45,7 +45,7 @@ public class MapLearningBot extends BotBase {
 	public MapLearningBot(String arg0, String arg1) {
 		super(arg0, arg1);
 		Dbg.prn("Created!");
-		addBotJob(new DebugTalk(this, 100));
+		addBotJob(new GeneraDebugTalk(this, 100));
 	}
 
 	@Override

@@ -243,5 +243,17 @@ public class BotBase extends ObserverBot {
 		return world;
 	}
 	
+	public boolean botHasItem(int i) {
+		return hasItem(i);
+	}
+	
+	public int getCurrentWeaponIndex() {
+		return getWeaponIndex();
+	}
+	
+	public void changeWeaponToIndex(int i) {
+		changeWeaponByInventoryIndex(i);
+	}
+	
 
 }

@@ -10,7 +10,7 @@ import soc.qase.ai.waypoint.Waypoint;
 public class KBEntry {
 
 	/**
-	 * Waypoint type of the entry
+	 * Waypoint of the entry - position in the world.
 	 */
 	Waypoint wp;
 	

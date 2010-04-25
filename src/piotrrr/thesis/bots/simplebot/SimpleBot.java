@@ -1,13 +1,17 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.common.combat.FiringDecision;
+import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.BasicCommands;
-import piotrrr.thesis.common.jobs.DebugTalk;
+import piotrrr.thesis.common.jobs.GeneraDebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.WaypointMap;
+import soc.qase.state.Action;
+import soc.qase.state.Angles;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -44,24 +48,33 @@ public class SimpleBot extends BotBase {
 	WaypointMap map = null;
 	
 	/**
-	 * Bot's Knowledge Base
+	 * Bot's Knowledge Base about the environment and items it can pick up.
 	 */
-	SimpleKB kb = null;
+	WorldKB kb = null;
 	
 	/**
 	 * Bot's current navigation plan
 	 */
 	NavPlan plan = null;
 	
+	/**
+	 * The job that reports the bot's state and state changes.
+	 */
 	StateReporter stateReporter;
 	
+	/**
+	 * The job that detects when the bot is stuck.
+	 */
 	StuckDetector stuckDetector;
 	
 	/**
 	 * Bot's job that is used to periodically say 
 	 * some debug information in the game.
 	 */
-	public DebugTalk dtalk;
+	public GeneraDebugTalk dtalk;
+	
+	
+	SimpleAimingModule aimingModule = new SimpleAimingModule();
 
 	/**
 	 * Basic constructor.
@@ -72,11 +85,14 @@ public class SimpleBot extends BotBase {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
 
-		dtalk = new DebugTalk(this, 30);
+		dtalk = new GeneraDebugTalk(this, 30);
+//		dtalk.active = false;
+		
 		stateReporter = new StateReporter(this);
 		stuckDetector = new StuckDetector(this, 5);
 		
 		addBotJob(dtalk);
+		
 		addBotJob(stateReporter);
 		addBotJob(new BasicCommands(this, "Player"));
 		addBotJob(stuckDetector);
@@ -89,7 +105,7 @@ public class SimpleBot extends BotBase {
 		if (map == null) { 
 			map = WaypointMap.loadMap(MAPS_DIR+getMapName());
 			assert map != null;
-			kb = SimpleKB.createKB(map);
+			kb = WorldKB.createKB(map);
 			assert kb != null;
 			dtalk.addToLog("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
 		}
@@ -112,7 +128,13 @@ public class SimpleBot extends BotBase {
 		}
 		assert plan != null;
 		
-		executeInstructions(LocalNav.getNavigationInstructions(this));
+		
+		
+		FiringDecision fd = SimpleCombatModule.getFiringDecision(this);
+		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+		executeNavInstructions(
+				LocalNav.getNavigationInstructions(this), 
+				aimingModule.getFiringInstructions(fd, this));
 		
 	}
 	
@@ -121,16 +143,32 @@ public class SimpleBot extends BotBase {
 	 * Executes the instructions got from the plan.
 	 * @param ni - navigation instructions.
 	 */
-	private void executeInstructions(NavInstructions ni) {
-		//Do the navigation and look ad good direction	
+	private void executeNavInstructions(NavInstructions ni, FiringInstructions fi) {
+		//Do the navigation and look ad good direction
+		Vector3f aimDir;
+		Vector3f moveDir;
+		int walk = PlayerMove.WALK_STOPPED;
+		int posture = PlayerMove.POSTURE_CROUCH;
+		
+		if (fi != null) aimDir = fi.fireDir;
+		else if (ni != null) aimDir = ni.moveDir;
+		else aimDir = new Vector3f(0,0,0);
+		
 		if (ni != null) {
-			setBotMovement(ni.moveDir, ni.aimDir, 
-					ni.walkState, ni.postureState);
+			moveDir = ni.moveDir;
+			walk = ni.walkState;
+			posture = ni.postureState;
 		}
-		else {
-			setBotMovement(new Vector3f(0,0,0), null, 
-					PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
+		else moveDir = new Vector3f(0,0,0);
+		
+		if (fi != null) {
+			Angles arg0=new Angles(fi.fireDir.x,fi.fireDir.y,fi.fireDir.z);
+			world.getPlayer().setGunAngles(arg0);
+			setAction(Action.ATTACK, true);
 		}
+		else setAction(Action.ATTACK, false); 
+		
+		setBotMovement(moveDir, aimDir, walk, posture);
 	}
 	
 	
