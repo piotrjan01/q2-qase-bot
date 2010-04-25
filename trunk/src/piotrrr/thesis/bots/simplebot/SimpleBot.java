@@ -1,14 +1,16 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.BasicCommands;
-import piotrrr.thesis.common.jobs.GeneraDebugTalk;
+import piotrrr.thesis.common.jobs.GeneralDebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
+import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Action;
 import soc.qase.state.Angles;
@@ -18,10 +20,7 @@ import soc.qase.tools.vecmath.Vector3f;
 /**
  * FIXME: Global TODO list.
  * 
- * Spontaniczne decyzje - w global nav
- * Jak utknie, to niech robi spontona lepiej
- * Niech nie robi spontona na przedmioty, które sa nieosiagalne
- * Niech nie robi planu na przedmioty, które sa nieosiagalne!
+ * Jak nie widzi waypointu do ktorego ma isc - nalezy skasowac polaczenie :)
  * 
  */
 
@@ -71,10 +70,9 @@ public class SimpleBot extends BotBase {
 	 * Bot's job that is used to periodically say 
 	 * some debug information in the game.
 	 */
-	public GeneraDebugTalk dtalk;
-	
-	
-	SimpleAimingModule aimingModule = new SimpleAimingModule();
+	public GeneralDebugTalk dtalk;
+		
+	AimingModule aimingModule = new SimpleAimingModule();
 
 	/**
 	 * Basic constructor.
@@ -85,7 +83,7 @@ public class SimpleBot extends BotBase {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
 
-		dtalk = new GeneraDebugTalk(this, 30);
+		dtalk = new GeneralDebugTalk(this, 30);
 //		dtalk.active = false;
 		
 		stateReporter = new StateReporter(this);
@@ -97,10 +95,24 @@ public class SimpleBot extends BotBase {
 		addBotJob(new BasicCommands(this, "Player"));
 		addBotJob(stuckDetector);
 	}
+	
+	public SimpleBot(String botName, String skinName, int aimingModuleNr) {
+		this(botName, skinName);
+		switch (aimingModuleNr) {
+		case 2:
+			aimingModule = new BotDePiotrAimingModule();
+			break;
+		case 1:
+		default:
+			break;
+		}
+	}
 
 	@Override
 	protected void botLogic() {
 		super.botLogic();
+		
+		if (botPaused) return;
 		
 		if (map == null) { 
 			map = WaypointMap.loadMap(MAPS_DIR+getMapName());
@@ -130,9 +142,9 @@ public class SimpleBot extends BotBase {
 		
 		
 		
-		FiringDecision fd = SimpleCombatModule.getFiringDecision(this);
+		FiringDecision fd =  null;//SimpleCombatModule.getFiringDecision(this);
 		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
-		executeNavInstructions(
+		executeInstructions(
 				LocalNav.getNavigationInstructions(this), 
 				aimingModule.getFiringInstructions(fd, this));
 		
@@ -143,7 +155,7 @@ public class SimpleBot extends BotBase {
 	 * Executes the instructions got from the plan.
 	 * @param ni - navigation instructions.
 	 */
-	private void executeNavInstructions(NavInstructions ni, FiringInstructions fi) {
+	private void executeInstructions(NavInstructions ni, FiringInstructions fi) {
 		//Do the navigation and look ad good direction
 		Vector3f aimDir;
 		Vector3f moveDir;
@@ -164,7 +176,8 @@ public class SimpleBot extends BotBase {
 		if (fi != null) {
 			Angles arg0=new Angles(fi.fireDir.x,fi.fireDir.y,fi.fireDir.z);
 			world.getPlayer().setGunAngles(arg0);
-			setAction(Action.ATTACK, true);
+			if (fi.doFire) setAction(Action.ATTACK, true);
+			else setAction(Action.ATTACK, false);
 		}
 		else setAction(Action.ATTACK, false); 
 		
@@ -185,6 +198,7 @@ public class SimpleBot extends BotBase {
 	public void respawn() {
 		super.respawn();
 		plan = null;
+		Dbg.prn(getBotName()+": I DIED!");
 	}
 
 }

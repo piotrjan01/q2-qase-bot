@@ -42,28 +42,33 @@ class GlobalNav {
 		
 		boolean changePlan = false;
 		
+		String talk = "";
+		
 		if (oldPlan == null) {
 			changePlan = true;
-			bot.dtalk.addToLog("plan change: no plan!");
+			talk = "plan change: no plan!";
 		}
 		else if (oldPlan.done) {
 			changePlan = true;
 			oldPlan.dest.ert = bot.getFrameNumber()+600; //60 seconds
-			bot.dtalk.addToLog("plan change: old plan is done!");
+			talk = "plan change: old plan is done!";
 		}
 		else if (bot.stateReporter.stateHasChanged) {
 			changePlan = true;
-			bot.dtalk.addToLog("plan change: state changed");
+			talk = "plan change: state changed";
 		}
 		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
-			bot.dtalk.addToLog("plan change: bot is stuck <-----------------------------");
+			talk = "plan change: bot is stuck <-----------------------------";
+			bot.dtalk.addToLog(talk);
 			return getSpontaneousAntiStuckPlan(bot);
 		}
 		else if (oldPlan.deadline <= bot.getFrameNumber()) { 
 			changePlan = true;
-			bot.dtalk.addToLog("plan change: timeout");
+			talk = "plan change: timeout";
 		}
+		
+		if (talk != "" ) bot.dtalk.addToLog(talk);
 		
 		/**
 		 * What do we do when we decide to change the plan?
@@ -99,14 +104,14 @@ class GlobalNav {
 			Waypoint wp = getSomeDistantWaypoint(bot);
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getPosition());
 			int wpInd = bot.map.indexOf(wp);
-			bot.dtalk.addToLog("moving to distant wp: "+wpInd);
+//			bot.dtalk.addToLog("moving to distant wp: "+wpInd);
 			plan = new NavPlan(new KBEntry(wp, EntityType.UNKNOWN, 0, false), bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		else {
 			//when wpInf is -1 it means that the kbe is added basing on observation, not from the map.
 			int wpInd = bot.map.indexOf(ranking.last().kbe.wp);
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().kbe.wp.getPosition());
-			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
+//			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
 			plan = new NavPlan(ranking.last().kbe, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		
@@ -156,7 +161,7 @@ class GlobalNav {
 		
 		int wpInd = bot.map.indexOf(chosen.wp);
 		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.wp.getPosition());
-		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
+//		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
 		
 		return newPlan;
 	}
@@ -177,7 +182,7 @@ class GlobalNav {
 		ret.isSpontaneos = true;
 		int wpInd = bot.map.indexOf(random);
 		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), random.getPosition());
-		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: @"+wpInd+" dist: "+distance+" timeout: "+timeout);
+//		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: @"+wpInd+" dist: "+distance+" timeout: "+timeout);
 		return ret;
 	}
 	
@@ -220,7 +225,6 @@ class GlobalNav {
 		if (getDistanceFollowingMap(bot, bot.getBotPosition(), ret.getPosition()) < minDistance) 
 				return getSomeDistantWaypoint(bot);
 		else return ret;
-	}
-	
+	}	
 
 }

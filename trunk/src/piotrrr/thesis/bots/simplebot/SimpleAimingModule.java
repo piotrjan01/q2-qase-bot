@@ -3,12 +3,12 @@ package piotrrr.thesis.bots.simplebot;
 import java.util.Collection;
 
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
-import soc.qase.file.bsp.BSPParser;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class SimpleAimingModule {
+public class SimpleAimingModule implements AimingModule {
 	
 	//These are the calibrated values. 
 	public static final float rocketSpeed = 50;
@@ -21,22 +21,48 @@ public class SimpleAimingModule {
 	private Vector3f lastPos = new Vector3f();
 	private int lastEnId = 0;
 	
-	private float predQuality = Float.MAX_VALUE;
+	private float lastPredQuality;
 	
-	FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
+	@Override
+	public FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
 		
 		if (fd == null || fd.enemy == null) return null;
-		FiringInstructions ret = null;
 		
+		boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
+		
+//		if (! reloading) bot.dtalk.addToLog("SHOOTING AT THE ENEMY: "+fd.enemy.getName()+" gun: "+CommFun.getGunName(fd.gunIndex));
+		
+		Vector3f enemyPos = fd.enemy.getOrigin().toVector3f();
+		Vector3f newPrediction;
+		
+		
+		
+		//Report the quality of the last prediction
 		if (lastPrediction != null) {
-			predQuality = getSimilarityBetweenVectors(lastPrediction, fd.enemy.getOrigin().toVector3f());
-			bot.dtalk.addToLog(" ----------> prediction q: "+predQuality+" lastEnemy: "+lastPos+" enemy: "+fd.enemy.getOrigin().toVector3f()+" pred: "+lastPrediction);
+			lastPredQuality = getSimilarityBetweenVectors(lastPrediction, enemyPos);
+//			if (! reloading) {
+//				bot.dtalk.addToLog(" -> last prediction q: "+lastPredQuality+" lastEnemyPos: "+lastPos+" nowEnemyPos: "+enemyPos+" lastPredPos: "+lastPrediction);
+//				bot.dtalk.addToLog(" -> prediction mov: "+CommFun.getMovementBetweenVectors(lastPos, lastPrediction)+" enemy mov: "+CommFun.getMovementBetweenVectors(lastPos, enemyPos));
+//			}
 		}
-		lastPrediction = predictPlayerPosition(fd, 1);
 		
-		lastPos = fd.enemy.getOrigin().toVector3f();
+		//Make the new predicton
+		newPrediction = predictPlayerPosition(fd);
 		
-		if (predQuality > 50) {
+		//If we can't shoot - we exit
+		if (reloading) {
+			lastPrediction = newPrediction;
+			lastPos = enemyPos;
+			return getNoFiringInstructions(bot, enemyPos);
+		}
+		
+		
+		
+		//if the prediction is bad, we don't use it
+		if (lastPredQuality > 50) {
+			lastPrediction = newPrediction;
+			lastPos = enemyPos;
+			bot.dtalk.addToLog(" => fast shooting - too poor prediction: @"+fd.enemy.getName()+" gun: "+CommFun.getGunName(fd.gunIndex));
 			return getFastFiringInstructions(fd, bot);
 		}
 
@@ -54,17 +80,14 @@ public class SimpleAimingModule {
 		switch (fd.gunIndex) {
 		
 		case 7:
-//			return getDelayedHitFiringInstructions(fd, blasterSpeed, 30f, false, bot);
 			bspeed = blasterSpeed;
 			break;
 		case 14:
 		case 17:
-//			return getDelayedHitFiringInstructions(fd, rocketSpeed, 60f, true, bot);
 			careful = true;
 			bspeed = rocketSpeed;
 			break;
 		case 15:
-//			return getDelayedHitFiringInstructions(fd, hblasterSpeed, 30f, false, bot);
 			bspeed = hblasterSpeed;
 			break;
 		case 16:
@@ -78,22 +101,41 @@ public class SimpleAimingModule {
 					"BasicFiringModule. Gave: "+fd.gunIndex);
 			
 		}
-		return getPredictingFiringInstructions(bot, fd, bspeed, careful);
+		FiringInstructions fi = getPredictingFiringInstructions(bot, fd, bspeed, careful, newPrediction);
+		lastPrediction = newPrediction;
+		lastPos = enemyPos;
+		return fi;
 	}
 	
-	FiringInstructions getPredictingFiringInstructions(SimpleBot bot, FiringDecision fd, float bulletSpeed, boolean careful) {
+	FiringInstructions getPredictingFiringInstructions(SimpleBot bot, FiringDecision fd, float bulletSpeed, 
+			boolean careful, Vector3f prediction) {
 		Vector3f playerPos = bot.getBotPosition();
-		float distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(fd.enemy.getOrigin()));
+		Vector3f enemyPos = fd.enemy.getOrigin().toVector3f();
 		
+		float distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(enemyPos));
+		
+		//Calculate the time to hit
 		float timeToHit = distance / bulletSpeed;
-		if (timeToHit < 1) timeToHit = 1;
-		Vector3f to = predictPlayerPosition(fd, timeToHit);
+		if (timeToHit < 1) timeToHit = 1f;
 		
-		bot.dtalk.addToLog(" ==========> prediction shooting: timeToHit: "+timeToHit);
+		//If it is too big - quit
+		if (timeToHit > 8) {
+			bot.dtalk.addToLog("no prediction shooting - enemy too far...");
+			return getNoFiringInstructions(bot, enemyPos);
+		}
 		
-		if ( careful &&  bot.getBsp().getObstacleDistance(playerPos, to, 30.0f, shortDistanceLimit) 
-				< shortDistanceLimit) return null;
-		return new FiringInstructions(to);
+		//We add to predicted position the additional movement that the enemy is predicted to do in timeToHit.
+		Vector3f movement = CommFun.getMovementBetweenVectors(enemyPos, prediction);
+		movement = CommFun.multiplyVectorByScalar(movement, timeToHit-1);
+		prediction.add(movement);
+		
+		if ( careful &&  bot.getBsp().getObstacleDistance(playerPos, prediction, 30.0f, shortDistanceLimit) 
+				< shortDistanceLimit) {
+			bot.dtalk.addToLog("careful! no shooting!");
+			return getNoFiringInstructions(bot, enemyPos);
+		}
+		bot.dtalk.addToLog(" => prediction shooting: @"+fd.enemy.getName()+" gun: "+CommFun.getGunName(fd.gunIndex)+"\n pred mov: "+movement+" timeToHit: "+timeToHit+" dist: "+distance+" bspeed: "+bulletSpeed);
+		return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, prediction));
 	}
 	
 	
@@ -104,113 +146,13 @@ public class SimpleAimingModule {
 	 * @return
 	 */
 	public FiringInstructions getFastFiringInstructions(FiringDecision fd, SimpleBot bot) {
-		if (fd.enemy != null) {
-				Vector3f to = new Vector3f(fd.enemy.getOrigin());
-				bot.dtalk.addToLog("=========> fast shooting enemy at origin: "+to);
-				Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
-				return new FiringInstructions(fireDir);
-				
-		}
-		return null;
+		Vector3f to = new Vector3f(fd.enemy.getOrigin());
+		Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
+		return new FiringInstructions(fireDir);
 	}
 	
 	
-	/**
-	 * Returns firing instructions following the firing decision for delayed hit guns.
-	 * @param fd
-	 * @param speed
-	 * @param shortDistanceLimit
-	 * @param careful
-	 * @param bot
-	 * @return
-	 */
-	public FiringInstructions getDelayedHitFiringInstructions(FiringDecision fd, float speed,
-			float shortDistanceLimit, boolean careful, SimpleBot bot) {
-		
-		Vector3f playerPos = bot.getBotPosition();
-		BSPParser bsp = bot.getBsp();
-		
-		if (fd.enemy != null) {
-			
-			if (lastEnId != fd.enemy.getNumber()) lastPos = null;
-			
-			if (lastPos == null) {
-				lastPos = new  Vector3f(fd.enemy.getOrigin());
-				lastEnId = fd.enemy.getNumber();
-				return getFastFiringInstructions(fd, bot);
-			}		
-			
-			float distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(fd.enemy.getOrigin()));
-			if (distance <= shortDistanceLimit) return getFastFiringInstructions(fd, bot);
-			
-			Vector3f to = new Vector3f(fd.enemy.getOrigin());
-			
-			bot.dtalk.addToLog("====> delayed shooting enemy at origin: "+to+" old: "+lastPos);
-		
-			Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, to);
-			
-			//Sometimes the movement length is weirdly too long, so we just do fast firing.
-			if (movement.length() > maxMovementLength) return getFastFiringInstructions(fd, bot);
-			
-			Vector3f firePos = new Vector3f(to);
-
-			float mult = CommFun.getDistanceBetweenPositions(playerPos, to);
-			mult = mult / speed;  //we get the time in frames to reach the target, theoretically.
-			
-			firePos.add(CommFun.multiplyVectorByScalar(movement, mult));
-			
-			Vector3f fireDir = CommFun.getNormalizedDirectionVector(playerPos, firePos);
-			if ( careful &&  bsp.getObstacleDistance(playerPos, firePos, 30.0f, shortDistanceLimit) 
-					< shortDistanceLimit) return null;
-			return new FiringInstructions(fireDir);
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns the firing instructions for instant hit weapons
-	 * @param fd
-	 * @param bot
-	 * @param shortDistanceLimit
-	 * @return
-	 */
-	public FiringInstructions getBulletsFiringInstructions(FiringDecision fd, SimpleBot bot,
-			float shortDistanceLimit) {
-		
-		Vector3f playerPos = bot.getBotPosition();
-		
-		if (fd.enemy != null) {
-			
-			if (lastEnId != fd.enemy.getNumber()) lastPos = null;
-			
-			if (lastPos == null) {
-				lastPos = new  Vector3f(fd.enemy.getOrigin());
-				lastEnId = fd.enemy.getNumber();
-				return getFastFiringInstructions(fd, bot);
-			}		
-			
-			float distance = CommFun.getDistanceBetweenPositions(playerPos, new Vector3f(fd.enemy.getOrigin()));
-			if (distance <= shortDistanceLimit) return getFastFiringInstructions(fd, bot);
-			
-			Vector3f to = new Vector3f(fd.enemy.getOrigin());
-			
-			bot.dtalk.addToLog("====> bullet shooting enemy at origin: "+to+" old: "+lastPos);
-		
-			Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, to);
-			lastPos = new  Vector3f(fd.enemy.getOrigin());
-			
-			if (movement.length() > maxMovementLength) return getFastFiringInstructions(fd, bot);
-			Vector3f firePos = new Vector3f(to);
-			
-			firePos.add(movement);
-			
-			Vector3f fireDir = CommFun.getNormalizedDirectionVector(playerPos, firePos);
-			return new FiringInstructions(fireDir);
-		}
-		return null;
-	}
-	
-	Vector3f predictPlayerPosition(FiringDecision fd, float inFrames) {
+	Vector3f predictPlayerPosition(FiringDecision fd) {
 		
 		if (lastEnId != fd.enemy.getNumber()) lastPos = null;
 		
@@ -223,10 +165,9 @@ public class SimpleAimingModule {
 		Vector3f to = new Vector3f(fd.enemy.getOrigin());
 		Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, to);
 		
-		Vector3f predictPos = new Vector3f(to);
-		predictPos.add(CommFun.multiplyVectorByScalar(movement, inFrames));
+		to.add(movement);
 		
-		return predictPos;
+		return to;
 		
 	}
 	
@@ -261,6 +202,11 @@ public class SimpleAimingModule {
 		return ret;
 	}
 	
+	FiringInstructions getNoFiringInstructions(SimpleBot bot, Vector3f enemyPos) {
+		FiringInstructions ret = new FiringInstructions(CommFun.getNormalizedDirectionVector(bot.getBotPosition(), enemyPos));
+		ret.doFire = false;
+		return ret;
+	}
 	
 	
 

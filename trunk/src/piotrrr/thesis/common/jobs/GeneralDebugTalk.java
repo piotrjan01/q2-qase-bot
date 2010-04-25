@@ -8,7 +8,7 @@ import piotrrr.thesis.tools.Dbg;
  * Dummy job, that repeats some debug info with given period.
  * @author Piotr Gwizda³a
  */
-public class GeneraDebugTalk extends Job {
+public class GeneralDebugTalk extends Job {
 	
 	public boolean active = true;
 	
@@ -20,7 +20,7 @@ public class GeneraDebugTalk extends Job {
 	
 	String toSay = "";
 
-	public GeneraDebugTalk(BotBase bot, int period) {
+	public GeneralDebugTalk(BotBase bot, int period) {
 		super(bot);
 		this.period = period;
 		lastFrame = bot.getFrameNumber();
@@ -47,7 +47,7 @@ public class GeneraDebugTalk extends Job {
 		if (! active) return;
 		double frame = (bot.getFrameNumber()-lastAddingFrame)/10.0;
 		lastAddingFrame = bot.getFrameNumber();
-		Dbg.prn(""+frame+">\tBOT SAYS: "+s);
+		Dbg.prn(bot.getBotName()+":\t"+frame+">\tBOT SAYS: "+s);
 		toSay += s+" :: ";
 	}
 

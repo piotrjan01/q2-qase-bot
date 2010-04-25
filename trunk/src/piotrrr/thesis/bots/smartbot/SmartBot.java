@@ -1,7 +1,7 @@
 package piotrrr.thesis.bots.smartbot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.common.jobs.GeneraDebugTalk;
+import piotrrr.thesis.common.jobs.GeneralDebugTalk;
 
 /**
  * This is one of the versions of the bots.
@@ -11,7 +11,7 @@ public class SmartBot extends BotBase {
 
 	public SmartBot(String botName, String skinName) {
 		super(botName, skinName);
-		addBotJob(new GeneraDebugTalk(this, 100));
+		addBotJob(new GeneralDebugTalk(this, 100));
 	}
 
 	@Override

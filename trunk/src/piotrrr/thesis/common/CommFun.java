@@ -64,5 +64,27 @@ public class CommFun {
 		return false;
 	}
 	
+	public static String getGunName(int ind) {
+		switch (ind) {
+			case 7: return "BLASTER";
+			case 8: return "SHOTGUN";
+			case 9: return "SUPER_SHOTGUN";
+			case 10: return "MACHINEGUN";
+			case 11: return "CHAINGUN";
+			case 12: return "GRENADES";
+			case 13: return "GRENADE_LAUNCHER";
+			case 14: return "ROCKET_LAUNCHER";
+			case 15: return "HYPERBLASTER";
+			case 16: return "RAILGUN";
+			case 17: return "BFG10K";
+			case 18: return "SHELLS";
+			case 19: return "BULLETS";
+			case 20: return "CELLS";
+			case 21: return "ROCKETS";
+			case 22: return "SLUGS";
+			default: return "unknown!";
+		}
+	}
+	
 
 }
