@@ -58,6 +58,10 @@ public class BasicCommands extends Job {
 				bot.consoleCommand("kill");
 			}
 			
+			if (cmd.equals("pausebot")) {
+				bot.botPaused = ! bot.botPaused;
+			}
+			
 			else {
 				bot.say("Hey "+commanderName+", I don't get it: "+cmd);				
 			}

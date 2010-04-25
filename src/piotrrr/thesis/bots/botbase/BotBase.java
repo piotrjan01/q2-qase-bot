@@ -7,6 +7,7 @@ import piotrrr.thesis.common.jobs.Job;
 import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
+import soc.qase.state.PlayerMove;
 import soc.qase.state.World;
 import soc.qase.tools.vecmath.Vector3f;
 /**
@@ -41,6 +42,11 @@ public class BotBase extends ObserverBot {
 	protected BSPParser bsp;
 
 	/**
+	 * Is used to pause the bot :) debugging purposes.
+	 */
+	public boolean botPaused = false;
+	
+	/**
 	 * Basic constructor
 	 * @param botName name of the bot to be created.
 	 * @param skinName the name of the skin to be used with the bot.
@@ -55,7 +61,8 @@ public class BotBase extends ObserverBot {
 			this.world = world;
 			updateFrameNumber();
 			runBotJobs();
-			botLogic();
+			if ( ! botPaused) botLogic();
+			else setBotMovement(new Vector3f(), new Vector3f(), PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
 		}
 		catch (Exception e) {
 			say("Runtime exception!");
@@ -116,7 +123,7 @@ public class BotBase extends ObserverBot {
 	 * @param j the job.
 	 * @return true if successful.
 	 */
-	protected boolean addBotJob(Job j) {
+	public boolean addBotJob(Job j) {
 		return botJobs.add(j);
 	}
 	
@@ -255,5 +262,8 @@ public class BotBase extends ObserverBot {
 		changeWeaponByInventoryIndex(i);
 	}
 	
+	public String getBotName() {
+		return getPlayerInfo().getName();
+	}
 
 }

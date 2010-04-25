@@ -2,6 +2,7 @@ package piotrrr.thesis.bots;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.jobs.ShutdownJob;
 
 /**
@@ -31,10 +32,47 @@ public class StartBots {
 		}
 	}
 	
+	public static void aimingExperiments1() {
+		SimpleBot bot = new SimpleBot(botName, skinName);
+		bot.connect(serverIP, serverPort);
+		
+		bot = new SimpleBot(botName+"-t1", skinName);
+		bot.dtalk.active = false;
+		bot.addBotJob(new HitsReporter(bot));
+		bot.connect(serverIP, serverPort);
+		
+		bot = new SimpleBot(botName+"-t2", skinName);
+		bot.dtalk.active = false;
+		bot.addBotJob(new HitsReporter(bot));
+		bot.connect(serverIP, serverPort);
+		
+		bot = new SimpleBot(botName+"-t3", skinName);
+		bot.dtalk.active = false;
+		bot.addBotJob(new HitsReporter(bot));
+		bot.connect(serverIP, serverPort);
+	}
+	
+	
+	public static void addBotsWithAimingModule(int count, int am, String names) {
+		for (int i=0; i<count; i++) {
+			SimpleBot bot = new SimpleBot(names+"-"+i, skinName, am);
+			bot.dtalk.active = false;
+			bot.addBotJob(new HitsReporter(bot));
+			bot.connect(serverIP, serverPort);
+		}
+	}
+	
+	public static void aimingExperiments2() {
+		addBotsWithAimingModule(3, 1, "simple-am");
+		addBotsWithAimingModule(3, 2, "bdp-am");
+	}
+	
 	public static void main(String[] args) {
 		System.setProperty("QUAKE2", quakePath);
 		
 		addBots(1);
+		
+//		aimingExperiments2();
 		
 	}
 	
