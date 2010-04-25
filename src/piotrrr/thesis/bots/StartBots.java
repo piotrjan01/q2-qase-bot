@@ -16,12 +16,12 @@ import piotrrr.thesis.common.jobs.ShutdownJob;
  */
 public class StartBots {
 	
-	static String quakePath = "H:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2";
-	static String botName = "SimpleBot";
-	static String skinName = "female/voodoo";
-//	static String serverIP = "127.0.0.1";
-	static String serverIP = "192.168.0.103";
-	static int serverPort = 27910;
+	public static String quakePath = "H:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2";
+	public static String botName = "SimpleBot";
+	public static String skinName = "female/voodoo";
+//	public static String serverIP = "127.0.0.1";
+	public static String serverIP = "192.168.0.103";
+	public static int serverPort = 27910;
 	
 	public static void addBots(int num) {
 		BotBase bot;
@@ -67,13 +67,13 @@ public class StartBots {
 		addBotsWithAimingModule(3, 2, "bdp-am");
 	}
 	
-	public static void main(String[] args) {
-		System.setProperty("QUAKE2", quakePath);
-		
-		addBots(1);
-		
-//		aimingExperiments2();
-		
-	}
+//	public static void main(String[] args) {
+//		System.setProperty("QUAKE2", quakePath);
+//		
+//		addBots(1);
+//		
+////		aimingExperiments2();
+//		
+//	}
 	
 }

@@ -1,13 +1,15 @@
 package piotrrr.thesis.bots.simplebot;
 
+import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.entities.EntityType;
 import soc.qase.ai.waypoint.Waypoint;
+import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * The class that encapsulates: Waypoint, EntityType, estimated respawn time.
  * @author Piotr Gwizda³a
  */
-public class KBEntry {
+public class KBEntry implements GameObject {
 
 	/**
 	 * Waypoint of the entry - position in the world.
@@ -52,6 +54,24 @@ public class KBEntry {
 		if (wp.getPosition().equals(other.wp.getPosition()) &&
 				et.equals(other.et)) return true;
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return et.toString();
+	}
+
+	@Override
+	public String toDetailedString() {
+		return "Entity type: "+et.toString()+"\n" +
+				"Watpoint: "+wp.toString()+"\n" +
+				"isFromMap: "+isFromMap+"\n"+
+				"Entity Respawn Time: "+ert;
+	}
+
+	@Override
+	public Vector3f getPosition() {
+		return wp.getPosition();
 	}
 	
 }

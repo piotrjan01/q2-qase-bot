@@ -22,6 +22,8 @@ import soc.qase.tools.vecmath.Vector3f;
  * 
  * Jak nie widzi waypointu do ktorego ma isc - nalezy skasowac polaczenie :)
  * 
+ * Jak jest stuck, to moze spadl - niech sprobuje sie odnalezc na mapie.
+ * 
  */
 
 /**
@@ -49,7 +51,7 @@ public class SimpleBot extends BotBase {
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
 	 */
-	WorldKB kb = null;
+	public WorldKB kb = null;
 	
 	/**
 	 * Bot's current navigation plan
@@ -67,11 +69,22 @@ public class SimpleBot extends BotBase {
 	StuckDetector stuckDetector;
 	
 	/**
+	 * The job that handles basic commands.
+	 */
+	BasicCommands basicCommands;
+	
+	/**
 	 * Bot's job that is used to periodically say 
 	 * some debug information in the game.
 	 */
 	public GeneralDebugTalk dtalk;
 		
+	
+	public boolean noFire = false;
+	
+	/**
+	 * Bot's aiming module
+	 */
 	AimingModule aimingModule = new SimpleAimingModule();
 
 	/**
@@ -89,10 +102,12 @@ public class SimpleBot extends BotBase {
 		stateReporter = new StateReporter(this);
 		stuckDetector = new StuckDetector(this, 5);
 		
+		basicCommands = new BasicCommands(this, "Player");
+		
 		addBotJob(dtalk);
 		
 		addBotJob(stateReporter);
-		addBotJob(new BasicCommands(this, "Player"));
+		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
 	}
 	
@@ -142,7 +157,8 @@ public class SimpleBot extends BotBase {
 		
 		
 		
-		FiringDecision fd =  null;//SimpleCombatModule.getFiringDecision(this);
+		FiringDecision fd =  null;
+		if ( ! noFire ) fd = SimpleCombatModule.getFiringDecision(this);
 		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
 		executeInstructions(
 				LocalNav.getNavigationInstructions(this), 
@@ -200,5 +216,11 @@ public class SimpleBot extends BotBase {
 		plan = null;
 		Dbg.prn(getBotName()+": I DIED!");
 	}
+	
+	@Override
+	public void handleCommand(String cmd) {
+		basicCommands.handleCommand(cmd);
+	}
+	
 
 }
