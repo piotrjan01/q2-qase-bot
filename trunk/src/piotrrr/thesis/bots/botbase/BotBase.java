@@ -3,6 +3,7 @@ package piotrrr.thesis.bots.botbase;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.jobs.Job;
 import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
@@ -46,6 +47,12 @@ public class BotBase extends ObserverBot {
 	 */
 	public boolean botPaused = false;
 	
+	
+	/**
+	 * Direction where to look when paused.
+	 */
+	Vector3f pausedLookDir = new Vector3f();
+	
 	/**
 	 * Basic constructor
 	 * @param botName name of the bot to be created.
@@ -62,7 +69,7 @@ public class BotBase extends ObserverBot {
 			updateFrameNumber();
 			runBotJobs();
 			if ( ! botPaused) botLogic();
-			else setBotMovement(new Vector3f(), new Vector3f(), PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
+			else setBotMovement(new Vector3f(), pausedLookDir, PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
 		}
 		catch (Exception e) {
 			say("Runtime exception!");
@@ -264,6 +271,18 @@ public class BotBase extends ObserverBot {
 	
 	public String getBotName() {
 		return getPlayerInfo().getName();
+	}
+
+	/**
+	 * Gives a command to the bot.
+	 * @param cmd
+	 */
+	public void handleCommand(String cmd) {
+		
+	}
+	
+	public void setPauseLookDirection(Vector3f lookAt) {
+		pausedLookDir = CommFun.getNormalizedDirectionVector(getBotPosition(), lookAt);
 	}
 
 }

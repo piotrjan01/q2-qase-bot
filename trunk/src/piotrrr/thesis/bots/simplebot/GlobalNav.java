@@ -16,9 +16,11 @@ import soc.qase.tools.vecmath.Vector3f;
  * @author Piotr Gwizda³a
  * @see SimpleBot
  */
-class GlobalNav {
+public class GlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.08;
+	
+	public static final int maximalDistance = 200;
 	
 	/**
 	 * Returns the new plan that the bot should follow
@@ -128,8 +130,7 @@ class GlobalNav {
 	static NavPlan getSpontaneousPlan(SimpleBot bot) {
 		NavPlan newPlan = null;
 		
-		//TODO:
-		int maximalDistance = 200;
+		
 		
 		LinkedList<KBEntry> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
 		if (entries.size() == 0) return null;

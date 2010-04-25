@@ -3,6 +3,7 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.bots.simplebot.SimpleBot;
 
 /**
  * The job that implements bot's perception and reaction do basic commands given
@@ -48,24 +49,39 @@ public class BasicCommands extends Job {
 		Vector<String> commands = bot.getMessages(commanderName+": ");
 		if (commands == null) return;
 		for (String cmd : commands) {
-			cmd = cmd.trim();
+			handleCommand(cmd);
+		}
+	}
+	
+	public void handleCommand(String cmd) {
+		cmd = cmd.trim();
+		
+		if (cmd.equals("disc")) {
+			bot.say("Bye, bye!");
+			bot.disconnect();
+		}
+		else if (cmd.equals("die")) {
+			bot.consoleCommand("kill");
+		}
+		else {
+			try {
 			
-			if (cmd.equals("disc")) {
-				bot.say("Bye, bye!");
-				bot.disconnect();
+				if (cmd.equals("pausebot")) {
+					bot.say("pause = "+(!bot.botPaused));
+					bot.botPaused = ! bot.botPaused;
+				}
+				
+				else if (cmd.equals("nofire")) {
+					bot.say("noFire = "+( ! ((SimpleBot)bot).noFire));
+					((SimpleBot)bot).noFire = ! ((SimpleBot)bot).noFire;
+				}
+				else {
+					bot.say("I don't get this command: "+cmd);
+				}
 			}
-			if (cmd.equals("die")) {
-				bot.consoleCommand("kill");
+			catch (ClassCastException e) {
+				bot.say("This command is not for me... ClassCastException!");
 			}
-			
-			if (cmd.equals("pausebot")) {
-				bot.botPaused = ! bot.botPaused;
-			}
-			
-			else {
-				bot.say("Hey "+commanderName+", I don't get it: "+cmd);				
-			}
-
 		}
 	}
 

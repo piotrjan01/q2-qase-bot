@@ -15,7 +15,7 @@ import soc.qase.tools.vecmath.Vector3f;
 /**
  * @author Piotr Gwizda³a
  */
-class WorldKB {
+public class WorldKB {
 	
 	/**
 	 * The map containing the information on entities in the environment
@@ -134,7 +134,7 @@ class WorldKB {
 	 * 
 	 * @see KBEntry
 	 */
-	LinkedList<KBEntry> getActiveEntitiesByType(EntityType et, long frameNumber) {
+	public LinkedList<KBEntry> getActiveEntitiesByType(EntityType et, long frameNumber) {
 		LinkedList<KBEntry> ret = new LinkedList<KBEntry>();
 		LinkedList<KBEntry> part = kb.get(et);
 		if (part == null) return ret;
@@ -167,7 +167,7 @@ class WorldKB {
 	 * @param currentFrame current frame at which the entries should be active
 	 * @return
 	 */
-	LinkedList<KBEntry> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {
+	public LinkedList<KBEntry> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {
 		LinkedList<KBEntry> ret = new LinkedList<KBEntry>();
 		for (LinkedList<KBEntry> l : kb.values()) {
 			for (KBEntry e : l) {
