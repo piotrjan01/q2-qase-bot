@@ -8,7 +8,6 @@ import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 import piotrrr.thesis.common.navigation.NavPlan;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -21,6 +20,12 @@ class GlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.08;
 	
+	/**
+	 * Returns the new plan that the bot should follow
+	 * @param bot the bot for which the plan is being established
+	 * @param oldPlan the bot's old plan
+	 * @return the new plan for the bot (can be the same as the oldPlan)
+	 */
 	static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
 	
 		/**
@@ -31,8 +36,8 @@ class GlobalNav {
 		 * + when the bot is stuck
 		 * + when the decision times out....?
 		 * - when the enemy appears
-		 * - when the bot has good pickup opportunity
-		 * - when it has died
+		 * + when the bot has good pickup opportunity
+		 * + when it has died
 		 */
 		
 		boolean changePlan = false;
@@ -62,9 +67,8 @@ class GlobalNav {
 		
 		/**
 		 * What do we do when we decide to change the plan?
-		 * + if there was a parent plan - we continue with it
-		 * - if we see something that we can pick up in spontaneous decision - we pick it
-		 * - if we don't do spontaneous pickup, we get the entities from KB basing on bot's state and
+		 * + if we see something that we can pick up in spontaneous decision - we pick it
+		 * + if we don't do spontaneous pickup, we get the entities from KB basing on bot's state and
 		 * choose one of them and create the plan to reach it.
 		 */
 		
@@ -111,6 +115,11 @@ class GlobalNav {
 		return plan;
 	}
 	
+	/**
+	 * Returns the best available spontaneous plan for the given bot. Can be null. 
+	 * @param bot the bot for whom we search for the plan
+	 * @return the navigation plan with just wan waypoint that is close to the bot - so called spontaneous plan.
+	 */
 	static NavPlan getSpontaneousPlan(SimpleBot bot) {
 		NavPlan newPlan = null;
 		
@@ -152,6 +161,13 @@ class GlobalNav {
 		return newPlan;
 	}
 	
+	/**
+	 * If the bot is stuck it may need the spontaneous plan in some random direction in order to 
+	 * move it out from the stuck position, get again close to it's known waypoints and be able to
+	 * find a new plan.
+	 * @param bot
+	 * @return the random spontaneous decision.
+	 */
 	static NavPlan getSpontaneousAntiStuckPlan(SimpleBot bot) {
 		Waypoint random = getSomeDistantWaypoint(bot);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
@@ -165,6 +181,14 @@ class GlobalNav {
 		return ret;
 	}
 	
+	/**
+	 * Returns the distance between given positions following the map
+	 * @param bot the bot for whom the distance is calculated
+	 * @param from initial position
+	 * @param to final position
+	 * @return distance between from and to following the shortest path on the map. 
+	 * Double.MAX_VALUE is returned in case there is no path.
+	 */
 	static double getDistanceFollowingMap(SimpleBot bot, Vector3f from, Vector3f to) {
 		double distance = 0.0d;
 		Waypoint [] path = bot.map.findShortestPath(from, to);

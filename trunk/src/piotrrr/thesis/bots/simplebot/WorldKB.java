@@ -15,7 +15,7 @@ import soc.qase.tools.vecmath.Vector3f;
 /**
  * @author Piotr Gwizda³a
  */
-class SimpleKB {
+class WorldKB {
 	
 	/**
 	 * The map containing the information on entities in the environment
@@ -34,7 +34,7 @@ class SimpleKB {
 	 */
 	static final int PICKUP_BLACKLIST_MAX_SIZE = 10;
 	
-	private SimpleKB() {
+	private WorldKB() {
 		kb = new HashMap<EntityType, LinkedList<KBEntry>>();
 		pickupBlacklist = new LinkedList<KBEntry>();
 	}
@@ -45,8 +45,8 @@ class SimpleKB {
 	 * @return the knowledge base
 	 */
 	@SuppressWarnings("unchecked")
-	static SimpleKB createKB(WaypointMap map) {
-		SimpleKB ret = new SimpleKB();
+	static WorldKB createKB(WaypointMap map) {
+		WorldKB ret = new WorldKB();
 		Vector wps = map.getItemNodes();
 		if (wps == null || wps.size() == 0) return ret;
 		for (Object o : wps) {
@@ -75,11 +75,11 @@ class SimpleKB {
 	 * 
 	 * 1. for each entity we try to find if it is in KB
 	 * 2. if it is, we update the information about it there
-	 * 3. if it's not, we add it as entity not from the map.
+	 * 3. if it's not, we add it as entity not from the map (observed)
 	 * 
-	 * @param entities
-	 * @param currentFrame
-	 * @param botName
+	 * @param entities the entities that are present in the world
+	 * @param currentFrame current frame number - to measure the time
+	 * @param botName the name of the bot
 	 * @see KBEntry
 	 */
 	@SuppressWarnings("unchecked")
@@ -116,18 +116,15 @@ class SimpleKB {
 				}
 				l.removeAll(toRemove);
 			}
-			
-
 			if (!foundAndUpdated) { //if we didn't find this ent in KB, it is probably new no-respawning entity
 				addToKB(et, new KBEntry(new Waypoint(e.getOrigin()), et, currentFrame-1, false));
 			}
 		}
-//		Dbg.prn("KB size: "+getKBSize()+" blacklist: "+pickupBlacklist.size()+" deleted: "+toRemove.size());
 	}
 	
 	/**
 	 * Reads from database all known entries that are of specified
-	 * EntityType and will should be active at specified frame.
+	 * EntityType and should be active at specified frame.
 	 * @param et entity type that we are interested in
 	 * @param frameNumber the frame at which the entity should be 
 	 * active in the world.
@@ -163,6 +160,13 @@ class SimpleKB {
 		l.add(ent);
 	}
 	
+	/**
+	 * Returns the list of active KB entries that are within specified range from given position
+	 * @param pos the position 
+	 * @param maxRange maximum range from the position pos
+	 * @param currentFrame current frame at which the entries should be active
+	 * @return
+	 */
 	LinkedList<KBEntry> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {
 		LinkedList<KBEntry> ret = new LinkedList<KBEntry>();
 		for (LinkedList<KBEntry> l : kb.values()) {
@@ -178,6 +182,10 @@ class SimpleKB {
 		return ret;
 	}
 	
+	/**
+	 * Adds the given entry to black-list
+	 * @param e
+	 */
 	void addToBlackList(KBEntry e) {
 		pickupBlacklist.add(e);
 		if (pickupBlacklist.size() > PICKUP_BLACKLIST_MAX_SIZE) pickupBlacklist.pop();
