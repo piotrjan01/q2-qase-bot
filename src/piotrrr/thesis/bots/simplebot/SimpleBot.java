@@ -22,6 +22,8 @@ import soc.qase.tools.vecmath.Vector3f;
  * 
  * Jak nie widzi waypointu do ktorego ma isc - nalezy skasowac polaczenie :)
  * 
+ * Niech nie bierze do spontana niewidzialnych rzeczy... ;]
+ * 
  * Jak jest stuck, to moze spadl - niech sprobuje sie odnalezc na mapie.
  * 
  */
