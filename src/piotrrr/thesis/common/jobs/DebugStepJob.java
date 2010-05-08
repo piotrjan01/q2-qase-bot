@@ -9,6 +9,8 @@ import piotrrr.thesis.gui.MainFrame;
  */
 public class DebugStepJob extends Job {
 	
+	static final int MF_REPORTING_STEP = 10;
+	
 	long pauseFrame;
 	
 	MainFrame mf;
@@ -27,6 +29,9 @@ public class DebugStepJob extends Job {
 			mf.updateDisplayedInfo();
 			pauseFrame = Long.MAX_VALUE;
 		}
+		//update displayed info with given period:
+		if (bot.getFrameNumber() % MF_REPORTING_STEP == 0)
+			mf.updateDisplayedInfo();
 	}
 	
 	public void pauseIn(long steps) {

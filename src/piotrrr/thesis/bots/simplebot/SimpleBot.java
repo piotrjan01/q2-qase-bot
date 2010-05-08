@@ -1,5 +1,7 @@
 package piotrrr.thesis.bots.simplebot;
 
+import java.util.Vector;
+
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
@@ -14,6 +16,7 @@ import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Action;
 import soc.qase.state.Angles;
+import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -127,12 +130,14 @@ public class SimpleBot extends BotBase {
 		
 		if (botPaused) return;
 		
+		//TODO: debuging stuff:
+		updateDebugSeenEntsBuffer();
+		
 		if (kb == null) { 
 			kb = WorldKB.createKB(MAPS_DIR+getMapName());
 			assert kb != null;
 			dtalk.addToLog("KB loaded!");
 		}
-		
 		kb.updateKB(world.getEntities(false), getFrameNumber(), this.getPlayerInfo().getName());
 		
 		/**
@@ -216,6 +221,27 @@ public class SimpleBot extends BotBase {
 	@Override
 	public void handleCommand(String cmd) {
 		basicCommands.handleCommand(cmd);
+	}
+	
+	@Override
+	public String toString() {
+		return "Bot name: "+getBotName()+"\n"+
+				"health: "+getBotHealth()+"\n"+
+				"armor: "+getBotArmor()+"\n"+
+				"state name: "+getCurrentStateName()+"\n"+
+				"frame nr: "+getFrameNumber()+"\n"+
+				"KB size: "+kb.getKBSize()+"\n"+
+				"position: "+getBotPosition()+"\n";
+	}
+	
+	
+	public Vector<Entity> debugSeenEntsBuffer = new Vector<Entity>();
+	int debugSeenEntsBufferMaxSize = 30;
+	void updateDebugSeenEntsBuffer() {
+		debugSeenEntsBuffer.addAll(world.getEntities(false));
+		while (debugSeenEntsBuffer.size() > debugSeenEntsBufferMaxSize) {
+			debugSeenEntsBuffer.removeElementAt(0);
+		}
 	}
 	
 

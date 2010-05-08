@@ -7,8 +7,11 @@
 package soc.qase.state;
 
 import java.util.*;
+
+import piotrrr.thesis.common.GameObject;
 import soc.qase.com.message.*;
 import soc.qase.info.*;
+import soc.qase.tools.vecmath.Vector3f;
 
 /*-------------------------------------------------------------------*/
 /**	Wrapper class for entity attributes (players, items, weapons,
@@ -24,7 +27,7 @@ import soc.qase.info.*;
  *	the getName() method can be called to investigate the name of the
  *	currently investigated entity. */
 /*-------------------------------------------------------------------*/
-public class Entity
+public class Entity implements GameObject
 {
 	private int entityNumber = 0;
 	private boolean active = false;
@@ -329,6 +332,7 @@ public class Entity
 /*-------------------------------------------------------------------*/
 	public int getRespawnTime()
 	{
+		if (getModelString() == null) return -1;
 		if(getModelString().indexOf("invul") != -1)
 			return 3000;
 		else if(getModelString().indexOf("band") != -1)
@@ -660,4 +664,22 @@ public class Entity
 	{
 		return ("Entity " + getNumber() + ":\t" + getCategory() + " / " + getType() + " / " + getSubType() + " / " + getName() + " / " + getSkin());
 	}
+
+@Override
+public Vector3f getPosition() {
+	return getOrigin().toVector3f();
+}
+
+@Override
+public String toDetailedString() {
+	return "entity: "+getCategory()+"."+getType()+"."+getSubType()+"\n"+
+			"position: "+getPosition()+"\n"+
+			"entity number: "+entityNumber+"\n"+
+			"skin: "+getSkin()+"\n"+
+			"active: "+getActive()+"\n"+
+			"origin: "+getOrigin()+"\n"+
+			"old origin: "+getOldOrigin()+"\n"+
+			"respawned: "+isRespawned()+"\n"+
+			"respawn time: "+getRespawnTime()+"\n";
+}
 }

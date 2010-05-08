@@ -33,6 +33,8 @@ public class WaypointItem implements Serializable, GameObject
 	private int respawnFailCounter = 0;
 	private long respawnFrame = 0L;
 	
+	private boolean fromMapGeneration = true;
+	
 
 /*-------------------------------------------------------------------*/
 /**	Constructor. Stores the index of a node in the parent WaypointMap's
@@ -147,6 +149,14 @@ public void incRespawnFailCounter() {
 	respawnFailCounter++;
 }
 
+public boolean isFromMapGeneration() {
+	return fromMapGeneration;
+}
+
+public void setFromMapGeneration(boolean fromMapGeneration) {
+	this.fromMapGeneration = fromMapGeneration;
+}
+
 @Override
 public String toString() {
 	return iCategory+"."+iType+"."+iSubType;
@@ -162,8 +172,9 @@ public String toDetailedString() {
 	return "pos: "+getPosition()+"\n"+
 			"cat/type: "+toString()+"\n"+
 			"resp frame: "+respawnFrame+"\n"+
-			"resp fail count"+respawnFailCounter+"\n"+
-			"Waypoint:\n"+node.toDetailedString();
+			"resp fail count: "+respawnFailCounter+"\n"+
+			"from map generation: "+fromMapGeneration+"\n"+
+			"\nWaypoint:\n"+node.toDetailedString();
 			
 }
 
