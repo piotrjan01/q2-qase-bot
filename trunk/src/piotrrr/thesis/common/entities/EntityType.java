@@ -1,5 +1,6 @@
 package piotrrr.thesis.common.entities;
 
+import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.state.Entity;
 
 /**
@@ -17,6 +18,10 @@ public enum EntityType {
 	 */
 	public static EntityType getEntityType(Entity e) {
 		return getEntityType(e.getCategory(), e.getType(), e.getSubType());
+	}
+	
+	public static EntityType getEntityType(WaypointItem i) {
+		return getEntityType(i.getCategory(), i.getType(), i.getSubType());
 	}
 	
 	/**

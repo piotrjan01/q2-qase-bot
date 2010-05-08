@@ -45,10 +45,6 @@ public class SimpleBot extends BotBase {
 	 */
 	NeedsFSM fsm;
 	
-	/**
-	 * The map that bot uses to navigate.
-	 */
-	WaypointMap map = null;
 	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
@@ -131,12 +127,10 @@ public class SimpleBot extends BotBase {
 		
 		if (botPaused) return;
 		
-		if (map == null) { 
-			map = WaypointMap.loadMap(MAPS_DIR+getMapName());
-			assert map != null;
-			kb = WorldKB.createKB(map);
+		if (kb == null) { 
+			kb = WorldKB.createKB(MAPS_DIR+getMapName());
 			assert kb != null;
-			dtalk.addToLog("KB built. Categorized items: "+kb.getKBSize()+" out of "+map.getItemNodes().size()+".");
+			dtalk.addToLog("KB loaded!");
 		}
 		
 		kb.updateKB(world.getEntities(false), getFrameNumber(), this.getPlayerInfo().getName());
