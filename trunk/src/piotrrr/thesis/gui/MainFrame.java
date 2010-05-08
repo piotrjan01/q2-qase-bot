@@ -11,17 +11,12 @@
 
 package piotrrr.thesis.gui;
 
-import java.awt.Component;
-import java.util.LinkedList;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
-import javax.swing.ListModel;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory.Default;
 
 import piotrrr.thesis.bots.StartBots;
-import piotrrr.thesis.bots.simplebot.GlobalNav;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
@@ -76,8 +71,11 @@ public class MainFrame extends javax.swing.JFrame {
         fullInfo = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        activeEntsRadioButton1 = new javax.swing.JRadioButton();
+        allEntsRadioButton1 = new javax.swing.JRadioButton();
         visibleWaypointsRadioButton2 = new javax.swing.JRadioButton();
+        navPlanRadioButton = new javax.swing.JRadioButton();
+        visibleEntsRadioButton2 = new javax.swing.JRadioButton();
+        seenEntsBuffRadioButton1 = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
         distanceLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -152,7 +150,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(discDbgButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(discAnotherBotsButton)))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         panelRunBotsLayout.setVerticalGroup(
             panelRunBotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -248,7 +246,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(sendCommandToDBGButton)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -297,11 +295,12 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Display info options"));
 
-        infoButtonGroup.add(activeEntsRadioButton1);
-        activeEntsRadioButton1.setText("all entities in the WorldKB");
-        activeEntsRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        infoButtonGroup.add(allEntsRadioButton1);
+        allEntsRadioButton1.setSelected(true);
+        allEntsRadioButton1.setText("all entities in the WorldKB");
+        allEntsRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activeEntsRadioButton1ActionPerformed(evt);
+                allEntsRadioButton1ActionPerformed(evt);
             }
         });
 
@@ -313,25 +312,58 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        infoButtonGroup.add(navPlanRadioButton);
+        navPlanRadioButton.setText("navigation plan details");
+        navPlanRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                navPlanRadioButtonActionPerformed(evt);
+            }
+        });
+
+        infoButtonGroup.add(visibleEntsRadioButton2);
+        visibleEntsRadioButton2.setText("visible entities from WorldKB");
+        visibleEntsRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visibleEntsRadioButton2ActionPerformed(evt);
+            }
+        });
+
+        infoButtonGroup.add(seenEntsBuffRadioButton1);
+        seenEntsBuffRadioButton1.setText("seen entities buffer");
+        seenEntsBuffRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seenEntsBuffRadioButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(allEntsRadioButton1)
                     .addComponent(visibleWaypointsRadioButton2)
-                    .addComponent(activeEntsRadioButton1))
+                    .addComponent(navPlanRadioButton)
+                    .addComponent(visibleEntsRadioButton2)
+                    .addComponent(seenEntsBuffRadioButton1))
                 .addContainerGap(89, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(activeEntsRadioButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(allEntsRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(visibleWaypointsRadioButton2)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(navPlanRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(visibleEntsRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(seenEntsBuffRadioButton1)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jLabel3.setText("Distance from the bot:");
@@ -349,14 +381,14 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(reqListScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel5)
-                        .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(distanceLabel)))
+                        .addComponent(distanceLabel))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel5)
+                        .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -394,7 +426,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -495,8 +527,8 @@ public class MainFrame extends javax.swing.JFrame {
         int ind = reqList.getSelectedIndex();
         if (ind < 0 || ind > requiredList.size()) return;
         fullInfo.setText(requiredList.get(ind).toDetailedString());
-        distanceLabel.setText(""+CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getPosition()));
         dbgBot.setPauseLookDirection(requiredList.get(ind).getPosition());
+        distanceLabel.setText(""+CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getPosition()));
     }//GEN-LAST:event_reqListValueChanged
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -528,25 +560,38 @@ public class MainFrame extends javax.swing.JFrame {
     	for (SimpleBot b : anotherBots) b.handleCommand(cmd);
     }//GEN-LAST:event_sendCommandToAnothersButtonActionPerformed
 
-    private void activeEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeEntsRadioButton1ActionPerformed
-        requiredList.clear();
-        requiredList.addAll(dbgBot.kb.getAllItems());
-        DefaultListModel m = new DefaultListModel();
-        for (Object o : requiredList) {
-        	m.addElement(o);
-        }
-        reqList.setModel(m);
-        fullInfo.setText("");
-    }//GEN-LAST:event_activeEntsRadioButton1ActionPerformed
+    private void allEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allEntsRadioButton1ActionPerformed
+      Vector<GameObject> v = new Vector<GameObject>();
+      v.addAll(dbgBot.kb.getAllItems());
+      setReqList(v);
+    }//GEN-LAST:event_allEntsRadioButton1ActionPerformed
 
     private void visibleWaypointsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleWaypointsRadioButton2ActionPerformed
-        // TODO add your handling code here:
+    	 Vector<GameObject> v = new Vector<GameObject>();
+         v.addAll(dbgBot.kb.getAllVisibleWaypoints(dbgBot));
+         setReqList(v);
     }//GEN-LAST:event_visibleWaypointsRadioButton2ActionPerformed
 
     private void stepButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButton1ActionPerformed
        int steps = Integer.parseInt(stepSizeTextField2.getText());
        stepJob.pauseIn(steps);
     }//GEN-LAST:event_stepButton1ActionPerformed
+
+    private void navPlanRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navPlanRadioButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_navPlanRadioButtonActionPerformed
+
+    private void visibleEntsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleEntsRadioButton2ActionPerformed
+    	 Vector<GameObject> v = new Vector<GameObject>();
+         v.addAll(dbgBot.kb.getAllVisibleEntities(dbgBot));
+         setReqList(v);
+    }//GEN-LAST:event_visibleEntsRadioButton2ActionPerformed
+
+    private void seenEntsBuffRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seenEntsBuffRadioButton1ActionPerformed
+    	Vector<GameObject> v = new Vector<GameObject>();
+    	v.addAll(dbgBot.debugSeenEntsBuffer);
+        setReqList(v);
+    }//GEN-LAST:event_seenEntsBuffRadioButton1ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -563,7 +608,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JRadioButton activeEntsRadioButton1;
+    private javax.swing.JRadioButton allEntsRadioButton1;
     private javax.swing.JTextArea botStateInfoTextArea1;
     private javax.swing.JButton connectDebugedButton;
     private javax.swing.JButton connectOthersButton;
@@ -589,24 +634,27 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextArea messages;
     private javax.swing.JScrollPane messagesScrollPane1;
+    private javax.swing.JRadioButton navPlanRadioButton;
     private javax.swing.JTextField nrBotsField;
     private javax.swing.JPanel panelRunBots;
     private javax.swing.JToggleButton pauseAnotherBotsToggle;
     private javax.swing.JToggleButton pauseToggleButton;
     private javax.swing.JList reqList;
     private javax.swing.JScrollPane reqListScrollPane2;
+    private javax.swing.JRadioButton seenEntsBuffRadioButton1;
     private javax.swing.JButton sendCommandToAnothersButton;
     private javax.swing.JButton sendCommandToDBGButton;
     private javax.swing.JButton stepButton1;
     private javax.swing.JTextField stepSizeTextField2;
+    private javax.swing.JRadioButton visibleEntsRadioButton2;
     private javax.swing.JRadioButton visibleWaypointsRadioButton2;
     // End of variables declaration//GEN-END:variables
     
     private SimpleBot dbgBot = null;
     
-    private LinkedList<SimpleBot> anotherBots = new LinkedList<SimpleBot>();
+    private Vector<SimpleBot> anotherBots = new Vector<SimpleBot>();
     
-    private LinkedList<GameObject> requiredList = new LinkedList<GameObject>();
+    private Vector<GameObject> requiredList = new Vector<GameObject>();
     
     private DebugStepJob stepJob = null;
     
@@ -616,7 +664,21 @@ public class MainFrame extends javax.swing.JFrame {
     
     public void updateDisplayedInfo() {
     	if (visibleWaypointsRadioButton2.isSelected()) visibleWaypointsRadioButton2ActionPerformed(null);
-    	else if (activeEntsRadioButton1.isSelected()) activeEntsRadioButton1ActionPerformed(null);
+    	else if (allEntsRadioButton1.isSelected()) allEntsRadioButton1ActionPerformed(null);
+    	else if (visibleEntsRadioButton2.isSelected()) visibleEntsRadioButton2ActionPerformed(null);
+    	else if (navPlanRadioButton.isSelected()) navPlanRadioButtonActionPerformed(null);
+    	else if (seenEntsBuffRadioButton1.isSelected()) seenEntsBuffRadioButton1ActionPerformed(null);
+    	botStateInfoTextArea1.setText(dbgBot.toString());
+    }
+    private void setReqList(Vector<GameObject> vect) {
+    	 requiredList.clear();
+         requiredList.addAll(vect);
+         DefaultListModel m = new DefaultListModel();
+         for (Object o : requiredList) {
+      	   m.addElement(o);
+         }
+         reqList.setModel(m);
+         fullInfo.setText("");
     }
 
 }

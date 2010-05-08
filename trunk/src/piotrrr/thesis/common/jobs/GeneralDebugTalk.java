@@ -30,6 +30,7 @@ public class GeneralDebugTalk extends Job {
 	@Override
 	public void run() {
 		if (! active) return;
+		if (bot.botPaused) return;
 		if (bot.getFrameNumber() - lastFrame < period ) return;
 		lastFrame = bot.getFrameNumber();
 		

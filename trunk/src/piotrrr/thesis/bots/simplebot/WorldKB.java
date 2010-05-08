@@ -82,26 +82,34 @@ public class WorldKB {
 	 */
 	@SuppressWarnings("unchecked")
 	void updateKB(Vector entities, long currentFrame, String botName) {
-		
+		Dbg.prn("KB: ents size: "+entities.size());
 		for (Object o : entities) {
 			Entity e = (Entity)o;
 			//don't bother with yourself :)
 			if (e.isPlayerEntity() && e.getName() == botName) continue;
 			//we just bother with items and weapons
-			if (e.getCategory() != Entity.CAT_WEAPONS &&
-				e.getCategory() != Entity.CAT_ITEMS) continue;
+			if (! e.getCategory().equalsIgnoreCase(Entity.CAT_WEAPONS) &&
+					! e.getCategory().equalsIgnoreCase(Entity.CAT_ITEMS)) {
+//				Dbg.prn("KB: not interesting category: "+e.toDetailedString());
+				continue;
+			}
 			
 			WaypointItem kbi = findInItems(e);
 			//a new item in the world - we assume it doesn't respawn
 			if (kbi == null) {
-				//we don't bother with inactive new entities
-				if (e.getActive() == false) continue;
-				//otherwise, we add the new entity to items KB
+//				Dbg.prn("KB: item not in KB:\n "+e.toDetailedString());
+				//we establish respawn frame for case of active and inactive entity
+				long respawnFrame = currentFrame-1;
+				if (e.getActive() == false) respawnFrame += e.getRespawnTime();
+				//we add the new entity to items KB
 				kbi = new WaypointItem(new Waypoint(e.getOrigin()), e);
+				kbi.setFromMapGeneration(false);
+				kbi.setRespawnFrame(respawnFrame);
 				items.add(kbi);
 			}
 			//the item is already in the KB, we update it's info
 			else {
+//				Dbg.prn("KB: item already in KB: "+e.toDetailedString());
 				//if it's active
 				if (e.getActive() == true) {
 					//it's there, so we make sure we have it in our KB as active
@@ -180,8 +188,30 @@ public class WorldKB {
 	}
 	
 	public Vector<WaypointItem> getAllItems() {
-		return (Vector<WaypointItem>)items.clone();
+		return items;
 	}
+	
+	public Vector<Waypoint> getAllVisibleWaypoints(SimpleBot bot) {
+		Vector<Waypoint> ret = new Vector<Waypoint>();
+		Waypoint [] wps = map.getAllNodes();
+		for (Waypoint wp : wps) {
+			if (bot.getBsp().isVisible(bot.getBotPosition(), wp.getPosition())) {
+				ret.add(wp);
+			}
+		}
+		return ret;
+	}
+	
+	public Vector<WaypointItem> getAllVisibleEntities(SimpleBot bot) {
+		Vector<WaypointItem> ret = new Vector<WaypointItem>();
+		for (WaypointItem wp : items) {
+			if (bot.getBsp().isVisible(bot.getBotPosition(), wp.getPosition())) {
+				ret.add(wp);
+			}
+		}
+		return ret;
+	}
+	
 	
 	/**
 	 * Adds the given entry to black-list
