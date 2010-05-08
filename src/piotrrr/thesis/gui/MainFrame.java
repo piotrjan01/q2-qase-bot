@@ -23,6 +23,7 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory.Default;
 import piotrrr.thesis.bots.StartBots;
 import piotrrr.thesis.bots.simplebot.GlobalNav;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.jobs.HitsReporter;
@@ -77,6 +78,8 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         activeEntsRadioButton1 = new javax.swing.JRadioButton();
         visibleWaypointsRadioButton2 = new javax.swing.JRadioButton();
+        jLabel3 = new javax.swing.JLabel();
+        distanceLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         botStateInfoTextArea1 = new javax.swing.JTextArea();
@@ -295,7 +298,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Display info options"));
 
         infoButtonGroup.add(activeEntsRadioButton1);
-        activeEntsRadioButton1.setText("active entities within the range");
+        activeEntsRadioButton1.setText("all entities in the WorldKB");
         activeEntsRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activeEntsRadioButton1ActionPerformed(evt);
@@ -319,7 +322,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(visibleWaypointsRadioButton2)
                     .addComponent(activeEntsRadioButton1))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,6 +334,10 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(51, Short.MAX_VALUE))
         );
 
+        jLabel3.setText("Distance from the bot:");
+
+        distanceLabel.setText("0");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -341,10 +348,15 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(reqListScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5)
-                    .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel5)
+                        .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(distanceLabel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -357,6 +369,10 @@ public class MainFrame extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(distanceLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -479,6 +495,7 @@ public class MainFrame extends javax.swing.JFrame {
         int ind = reqList.getSelectedIndex();
         if (ind < 0 || ind > requiredList.size()) return;
         fullInfo.setText(requiredList.get(ind).toDetailedString());
+        distanceLabel.setText(""+CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getPosition()));
         dbgBot.setPauseLookDirection(requiredList.get(ind).getPosition());
     }//GEN-LAST:event_reqListValueChanged
 
@@ -513,7 +530,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void activeEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeEntsRadioButton1ActionPerformed
         requiredList.clear();
-        requiredList.addAll(dbgBot.kb.getActiveEntitiesWithinTheRange(dbgBot.getBotPosition(), GlobalNav.maximalDistance, dbgBot.getFrameNumber()));
+        requiredList.addAll(dbgBot.kb.getAllItems());
         DefaultListModel m = new DefaultListModel();
         for (Object o : requiredList) {
         	m.addElement(o);
@@ -552,11 +569,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton connectOthersButton;
     private javax.swing.JButton discAnotherBotsButton;
     private javax.swing.JButton discDbgButton;
+    private javax.swing.JLabel distanceLabel;
     private javax.swing.JTextArea fullInfo;
     private javax.swing.JScrollPane fullInfoScrollPane3;
     private javax.swing.ButtonGroup infoButtonGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
