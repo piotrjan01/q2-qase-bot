@@ -86,5 +86,15 @@ public class CommFun {
 		}
 	}
 	
+	public static Vector3f cloneVector(Vector3f v) {
+		Vector3f ret = new Vector3f();
+		ret.x = v.x; ret.y = v.y; ret.z = v.z;
+		return ret;
+	}
+	
+	public static float getDifferenceBetweenVectors(Vector3f a, Vector3f b) {
+		return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+Math.abs(a.z-b.z);
+	}
+	
 
 }

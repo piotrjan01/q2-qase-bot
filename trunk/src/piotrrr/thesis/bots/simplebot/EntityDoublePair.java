@@ -26,6 +26,11 @@ public class EntityDoublePair implements Comparable<EntityDoublePair>, GameObjec
 	public Vector3f getPosition() {
 		return ent.getPosition();
 	}
+	
+	@Override
+	public String toString() {
+		return ent.toString();
+	}
 
 	@Override
 	public String toDetailedString() {

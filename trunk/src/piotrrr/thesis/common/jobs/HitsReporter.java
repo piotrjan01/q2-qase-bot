@@ -3,6 +3,7 @@ package piotrrr.thesis.common.jobs;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.tools.Dbg;
+import soc.qase.state.Entity;
 
 /**
  * This job reports bot's state changes.
@@ -29,6 +30,12 @@ public class HitsReporter extends Job {
 		
 		if (h < lastHealth || a < lastArmor) {
 			Dbg.prn(bot.getBotName()+":\t==> BOT HIT: lost h: "+(lastHealth-h)+" lost a: "+(lastArmor-a));
+//			Entity botEnt = null;
+//			for (Object e : bot.getWorld().getEntities(false)) {
+//				botEnt = (Entity)e;
+//				if ( ! botEnt.isPlayerEntity()) continue;
+//				Dbg.prn(botEnt.getName()+":\t"+botEnt.getEffects().getEffectsString());
+//			}
 		}
 		
 		lastHealth = h;

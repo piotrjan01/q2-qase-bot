@@ -9,7 +9,7 @@ import piotrrr.thesis.gui.MainFrame;
  */
 public class DebugStepJob extends Job {
 	
-	static final int MF_REPORTING_STEP = 10;
+	static final int MF_REPORTING_STEP = 3;
 	
 	long pauseFrame;
 	

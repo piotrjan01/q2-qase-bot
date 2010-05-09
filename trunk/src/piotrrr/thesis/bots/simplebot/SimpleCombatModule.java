@@ -9,17 +9,24 @@ import soc.qase.tools.vecmath.Vector3f;
 
 public class SimpleCombatModule {
 	
+	public static final int MAX_ENEMY_INFO_AGE = 3;
+	
 	@SuppressWarnings("unchecked")
 	static FiringDecision getFiringDecision(SimpleBot bot) {
 		Vector3f playerPos = bot.getBotPosition();
-		Vector<Entity> enems = bot.getWorld().getOpponents(true);
 		Entity chosen = null;
-		for (Entity e : enems) {
-			if ( ! bot.getBsp().isVisible(playerPos, e.getOrigin().toVector3f())) continue;
-			if (chosen != null && 
-				CommFun.getDistanceBetweenPositions(playerPos, chosen.getOrigin().toVector3f()) <= 
-				CommFun.getDistanceBetweenPositions(playerPos, e.getOrigin().toVector3f())) continue;
-			chosen = e;
+		float chosenRisk = Float.MAX_VALUE;
+		for (EnemyInfo ei : bot.kb.enemyInformation.values()) {
+			if (ei.getInfoAge(bot.getFrameNumber()) > MAX_ENEMY_INFO_AGE) continue;
+			
+			if (ei.predictedPos != null && ! bot.getBsp().isVisible(playerPos, ei.predictedPos)) continue;
+			else if ( ! bot.getBsp().isVisible(playerPos, ei.getPosition())) continue;
+			
+			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getPosition());
+			if (risk < chosenRisk) {
+				chosen = ei.ent;
+				chosenRisk = risk;
+			}
 		}
 		if (chosen == null) return null;
 		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getOrigin().toVector3f());
