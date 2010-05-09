@@ -467,17 +467,22 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="allEntsRadioButton1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
-                              <Component id="edgeFailuresRadioButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="visibleWaypointsRadioButton2" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="visibleEntsRadioButton2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="pickupFailuresRadioButton1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="navPlanRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="allEntsRadioButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="visibleEntsRadioButton2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="enemyInfoRadioButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="edgeFailuresRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="182" max="32767" attributes="0"/>
+                      <EmptySpace pref="176" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -490,7 +495,10 @@
                           <Component id="edgeFailuresRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="visibleEntsRadioButton2" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="visibleEntsRadioButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="enemyInfoRadioButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="visibleWaypointsRadioButton2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -567,6 +575,17 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="edgeFailuresRadioButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="enemyInfoRadioButton1">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="infoButtonGroup"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="enemy information"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enemyInfoRadioButton1ActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -651,7 +670,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="messagesScrollPane1" pref="1023" max="32767" attributes="0"/>
+                  <Component id="messagesScrollPane1" pref="1045" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>

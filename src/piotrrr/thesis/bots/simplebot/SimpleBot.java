@@ -3,6 +3,7 @@ package piotrrr.thesis.bots.simplebot;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
@@ -137,6 +138,8 @@ public class SimpleBot extends BotBase {
 			dtalk.addToLog("KB loaded!");
 		}
 		
+		kb.updateEnemyInformation(this);
+		
 		/**
 		 * This is how we do:
 		 * 1. Find where to go - get plan
@@ -158,9 +161,12 @@ public class SimpleBot extends BotBase {
 		FiringDecision fd =  null;
 		if ( ! noFire ) fd = SimpleCombatModule.getFiringDecision(this);
 		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+		
+		FiringInstructions fi = aimingModule.getFiringInstructions(fd, this);
+		
 		executeInstructions(
 				LocalNav.getNavigationInstructions(this), 
-				aimingModule.getFiringInstructions(fd, this));
+				fi);
 		
 	}
 	

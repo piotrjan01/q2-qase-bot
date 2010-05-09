@@ -50,6 +50,11 @@ public class WorldKB {
 	LinkedList<Entity> targetBlacklist;
 	
 	/**
+	 * Stores information on the enemies
+	 */
+	HashMap<Integer, EnemyInfo> enemyInformation = new HashMap<Integer, EnemyInfo>();
+	
+	/**
 	 * The maximum size of pickupBlaclist
 	 */
 	static final int TARGET_BLACKLIST_MAX_SIZE = 15;
@@ -222,6 +227,32 @@ public class WorldKB {
 				e.getCategory().equalsIgnoreCase(Entity.CAT_WEAPONS) 
 		   ) return true;
 		return false;
+	}
+	
+	public void updateEnemyInformation(SimpleBot bot) {
+		Vector<Integer> toDelete = new Vector<Integer>(); 
+		Vector enems = bot.getWorld().getOpponents(true);
+		for (Object o : enems) {
+			Entity e = (Entity)o;
+			if (enemyInformation.containsKey(e.getNumber())) {
+				EnemyInfo ei = enemyInformation.get(e.getNumber());
+				ei.updateEnemyInfo(e, bot.getFrameNumber());
+			}
+			else enemyInformation.put(e.getNumber(), new EnemyInfo(e, bot.getFrameNumber()));
+		}
+		for (EnemyInfo ei : enemyInformation.values()) {
+			if (ei.isOutdated(bot.getFrameNumber())) 
+				toDelete.add(ei.ent.getNumber());
+		}
+		for (Integer i : toDelete)
+			enemyInformation.remove(i);
+		
+	}
+	
+	public Vector<EnemyInfo> getAllEnemyInformation() {
+		Vector<EnemyInfo> ret = new Vector<EnemyInfo>();
+		ret.addAll(enemyInformation.values());
+		return ret;
 	}
 	
 

@@ -69,7 +69,7 @@ public class GlobalNav {
 			changePlan = true;
 			talk = "plan change: bot is stuck <--------------------- \n";
 			//if we are at the end of the path:
-			if (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1) {
+			if (oldPlan != null && oldPlan.path != null && (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1)) {
 				//we mark that this item failed to be picked
 				bot.kb.failedToPickup(oldPlan.dest);
 				talk += " at the end of the path";
@@ -78,7 +78,7 @@ public class GlobalNav {
 			else {
 				talk += " in the middle of the path";
 				//if there is no opponent visible (we are not stuck because of him)
-				if ( ! bot.isOpponentVisible() && 
+				if (oldPlan != null && oldPlan.path != null && ! bot.isOpponentVisible() && 
 						oldPlan.pathIndex > 0 && 
 						oldPlan.pathIndex < oldPlan.path.length) {
 					Waypoint src = oldPlan.path[oldPlan.pathIndex-1];
@@ -95,7 +95,7 @@ public class GlobalNav {
 			changePlan = true;
 			talk = "plan change: timeout <------------------------- \n";
 			//if we are close to destination
-			if (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1) {
+			if (oldPlan != null && oldPlan.path != null && (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1)) {
 				//we mark that picking up failed
 				bot.kb.failedToPickup(oldPlan.dest);
 				talk += " at the end of the path";
@@ -104,7 +104,7 @@ public class GlobalNav {
 			else {
 				talk += " in the middle of the path";
 				//if there is no opponent visible (we are not stuck because of him)
-				if ( ! bot.isOpponentVisible() && 
+				if (oldPlan != null && oldPlan.path != null && ! bot.isOpponentVisible() && 
 						oldPlan.pathIndex > 0 && 
 						oldPlan.pathIndex < oldPlan.path.length) {
 					Waypoint src = oldPlan.path[oldPlan.pathIndex-1];
@@ -251,23 +251,4 @@ public class GlobalNav {
 		}
 		return distance;
 	}
-	
-	/**
-	 * Returns some distant, random waypoint on the map. Used when really don't know what to do and
-	 * needs to go somewhere to find out new entities.
-	 * @return
-	 */
-	static private Waypoint getSomeDistantWaypoint(SimpleBot bot) {
-		//the minimal distance considered to be 'distant' waypoint.
-		int minDistance = 300;
-		Random rand = new Random();
-		int waypointCount = bot.kb.map.getAllNodes().length;
-		int wpNum = Math.abs(rand.nextInt());
-		wpNum = Math.abs(wpNum) % waypointCount;
-		Waypoint ret = bot.kb.map.getNode(wpNum);
-		if (getDistanceFollowingMap(bot, bot.getBotPosition(), ret.getPosition()) < minDistance) 
-				return getSomeDistantWaypoint(bot);
-		else return ret;
-	}	
-
 }

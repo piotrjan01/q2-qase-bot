@@ -78,6 +78,7 @@ public class MainFrame extends javax.swing.JFrame {
         visibleEntsRadioButton2 = new javax.swing.JRadioButton();
         pickupFailuresRadioButton1 = new javax.swing.JRadioButton();
         edgeFailuresRadioButton = new javax.swing.JRadioButton();
+        enemyInfoRadioButton1 = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
         distanceLabel = new javax.swing.JLabel();
         goToButton = new javax.swing.JButton();
@@ -347,6 +348,14 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        infoButtonGroup.add(enemyInfoRadioButton1);
+        enemyInfoRadioButton1.setText("enemy information");
+        enemyInfoRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enemyInfoRadioButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -354,15 +363,18 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(allEntsRadioButton1)
-                        .addGap(58, 58, 58)
-                        .addComponent(edgeFailuresRadioButton))
                     .addComponent(visibleWaypointsRadioButton2)
-                    .addComponent(visibleEntsRadioButton2)
                     .addComponent(pickupFailuresRadioButton1)
-                    .addComponent(navPlanRadioButton))
-                .addContainerGap(182, Short.MAX_VALUE))
+                    .addComponent(navPlanRadioButton)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(allEntsRadioButton1)
+                            .addComponent(visibleEntsRadioButton2))
+                        .addGap(44, 44, 44)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(enemyInfoRadioButton1)
+                            .addComponent(edgeFailuresRadioButton))))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -372,7 +384,9 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(allEntsRadioButton1)
                     .addComponent(edgeFailuresRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(visibleEntsRadioButton2)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(visibleEntsRadioButton2)
+                    .addComponent(enemyInfoRadioButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(visibleWaypointsRadioButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -478,7 +492,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1045, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -633,6 +647,12 @@ public class MainFrame extends javax.swing.JFrame {
        dbgBot.goToPositionWithNoClipCheating(dst);
     }//GEN-LAST:event_goToButtonActionPerformed
 
+    private void enemyInfoRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enemyInfoRadioButton1ActionPerformed
+    	Vector<GameObject> v = new Vector<GameObject>();
+        v.addAll(dbgBot.kb.getAllEnemyInformation());
+        setReqList(v);
+    }//GEN-LAST:event_enemyInfoRadioButton1ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -656,6 +676,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton discDbgButton;
     private javax.swing.JLabel distanceLabel;
     private javax.swing.JRadioButton edgeFailuresRadioButton;
+    private javax.swing.JRadioButton enemyInfoRadioButton1;
     private javax.swing.JTextArea fullInfo;
     private javax.swing.JScrollPane fullInfoScrollPane3;
     private javax.swing.JButton goToButton;
@@ -711,9 +732,11 @@ public class MainFrame extends javax.swing.JFrame {
     	else if (navPlanRadioButton.isSelected()) navPlanRadioButtonActionPerformed(null);
     	else if (pickupFailuresRadioButton1.isSelected()) pickupFailuresRadioButton1ActionPerformed(null);
     	else if (edgeFailuresRadioButton.isSelected()) edgeFailuresRadioButtonActionPerformed(null);
+    	else if (enemyInfoRadioButton1.isSelected()) enemyInfoRadioButton1ActionPerformed(null);
     	botStateInfoTextArea1.setText(dbgBot.toString());
     }
     private void setReqList(Vector<GameObject> vect) {
+    	int lastSelection = reqList.getSelectedIndex();
     	 requiredList.clear();
          requiredList.addAll(vect);
          DefaultListModel m = new DefaultListModel();
@@ -721,7 +744,9 @@ public class MainFrame extends javax.swing.JFrame {
       	   m.addElement(o);
          }
          reqList.setModel(m);
+         reqList.setSelectedIndex(lastSelection);
          fullInfo.setText("");
+         reqListValueChanged(null);
     }
 
 }

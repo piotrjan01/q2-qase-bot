@@ -664,7 +664,7 @@ public class Entity implements GameObject
 /*-------------------------------------------------------------------*/
 	public String toString()
 	{
-		return ("Entity " + getNumber() + ":\t" + getCategory() + " / " + getType() + " / " + getSubType() + " / " + getName() + " / " + getSkin());
+		return (""+getNumber()+":"+getCategory()+"." + getType() + "." + getSubType());
 	}
 
 @Override
@@ -684,4 +684,9 @@ public String toDetailedString() {
 			"respawned: "+isRespawned()+"\n"+
 			"respawn time: "+getRespawnTime()+"\n";
 }
+
+public Config getConfig() {
+	return config;
+}
+
 }
