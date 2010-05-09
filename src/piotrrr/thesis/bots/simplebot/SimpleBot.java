@@ -13,6 +13,7 @@ import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.tools.Dbg;
+import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Action;
 import soc.qase.state.Angles;
@@ -130,15 +131,11 @@ public class SimpleBot extends BotBase {
 		
 		if (botPaused) return;
 		
-		//TODO: debuging stuff:
-		updateDebugSeenEntsBuffer();
-		
 		if (kb == null) { 
-			kb = WorldKB.createKB(MAPS_DIR+getMapName());
+			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
 			assert kb != null;
 			dtalk.addToLog("KB loaded!");
 		}
-		kb.updateKB(world.getEntities(false), getFrameNumber(), this.getPlayerInfo().getName());
 		
 		/**
 		 * This is how we do:
@@ -213,6 +210,7 @@ public class SimpleBot extends BotBase {
 	
 	@Override
 	public void respawn() {
+		kb.removeFailingEdgesFromTheMap();
 		super.respawn();
 		plan = null;
 		Dbg.prn(getBotName()+": I DIED!");
@@ -225,24 +223,29 @@ public class SimpleBot extends BotBase {
 	
 	@Override
 	public String toString() {
+		
+		int edgs = 0;
+		for (Waypoint wp : kb.map.getAllNodes()) {
+			edgs += wp.getEdges().length;
+		}
+		
 		return "Bot name: "+getBotName()+"\n"+
 				"health: "+getBotHealth()+"\n"+
 				"armor: "+getBotArmor()+"\n"+
 				"state name: "+getCurrentStateName()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
 				"KB size: "+kb.getKBSize()+"\n"+
-				"position: "+getBotPosition()+"\n";
+				"position: "+getBotPosition()+"\n"+
+				"map wps: "+kb.map.getAllNodes().length+"\n"+
+				"map edges: "+edgs+"\n";
 	}
 	
-	
-	public Vector<Entity> debugSeenEntsBuffer = new Vector<Entity>();
-	int debugSeenEntsBufferMaxSize = 30;
-	void updateDebugSeenEntsBuffer() {
-		debugSeenEntsBuffer.addAll(world.getEntities(false));
-		while (debugSeenEntsBuffer.size() > debugSeenEntsBufferMaxSize) {
-			debugSeenEntsBuffer.removeElementAt(0);
+	public boolean isOpponentVisible() {
+		for (Object o : world.getOpponents(true)) {
+			Entity e = (Entity)o;
+			if (getBsp().isVisible(getBotPosition(), e.getPosition())) return true;
 		}
+		return false;
 	}
-	
 
 }

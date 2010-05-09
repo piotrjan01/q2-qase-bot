@@ -30,12 +30,6 @@ public class WaypointItem implements Serializable, GameObject
 	private int inventoryIndex = -1;
 	private String iCategory = null, iType = null, iSubType = null;
 	
-	private int respawnFailCounter = 0;
-	private long respawnFrame = 0L;
-	
-	private boolean fromMapGeneration = true;
-	
-
 /*-------------------------------------------------------------------*/
 /**	Constructor. Stores the index of a node in the parent WaypointMap's
  *	node array, and an Entity object representing the item stored at
@@ -129,34 +123,6 @@ public class WaypointItem implements Serializable, GameObject
 		return false;
 	}
 
-public void setRespawnFailCounter(int respawnFailCounter) {
-	this.respawnFailCounter = respawnFailCounter;
-}
-
-public int getRespawnFailCounter() {
-	return respawnFailCounter;
-}
-
-public void setRespawnFrame(long respawnFrame) {
-	this.respawnFrame = respawnFrame;
-}
-
-public long getRespawnFrame() {
-	return respawnFrame;
-}
-
-public void incRespawnFailCounter() {
-	respawnFailCounter++;
-}
-
-public boolean isFromMapGeneration() {
-	return fromMapGeneration;
-}
-
-public void setFromMapGeneration(boolean fromMapGeneration) {
-	this.fromMapGeneration = fromMapGeneration;
-}
-
 @Override
 public String toString() {
 	return iCategory+"."+iType+"."+iSubType;
@@ -171,9 +137,6 @@ public Vector3f getPosition() {
 public String toDetailedString() {
 	return "pos: "+getPosition()+"\n"+
 			"cat/type: "+toString()+"\n"+
-			"resp frame: "+respawnFrame+"\n"+
-			"resp fail count: "+respawnFailCounter+"\n"+
-			"from map generation: "+fromMapGeneration+"\n"+
 			"\nWaypoint:\n"+node.toDetailedString();
 			
 }

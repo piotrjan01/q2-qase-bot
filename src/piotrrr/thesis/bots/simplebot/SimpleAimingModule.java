@@ -37,6 +37,7 @@ public class SimpleAimingModule implements AimingModule {
 		
 		
 		
+		
 		//Report the quality of the last prediction
 		if (lastPrediction != null) {
 			lastPredQuality = getSimilarityBetweenVectors(lastPrediction, enemyPos);

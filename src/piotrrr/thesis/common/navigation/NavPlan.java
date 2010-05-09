@@ -2,6 +2,7 @@ package piotrrr.thesis.common.navigation;
 
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.ai.waypoint.WaypointItem;
+import soc.qase.state.Entity;
 
 /**
  * This class encapsulates the path that the bot has planned to move along.
@@ -12,7 +13,7 @@ public class NavPlan {
 	/**
 	 * The destination waypoint
 	 */
-	public WaypointItem dest;
+	public Entity dest;
 	
 	/**
 	 * Tells whether the plan is done.
@@ -31,7 +32,7 @@ public class NavPlan {
 	 */
 	public Waypoint [] path;
 	
-	public NavPlan(WaypointItem dest, long deadline) {
+	public NavPlan(Entity dest, long deadline) {
 		this.dest = dest;
 		this.deadline = deadline;
 	}
