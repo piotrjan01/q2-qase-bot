@@ -21,7 +21,7 @@ public class LocalNav {
 		
 		
 		//If we are next to destination.
-		if (CommFun.getDistanceBetweenPositions(plan.dest.getNode().getPosition(), playerPos)
+		if (CommFun.getDistanceBetweenPositions(plan.dest.getPosition(), playerPos)
 				<= acceptableDistance) {
 			plan.done = true;
 			return null;
@@ -44,7 +44,7 @@ public class LocalNav {
 		if (plan.pathIndex >= plan.path.length) { 
 			//If we have already went through all the path, 
 			//we set ourselves towards destination
-			desiredPos = plan.dest.getNode().getPosition();
+			desiredPos = plan.dest.getPosition();
 		}
 		else desiredPos = plan.path[plan.pathIndex].getPosition();
 		

@@ -29,6 +29,7 @@ import soc.qase.tools.vecmath.Vector3f;
 /*-------------------------------------------------------------------*/
 public class Entity implements GameObject
 {
+	
 	private int entityNumber = 0;
 	private boolean active = false;
 	private Model model = null;
@@ -650,11 +651,12 @@ public class Entity implements GameObject
 		ent.subType = this.subType;
 		ent.name = this.name;
 		ent.skin = this.skin;
-
+		
 //		ent.setConfig((config == null ? null : config.deepCopy()));
 
 		return ent;
 	}
+
 
 /*-------------------------------------------------------------------*/
 /**	Constructs and returns a string representation of the Entity object.

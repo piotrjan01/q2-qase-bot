@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityType;
+import piotrrr.thesis.common.navigation.EdgeFailure;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.ai.waypoint.WaypointItem;
@@ -19,29 +20,45 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class WorldKB {
 	
+	
+	public static final int MAX_PICKUP_FAILURE_COUNT = 1;
+	
+	public static final int MAX_WP_FAILURE_COUNT = 0;
+	
+	public static final int ENTS_MAX_COUNT = 1024;
+	
+	int [] pickupFailures = new int [ENTS_MAX_COUNT];
+	
+	int [][] waypointEdgesFailures;
+	
 
+	/**
+	 * Bot that owns this KB
+	 */
+	SimpleBot bot = null;
+	
 	/**
 	 * The map that is used to navigate.
 	 */
 	WaypointMap map = null;
-	
-	Vector<WaypointItem> items = new Vector<WaypointItem>();
 	
 	/**
 	 * The black list of pickup things. If the bot decides to pickup something, 
 	 * he shouldn't repeat this decision for some time, in case the thing can not be
 	 * picked up. 
 	 */
-	LinkedList<Waypoint> targetBlacklist;
+	LinkedList<Entity> targetBlacklist;
 	
 	/**
 	 * The maximum size of pickupBlaclist
 	 */
-	static final int TARGET_BLACKLIST_MAX_SIZE = 10;
+	static final int TARGET_BLACKLIST_MAX_SIZE = 15;
 	
-	private WorldKB(WaypointMap map) {
-		targetBlacklist = new LinkedList<Waypoint>();
+	private WorldKB(WaypointMap map, SimpleBot bot) {
+		targetBlacklist = new LinkedList<Entity>();
 		this.map = map;
+		this.bot = bot;
+		waypointEdgesFailures = new int [map.getAllNodes().length][map.getAllNodes().length];
 	}
 	
 	/**
@@ -50,16 +67,11 @@ public class WorldKB {
 	 * @return the knowledge base
 	 */
 	@SuppressWarnings("unchecked")
-	static WorldKB createKB(String mapPath) {
+	static WorldKB createKB(String mapPath, SimpleBot bot) {
 		WaypointMap map = WaypointMap.loadMap(mapPath);
+		assert map != null;
 		Dbg.prn("Map path: "+mapPath);
-		WorldKB ret = new WorldKB(map);
-		Vector wps = map.getItemNodes();
-		if (wps == null || wps.size() == 0) return ret;
-		for (Object o : wps) {
-			WaypointItem wi = (WaypointItem) o;
-			ret.items.add(wi);
-		}
+		WorldKB ret = new WorldKB(map, bot);
 		return ret;
 	}
 	
@@ -68,101 +80,20 @@ public class WorldKB {
 	 * @return
 	 */
 	int getKBSize() {
-		return items.size();
+		return getAllItems().size();
 	}
 
 	
-	/**
-	 * Updates the knowledge base with observed entities
-	 * 
-	 * @param entities the entities that are present in the world
-	 * @param currentFrame current frame number - to measure the time
-	 * @param botName the name of the bot
-	 * @see KBEntry
-	 */
-	@SuppressWarnings("unchecked")
-	void updateKB(Vector entities, long currentFrame, String botName) {
-		Dbg.prn("KB: ents size: "+entities.size());
-		for (Object o : entities) {
+	public Vector<Entity> getActiveEntitiesByType(EntityType et, long frameNumber) {
+		Vector<Entity> ret = new Vector<Entity>();
+		for (Object o : bot.getWorld().getEntities(true)) {
 			Entity e = (Entity)o;
-			//don't bother with yourself :)
-			if (e.isPlayerEntity() && e.getName() == botName) continue;
-			//we just bother with items and weapons
-			if (! e.getCategory().equalsIgnoreCase(Entity.CAT_WEAPONS) &&
-					! e.getCategory().equalsIgnoreCase(Entity.CAT_ITEMS)) {
-//				Dbg.prn("KB: not interesting category: "+e.toDetailedString());
-				continue;
-			}
-			
-			WaypointItem kbi = findInItems(e);
-			//a new item in the world - we assume it doesn't respawn
-			if (kbi == null) {
-//				Dbg.prn("KB: item not in KB:\n "+e.toDetailedString());
-				//we establish respawn frame for case of active and inactive entity
-				long respawnFrame = currentFrame-1;
-				if (e.getActive() == false) respawnFrame += e.getRespawnTime();
-				//we add the new entity to items KB
-				kbi = new WaypointItem(new Waypoint(e.getOrigin()), e);
-				kbi.setFromMapGeneration(false);
-				kbi.setRespawnFrame(respawnFrame);
-				items.add(kbi);
-			}
-			//the item is already in the KB, we update it's info
-			else {
-//				Dbg.prn("KB: item already in KB: "+e.toDetailedString());
-				//if it's active
-				if (e.getActive() == true) {
-					//it's there, so we make sure we have it in our KB as active
-					kbi.setRespawnFrame(0); 	
-				}
-				//if it's not active
-				else {
-					//If we expected it...
-					if (kbi.getRespawnFrame() <= currentFrame) {
-						//we increment respawn fail counter...
-						kbi.setRespawnFrame(currentFrame+e.getRespawnTime());
-						kbi.incRespawnFailCounter();
-						//if it failed too much, we delete it..
-						if (kbi.getRespawnFailCounter() > WaypointItem.maximalRespawnFailCount)
-							items.remove(kbi);
-					}
-					
-				}
-			}
-			
-		}
-		
-		return;
-	}
-	
-	private WaypointItem findInItems(Entity e) {
-		for (WaypointItem i : items) {
-			if (i.getNode().getPosition().equals(e.getOrigin().toVector3f())) return i;
-		}
-		return null;
-	}
-	
-	/**
-	 * Reads from database all known entries that are of specified
-	 * EntityType and should be active at specified frame.
-	 * @param et entity type that we are interested in
-	 * @param frameNumber the frame at which the entity should be 
-	 * active in the world.
-	 * @return the list of KBEntries that are of specified type and
-	 * should be active at specified frameNumber.
-	 * TODO: is respawning added !!!
-	 * 
-	 * @see KBEntry
-	 */
-	public Vector<WaypointItem> getActiveEntitiesByType(EntityType et, long frameNumber) {
-		
-		Vector<WaypointItem> ret = new Vector<WaypointItem>();
-		for (WaypointItem it : items) {
-			EntityType itType = EntityType.getEntityType(it);
-			if ( ! et.equals(itType) ||
-				it.getRespawnFrame() > frameNumber	|| 
-				targetBlacklist.contains(it.getNode())) continue;
-			ret.add(it);
+			EntityType itType = EntityType.getEntityType(e);
+			if ( ! et.equals(itType) ) continue;
+			if (e.isPlayerEntity() && e.getName().equals(bot.getBotName())) continue;
+			if (targetBlacklist.contains(e)) continue;
+			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			ret.add(e);
 		}
 		return ret;
 	}
@@ -175,19 +106,25 @@ public class WorldKB {
 	 * @param currentFrame current frame at which the entries should be active
 	 * @return
 	 */
-	public Vector<WaypointItem> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {
-		Vector<WaypointItem> ret = new Vector<WaypointItem>();
-		for (WaypointItem it : items) {
-			double dist = CommFun.getDistanceBetweenPositions(pos, it.getNode().getPosition());
-			if ( dist > maxRange ||
-				it.getRespawnFrame() > currentFrame	|| 
-				targetBlacklist.contains(it.getNode())) continue;
-			ret.add(it);
+	public Vector<Entity> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {			
+		Vector<Entity> ret = new Vector<Entity>();
+		for (Object o : bot.getWorld().getEntities(true)) {
+			Entity e = (Entity)o;
+			if ( ! isPickableType(e)) continue;
+			if (targetBlacklist.contains(e)) continue;
+			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			double dist = CommFun.getDistanceBetweenPositions(pos, e.getPosition());
+			if (dist > maxRange) continue;
+			ret.add(e);
 		}
 		return ret;
+		
 	}
 	
-	public Vector<WaypointItem> getAllItems() {
+	public Vector<Entity> getAllItems() {
+		Vector<Entity> items = new Vector<Entity>();
+		items.addAll(bot.getWorld().getWeapons(false));
+		items.addAll(bot.getWorld().getItems(false));
 		return items;
 	}
 	
@@ -202,12 +139,12 @@ public class WorldKB {
 		return ret;
 	}
 	
-	public Vector<WaypointItem> getAllVisibleEntities(SimpleBot bot) {
-		Vector<WaypointItem> ret = new Vector<WaypointItem>();
-		for (WaypointItem wp : items) {
-			if (bot.getBsp().isVisible(bot.getBotPosition(), wp.getPosition())) {
-				ret.add(wp);
-			}
+	public Vector<Entity> getAllVisibleEntities(SimpleBot bot) {
+		Vector<Entity> ret = new Vector<Entity>();
+		for (Object o : bot.getWorld().getEntities(false)) {
+			Entity e = (Entity)o;
+			if ( ! bot.getBsp().isVisible(bot.getBotPosition(), e.getPosition())) continue;
+			ret.add(e);
 		}
 		return ret;
 	}
@@ -217,8 +154,8 @@ public class WorldKB {
 	 * Adds the given entry to black-list
 	 * @param e
 	 */
-	void addToBlackList(Waypoint wp) {
-		targetBlacklist.add(wp);
+	void addToBlackList(Entity ent) {
+		targetBlacklist.add(ent);
 		if (targetBlacklist.size() > TARGET_BLACKLIST_MAX_SIZE) targetBlacklist.pop();
 		return;
 	}
@@ -227,10 +164,64 @@ public class WorldKB {
 		return map.findShortestPath(from, to);
 	}
 	
-	WaypointItem getRandomItem() {
+	Entity getRandomItem() {
 		Random r = new Random();
+		Vector<Entity> items = getAllItems();
 		int ind = ((r.nextInt() % items.size()) + items.size()) % items.size();
 		return items.elementAt(ind);
+	}
+	
+	void failedToPickup(Entity e) {
+		pickupFailures[e.getNumber()] ++ ;
+	}
+	
+	void decPickupFailure(Entity e) {
+		pickupFailures[e.getNumber()] -- ;
+	}
+	
+	int getPickupFailureCount(Entity e) {
+		return pickupFailures[e.getNumber()];
+	}
+	
+	public Vector<EntityDoublePair> getAllEntsWithPickupFailure() {
+		Vector<EntityDoublePair> ret = new Vector<EntityDoublePair>();
+		for (int i=0; i<ENTS_MAX_COUNT; i++) {
+			if (pickupFailures[i] != 0) ret.add(new EntityDoublePair(bot.getWorld().getEntity(i), pickupFailures[i]));
+		}
+		return ret;
+	}
+	
+	public Vector<EdgeFailure> getAllEdgeFailures() {
+		Vector<EdgeFailure> ret = new Vector<EdgeFailure>();
+		for (int i=0; i<waypointEdgesFailures.length; i++) {
+			for (int j=0; j<waypointEdgesFailures[0].length; j++) {
+				if (waypointEdgesFailures[i][j] != 0) ret.add(new EdgeFailure(map.getNode(i), map.getNode(j), waypointEdgesFailures[i][j]));
+			}
+		}
+		return ret;
+	}
+	
+	public void removeFailingEdgesFromTheMap() {
+		map.unlockMap();
+		Vector<EdgeFailure> fails = getAllEdgeFailures();
+		for (EdgeFailure f : fails) {
+			if (f.failCount > MAX_WP_FAILURE_COUNT) {
+				int src = map.indexOf(f.src);
+				int dst = map.indexOf(f.dst);
+				waypointEdgesFailures[src][dst] = 0;
+				map.getEdgeMatrix();
+				boolean result = f.src.removeEdge(f.dst);
+				assert result == true;
+			}
+		}
+		map.lockMap();
+	}
+	
+	private boolean isPickableType(Entity e) {
+		if ( e.getCategory().equalsIgnoreCase(Entity.CAT_ITEMS) ||
+				e.getCategory().equalsIgnoreCase(Entity.CAT_WEAPONS) 
+		   ) return true;
+		return false;
 	}
 	
 

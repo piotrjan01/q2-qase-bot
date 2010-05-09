@@ -23,6 +23,7 @@ import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.tools.Dbg;
+import soc.qase.tools.vecmath.Vector3f;
 
 /**
  *
@@ -75,9 +76,11 @@ public class MainFrame extends javax.swing.JFrame {
         visibleWaypointsRadioButton2 = new javax.swing.JRadioButton();
         navPlanRadioButton = new javax.swing.JRadioButton();
         visibleEntsRadioButton2 = new javax.swing.JRadioButton();
-        seenEntsBuffRadioButton1 = new javax.swing.JRadioButton();
+        pickupFailuresRadioButton1 = new javax.swing.JRadioButton();
+        edgeFailuresRadioButton = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
         distanceLabel = new javax.swing.JLabel();
+        goToButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         botStateInfoTextArea1 = new javax.swing.JTextArea();
@@ -150,7 +153,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(discDbgButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(discAnotherBotsButton)))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         panelRunBotsLayout.setVerticalGroup(
             panelRunBotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,7 +249,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(sendCommandToDBGButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,11 +331,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        infoButtonGroup.add(seenEntsBuffRadioButton1);
-        seenEntsBuffRadioButton1.setText("seen entities buffer");
-        seenEntsBuffRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        infoButtonGroup.add(pickupFailuresRadioButton1);
+        pickupFailuresRadioButton1.setText("pickup failures");
+        pickupFailuresRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                seenEntsBuffRadioButton1ActionPerformed(evt);
+                pickupFailuresRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        infoButtonGroup.add(edgeFailuresRadioButton);
+        edgeFailuresRadioButton.setText("edge failures");
+        edgeFailuresRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edgeFailuresRadioButtonActionPerformed(evt);
             }
         });
 
@@ -343,32 +354,43 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(allEntsRadioButton1)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(allEntsRadioButton1)
+                        .addGap(58, 58, 58)
+                        .addComponent(edgeFailuresRadioButton))
                     .addComponent(visibleWaypointsRadioButton2)
-                    .addComponent(navPlanRadioButton)
                     .addComponent(visibleEntsRadioButton2)
-                    .addComponent(seenEntsBuffRadioButton1))
-                .addContainerGap(89, Short.MAX_VALUE))
+                    .addComponent(pickupFailuresRadioButton1)
+                    .addComponent(navPlanRadioButton))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(allEntsRadioButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(visibleWaypointsRadioButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(navPlanRadioButton)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allEntsRadioButton1)
+                    .addComponent(edgeFailuresRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(visibleEntsRadioButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(seenEntsBuffRadioButton1)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(visibleWaypointsRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pickupFailuresRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(navPlanRadioButton))
         );
 
         jLabel3.setText("Distance from the bot:");
 
         distanceLabel.setText("0");
+
+        goToButton.setText("Go to this position");
+        goToButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goToButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -378,18 +400,22 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(reqListScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(distanceLabel))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(fullInfoScrollPane3)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel5)
-                        .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(distanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(goToButton)
+                        .addGap(184, 184, 184)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -397,20 +423,24 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(distanceLabel))
+                                .addGap(162, 162, 162)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(goToButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5)
+                                .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(distanceLabel)
+                            .addComponent(jLabel3))))
                 .addContainerGap())
         );
 
@@ -426,13 +456,13 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -448,14 +478,14 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -463,35 +493,33 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelRunBots, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelRunBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -587,11 +615,23 @@ public class MainFrame extends javax.swing.JFrame {
          setReqList(v);
     }//GEN-LAST:event_visibleEntsRadioButton2ActionPerformed
 
-    private void seenEntsBuffRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seenEntsBuffRadioButton1ActionPerformed
+    private void pickupFailuresRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickupFailuresRadioButton1ActionPerformed
     	Vector<GameObject> v = new Vector<GameObject>();
-    	v.addAll(dbgBot.debugSeenEntsBuffer);
+        v.addAll(dbgBot.kb.getAllEntsWithPickupFailure());
         setReqList(v);
-    }//GEN-LAST:event_seenEntsBuffRadioButton1ActionPerformed
+    }//GEN-LAST:event_pickupFailuresRadioButton1ActionPerformed
+
+    private void edgeFailuresRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgeFailuresRadioButtonActionPerformed
+    	Vector<GameObject> v = new Vector<GameObject>();
+        v.addAll(dbgBot.kb.getAllEdgeFailures());
+        setReqList(v);
+    }//GEN-LAST:event_edgeFailuresRadioButtonActionPerformed
+
+    private void goToButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToButtonActionPerformed
+    	if (reqList.getSelectedIndex() == -1) return;
+    	Vector3f dst = requiredList.elementAt(reqList.getSelectedIndex()).getPosition();
+       dbgBot.goToPositionWithNoClipCheating(dst);
+    }//GEN-LAST:event_goToButtonActionPerformed
 
     /**
     * @param args the command line arguments
@@ -602,7 +642,7 @@ public class MainFrame extends javax.swing.JFrame {
             public void run() {
                 MainFrame mf = new MainFrame();
                 mf.setVisible(true);
-                Dbg.toAppend = mf.getMessagesTextArea();
+//                Dbg.toAppend = mf.getMessagesTextArea();
             }
         });
     }
@@ -615,8 +655,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton discAnotherBotsButton;
     private javax.swing.JButton discDbgButton;
     private javax.swing.JLabel distanceLabel;
+    private javax.swing.JRadioButton edgeFailuresRadioButton;
     private javax.swing.JTextArea fullInfo;
     private javax.swing.JScrollPane fullInfoScrollPane3;
+    private javax.swing.JButton goToButton;
     private javax.swing.ButtonGroup infoButtonGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -639,9 +681,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel panelRunBots;
     private javax.swing.JToggleButton pauseAnotherBotsToggle;
     private javax.swing.JToggleButton pauseToggleButton;
+    private javax.swing.JRadioButton pickupFailuresRadioButton1;
     private javax.swing.JList reqList;
     private javax.swing.JScrollPane reqListScrollPane2;
-    private javax.swing.JRadioButton seenEntsBuffRadioButton1;
     private javax.swing.JButton sendCommandToAnothersButton;
     private javax.swing.JButton sendCommandToDBGButton;
     private javax.swing.JButton stepButton1;
@@ -667,7 +709,8 @@ public class MainFrame extends javax.swing.JFrame {
     	else if (allEntsRadioButton1.isSelected()) allEntsRadioButton1ActionPerformed(null);
     	else if (visibleEntsRadioButton2.isSelected()) visibleEntsRadioButton2ActionPerformed(null);
     	else if (navPlanRadioButton.isSelected()) navPlanRadioButtonActionPerformed(null);
-    	else if (seenEntsBuffRadioButton1.isSelected()) seenEntsBuffRadioButton1ActionPerformed(null);
+    	else if (pickupFailuresRadioButton1.isSelected()) pickupFailuresRadioButton1ActionPerformed(null);
+    	else if (edgeFailuresRadioButton.isSelected()) edgeFailuresRadioButtonActionPerformed(null);
     	botStateInfoTextArea1.setText(dbgBot.toString());
     }
     private void setReqList(Vector<GameObject> vect) {

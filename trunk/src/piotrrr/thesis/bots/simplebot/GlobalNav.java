@@ -21,7 +21,7 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class GlobalNav {
 	
-	public static final double PLAN_TIME_PER_DIST = 0.08;
+	public static final double PLAN_TIME_PER_DIST = 0.1;
 	
 	public static final int maximalDistance = 200;
 	
@@ -56,22 +56,66 @@ public class GlobalNav {
 		else if (oldPlan.done) {
 			changePlan = true;
 			//FIXME ?? blacklist ?? sprawdzic co wyklucza lepiej: respawn time czy blacklist?
-			oldPlan.dest.setRespawnFrame(bot.getFrameNumber()+600); //60 seconds
+//			oldPlan.dest.setRespawnFrame(bot.getFrameNumber()+600); //60 seconds
+			bot.kb.addToBlackList(oldPlan.dest);
 			talk = "plan change: old plan is done!";
 		}
 		else if (bot.stateReporter.stateHasChanged) {
 			changePlan = true;
 			talk = "plan change: state changed";
 		}
+		//if the bot is stuck
 		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
-			talk = "plan change: bot is stuck <-----------------------------";
+			talk = "plan change: bot is stuck <--------------------- \n";
+			//if we are at the end of the path:
+			if (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1) {
+				//we mark that this item failed to be picked
+				bot.kb.failedToPickup(oldPlan.dest);
+				talk += " at the end of the path";
+			}
+			//if we were in the middle of the path:
+			else {
+				talk += " in the middle of the path";
+				//if there is no opponent visible (we are not stuck because of him)
+				if ( ! bot.isOpponentVisible() && 
+						oldPlan.pathIndex > 0 && 
+						oldPlan.pathIndex < oldPlan.path.length) {
+					Waypoint src = oldPlan.path[oldPlan.pathIndex-1];
+					Waypoint dst = oldPlan.path[oldPlan.pathIndex];
+					//we mark that the edge between those waypoints have failed
+					bot.kb.waypointEdgesFailures[bot.kb.map.indexOf(src)][bot.kb.map.indexOf(dst)]++;
+				}
+			}
 			bot.dtalk.addToLog(talk);
 			return getSpontaneousAntiStuckPlan(bot);
 		}
+		//if we timed out with the plan
 		else if (oldPlan.deadline <= bot.getFrameNumber()) { 
 			changePlan = true;
-			talk = "plan change: timeout";
+			talk = "plan change: timeout <------------------------- \n";
+			//if we are close to destination
+			if (oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1) {
+				//we mark that picking up failed
+				bot.kb.failedToPickup(oldPlan.dest);
+				talk += " at the end of the path";
+			}
+			//if we were in the middle of the path:
+			else {
+				talk += " in the middle of the path";
+				//if there is no opponent visible (we are not stuck because of him)
+				if ( ! bot.isOpponentVisible() && 
+						oldPlan.pathIndex > 0 && 
+						oldPlan.pathIndex < oldPlan.path.length) {
+					Waypoint src = oldPlan.path[oldPlan.pathIndex-1];
+					Waypoint dst = oldPlan.path[oldPlan.pathIndex];
+					//if the bot is for some reason far from the path: (e.g. it has fallen)
+					if (CommFun.getDistanceBetweenPositions(bot.getBotPosition(), src.getPosition()) > 200 &&
+							CommFun.getDistanceBetweenPositions(bot.getBotPosition(), dst.getPosition()) > 200)
+						//we mark that the edge between those waypoints have failed
+						bot.kb.waypointEdgesFailures[bot.kb.map.indexOf(src)][bot.kb.map.indexOf(dst)]++;
+				}
+			}
 		}
 		
 		if (talk != "" ) bot.dtalk.addToLog(talk);
@@ -93,36 +137,32 @@ public class GlobalNav {
 		if (! changePlan) return oldPlan;
 		
 		
-		TreeSet<WPItemDoublePair> ranking = new TreeSet<WPItemDoublePair>();
+		TreeSet<EntityDoublePair> ranking = new TreeSet<EntityDoublePair>();
 		EntityTypeDoublePair [] ents = bot.fsm.getDesiredEntities();
 		for (EntityTypeDoublePair etdp : ents) {
-			Vector<WaypointItem> items  = bot.kb.getActiveEntitiesByType(etdp.t, bot.getFrameNumber());
-			for (WaypointItem item : items) {
-				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), item.getNode().getPosition());
+			Vector<Entity> items  = bot.kb.getActiveEntitiesByType(etdp.t, bot.getFrameNumber());
+			for (Entity item : items) {
+				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), item.getPosition());
 				if (distance == Double.MAX_VALUE) continue;
 				double rank = 10000*etdp.d / distance; //the weight divided by distance
-				ranking.add(new WPItemDoublePair(item, rank));
+				ranking.add(new EntityDoublePair(item, rank));
 			}
 		}
 		
 		
 		if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
-			Waypoint wp = getSomeDistantWaypoint(bot);
+			Entity wp = bot.kb.getRandomItem();
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getPosition());
-			int wpInd = bot.kb.map.indexOf(wp);
-//			bot.dtalk.addToLog("moving to distant wp: "+wpInd);
-			plan = new NavPlan(new WaypointItem(wp, new Entity()), bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
-//			plan = new NavPlan(new KBEntry(wp, EntityType.UNKNOWN, 0, false), bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
+			bot.dtalk.addToLog("ranking size = 0, going for random item");
+			plan = new NavPlan(wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		else {
-			//when wpInf is -1 it means that the kbe is added basing on observation, not from the map.
-			int wpInd = bot.kb.map.indexOf(ranking.last().wpi.getNode());
-			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().wpi.getNode().getPosition());
-//			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+ranking.last().kbe.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
-			plan = new NavPlan(ranking.last().wpi, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
+			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().ent.getPosition());
+			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+EntityType.getEntityType(ranking.last().ent)+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
+			plan = new NavPlan(ranking.last().ent, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
 		}
 		
-		plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getNode().getPosition());
+		plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getPosition());
 		
 		return plan;
 	}
@@ -135,18 +175,16 @@ public class GlobalNav {
 	static NavPlan getSpontaneousPlan(SimpleBot bot) {
 		NavPlan newPlan = null;
 		
-		
-		
-		Vector<WaypointItem> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
+		Vector<Entity> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
 		if (entries.size() == 0) return null;
 		
-		WaypointItem chosen = null;
-		for (WaypointItem ent : entries) {
-			if (! CommFun.areOnTheSameHeight(bot.getBotPosition(), ent.getNode().getPosition())) continue;
-			if (! bot.getBsp().isVisible(bot.getBotPosition(), ent.getNode().getPosition())) continue;
+		Entity chosen = null;
+		for (Entity ent : entries) {
+			if (! CommFun.areOnTheSameHeight(bot.getBotPosition(), ent.getPosition())) continue;
+			if (! bot.getBsp().isVisible(bot.getBotPosition(), ent.getPosition())) continue;
 			if (chosen != null) {
-				float distOld = CommFun.getDistanceBetweenPositions(chosen.getNode().getPosition(), bot.getBotPosition());
-				float distNew = CommFun.getDistanceBetweenPositions(ent.getNode().getPosition(), bot.getBotPosition());
+				float distOld = CommFun.getDistanceBetweenPositions(chosen.getPosition(), bot.getBotPosition());
+				float distNew = CommFun.getDistanceBetweenPositions(ent.getPosition(), bot.getBotPosition());
 				if (distNew < distOld) chosen = ent;
 			}
 			else chosen = ent;
@@ -157,16 +195,15 @@ public class GlobalNav {
 //		if ( ! CommFun.areOnTheSameHeight(chosen.wp.getPosition(), bot.getBotPosition())) Dbg.err("not the same height!!!");
 //		else Dbg.prn("bot h: "+bot.getBotPosition().z+" target h: "+chosen.wp.getPosition().z);
 		
-		bot.kb.addToBlackList(chosen.getNode());
+		bot.kb.addToBlackList(chosen);
 		
 		newPlan = new NavPlan(chosen, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*maximalDistance));
 		newPlan.path = new Waypoint[1];
-		newPlan.path[0] = chosen.getNode();
+		newPlan.path[0] = new Waypoint(chosen.getPosition());
 		newPlan.isSpontaneos = true;
 		
-		int wpInd = bot.kb.map.indexOf(chosen.getNode());
-		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getNode().getPosition());
-//		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.et.name()+"@"+wpInd+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
+		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getPosition());
+		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.toString()+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
 		
 		return newPlan;
 	}
@@ -179,15 +216,16 @@ public class GlobalNav {
 	 * @return the random spontaneous decision.
 	 */
 	static NavPlan getSpontaneousAntiStuckPlan(SimpleBot bot) {
-		WaypointItem random = bot.kb.getRandomItem();
+		Entity re = bot.kb.getRandomItem();
+		bot.kb.decPickupFailure(re);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
-		NavPlan ret = new NavPlan(random, bot.getFrameNumber()+timeout);
+		NavPlan ret = new NavPlan(re, bot.getFrameNumber()+timeout);
 		ret.path = new Waypoint[1];
-		ret.path[0] = random.getNode();
+		ret.path[0] = new Waypoint(re.getPosition());
 		ret.isSpontaneos = true;
-		int wpInd = bot.kb.map.indexOf(random.getNode());
-		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), random.getNode().getPosition());
-		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: @"+wpInd+" dist: "+distance+" timeout: "+timeout);
+//		int wpInd = bot.kb.map.indexOf(random.getNode());
+		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), re.getPosition());
+		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: dist: "+distance+" timeout: "+timeout);
 		return ret;
 	}
 	
@@ -224,7 +262,7 @@ public class GlobalNav {
 		int minDistance = 300;
 		Random rand = new Random();
 		int waypointCount = bot.kb.map.getAllNodes().length;
-		int wpNum = rand.nextInt();
+		int wpNum = Math.abs(rand.nextInt());
 		wpNum = Math.abs(wpNum) % waypointCount;
 		Waypoint ret = bot.kb.map.getNode(wpNum);
 		if (getDistanceFollowingMap(bot, bot.getBotPosition(), ret.getPosition()) < minDistance) 
