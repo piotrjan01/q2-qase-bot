@@ -27,10 +27,15 @@ public class LocalNav {
 			return null;
 		}
 		
+		
+		//TODO: why the path can be null? ????
 		//If the path is null, we can't do anything.
 		if (plan.path == null) {
-			Dbg.err("Path is null!");
-			return null;
+			plan.path = bot.kb.findShortestPath(playerPos, plan.dest.getPosition());
+			if (plan.path == null) {
+				Dbg.err("Path is null!");
+				return null;
+			}
 		}
 		
 		int posture = PlayerMove.POSTURE_NORMAL;

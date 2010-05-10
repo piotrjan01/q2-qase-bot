@@ -1,9 +1,8 @@
 package piotrrr.thesis.bots.simplebot;
 
-import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
@@ -15,7 +14,6 @@ import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
-import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Action;
 import soc.qase.state.Angles;
 import soc.qase.state.Entity;
@@ -89,6 +87,11 @@ public class SimpleBot extends BotBase {
 	 * Bot's aiming module
 	 */
 	AimingModule aimingModule = new SimpleAimingModule();
+	
+	/**
+	 * Combat modules configuration
+	 */
+	CombatConfig cConfig = new CombatConfig();
 
 	/**
 	 * Basic constructor.
@@ -112,18 +115,6 @@ public class SimpleBot extends BotBase {
 		addBotJob(stateReporter);
 		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
-	}
-	
-	public SimpleBot(String botName, String skinName, int aimingModuleNr) {
-		this(botName, skinName);
-		switch (aimingModuleNr) {
-		case 2:
-			aimingModule = new BotDePiotrAimingModule();
-			break;
-		case 1:
-		default:
-			break;
-		}
 	}
 
 	@Override
@@ -160,7 +151,14 @@ public class SimpleBot extends BotBase {
 		
 		FiringDecision fd =  null;
 		if ( ! noFire ) fd = SimpleCombatModule.getFiringDecision(this);
+		
 		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+		else {
+			int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE.value()+0.1f);
+			if (getWeaponIndex() != justInCaseWeaponIndex)
+				changeWeaponByInventoryIndex(justInCaseWeaponIndex);
+		}
+			
 		
 		FiringInstructions fi = aimingModule.getFiringInstructions(fd, this);
 		

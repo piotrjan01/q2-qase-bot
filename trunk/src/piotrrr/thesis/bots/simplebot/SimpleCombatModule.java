@@ -1,35 +1,31 @@
 package piotrrr.thesis.bots.simplebot;
 
-import java.util.Vector;
 
+import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.combat.FiringDecision;
-import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 public class SimpleCombatModule {
 	
-	public static final int MAX_ENEMY_INFO_AGE = 3;
-	
-	@SuppressWarnings("unchecked")
 	static FiringDecision getFiringDecision(SimpleBot bot) {
 		Vector3f playerPos = bot.getBotPosition();
-		Entity chosen = null;
+		EnemyInfo chosen = null;
 		float chosenRisk = Float.MAX_VALUE;
 		for (EnemyInfo ei : bot.kb.enemyInformation.values()) {
-			if (ei.getInfoAge(bot.getFrameNumber()) > MAX_ENEMY_INFO_AGE) continue;
+			if (ei.getInfoAge(bot.getFrameNumber()) > bot.cConfig.MAX_ENEMY_INFO_AGE.value()) continue;
 			
 			if (ei.predictedPos != null && ! bot.getBsp().isVisible(playerPos, ei.predictedPos)) continue;
 			else if ( ! bot.getBsp().isVisible(playerPos, ei.getPosition())) continue;
 			
 			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getPosition());
 			if (risk < chosenRisk) {
-				chosen = ei.ent;
+				chosen = ei;
 				chosenRisk = risk;
 			}
 		}
 		if (chosen == null) return null;
-		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getOrigin().toVector3f());
+		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getPosition());
 		return new FiringDecision(chosen, chooseWeapon(bot, distance));
 	}
 	
@@ -46,36 +42,20 @@ public class SimpleCombatModule {
 		RAILGUN = 16, BFG10K = 17, SHELLS = 18, BULLETS = 19, CELLS = 20,
 		ROCKETS = 21, SLUGS = 22;
 		**/
-		float shortDistanceLimit = 100f; 
-		
-		int [] ammoTable = { 0, 0, 0, 0, 0, 0, 0,
-				7, //blaster - ammo for blaster is just blaster himself
-				18, //shotgun
-				18, //ss
-				19, //mgun
-				19, //chgun
-				12, // granades - ammo for granates are granates themselves
-				12, //g launcher
-				21, //r launcher
-				20, //hyperblaster - energy cells
-				22, //railgun - slugs
-				20 //bfgk - energy cells
-		};
-		
-		int [] shortDistOrder = { 16, 15, 9, 11, 10, 8, 7 };
-		int [] longDistOrder = { 16, 15, 11, 14, 10, 9, 8, 7 };
-		
-		int [] order = null;
-		
-		if (distance > shortDistanceLimit) order = longDistOrder;
-		else order = shortDistOrder;
-		
-		for (int i : order) {
-			if (bot.botHasItem(i) && bot.botHasItem(ammoTable[i]) ) {
-				return i;
+		int maxWeight = -1;
+		int gunInd = 7;
+		for (int i=7; i<18; i++) {
+			if ( ! bot.botHasItem(i) || ! bot.botHasItem(CombatConfig.ammoTable[i])) continue;
+			if (distance < bot.cConfig.MAX_SHORT_DISTANCE.value() && CombatConfig.isBannedForShortDistance(i)) continue;
+			if (distance > bot.cConfig.MIN_LONG_DISTANCE.value() && CombatConfig.isBannedForLongDistance(i)) continue;
+			int weight = bot.cConfig.getWeaponWeightByInvIndex(i);
+			if (weight > maxWeight) {
+				maxWeight = weight;
+				gunInd = i;
 			}
 		}
-		return 7;
+		
+		return gunInd;
 		
 	}
 
