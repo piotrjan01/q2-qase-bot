@@ -53,20 +53,6 @@ public class StartBots {
 	}
 	
 	
-	public static void addBotsWithAimingModule(int count, int am, String names) {
-		for (int i=0; i<count; i++) {
-			SimpleBot bot = new SimpleBot(names+"-"+i, skinName, am);
-			bot.dtalk.active = false;
-			bot.addBotJob(new HitsReporter(bot));
-			bot.connect(serverIP, serverPort);
-		}
-	}
-	
-	public static void aimingExperiments2() {
-		addBotsWithAimingModule(3, 1, "simple-am");
-		addBotsWithAimingModule(3, 2, "bdp-am");
-	}
-	
 //	public static void main(String[] args) {
 //		System.setProperty("QUAKE2", quakePath);
 //		

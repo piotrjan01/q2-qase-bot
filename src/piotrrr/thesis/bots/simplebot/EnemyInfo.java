@@ -2,13 +2,7 @@ package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
-import piotrrr.thesis.tools.Dbg;
-import soc.qase.info.Config;
-import soc.qase.state.Effects;
 import soc.qase.state.Entity;
-import soc.qase.state.Events;
-import soc.qase.state.Inventory;
-import soc.qase.state.Sound;
 import soc.qase.tools.vecmath.Vector3f;
 
 public class EnemyInfo implements GameObject {
@@ -105,21 +99,5 @@ public class EnemyInfo implements GameObject {
 	public boolean isOutdated(long currentFrame) {
 		return (getInfoAge(currentFrame) > MAX_ENEMY_INFO_AGE);
 	}
-	
-	private String getEffectsList() {
-		Effects ef = ent.getEffects();
-		return ef.getEffectsString();
-	}
-	
-	private String getSounds() {
-		Sound s = ent.getSound();
-		if (s == null) return "";
-		if (ent.getConfig() == null) return "";
-		ent.getConfig().getSoundString(s.getIndex());
-		return "nr: "+s.getEntityNumber()+" str: "+ent.getConfig().getSoundString(s.getIndex());
-	}
-	
-	
-
 
 }

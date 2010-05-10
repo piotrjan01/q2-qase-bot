@@ -1,15 +1,15 @@
 package piotrrr.thesis.common.combat;
 
-import soc.qase.state.Entity;
+import piotrrr.thesis.bots.simplebot.EnemyInfo;
 
 public class FiringDecision {
 	
-	public Entity enemy;
+	public EnemyInfo enemyInfo;
 	
 	public int gunIndex;
 	
-	public FiringDecision(Entity enemy, int gunIndex) {
-		this.enemy = enemy;
+	public FiringDecision(EnemyInfo enemy, int gunIndex) {
+		this.enemyInfo = enemy;
 		this.gunIndex = gunIndex;
 	}
 	
