@@ -12,8 +12,8 @@ public class AppTests {
 	public static void main(String[] args) {
 		System.out.println("Starting...");
 		
-		EntityWrapperTest t = new EntityWrapperTest();
-		assert (t.runTest()==true) : "EntityWrapperTest failed!";
+//		EntityWrapperTest t = new EntityWrapperTest();
+//		assert (t.runTest()==true) : "EntityWrapperTest failed!";
 		
 		System.out.println("Done!");
 	}
