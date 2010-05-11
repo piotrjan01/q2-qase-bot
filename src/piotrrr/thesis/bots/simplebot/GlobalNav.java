@@ -1,7 +1,5 @@
 package piotrrr.thesis.bots.simplebot;
 
-import java.util.LinkedList;
-import java.util.Random;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -10,7 +8,6 @@ import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.Waypoint;
-import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 

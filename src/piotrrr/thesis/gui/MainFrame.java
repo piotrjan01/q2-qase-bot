@@ -22,7 +22,6 @@ import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.jobs.HitsReporter;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
@@ -31,7 +30,12 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    /** Creates new form MainFrame */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
     }
@@ -657,7 +661,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void visibleWaypointsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleWaypointsRadioButton2ActionPerformed
     	 Vector<GameObject> v = new Vector<GameObject>();
-         v.addAll(dbgBot.kb.getAllVisibleWaypoints(dbgBot));
+         v.addAll(dbgBot.kb.getAllVisibleWaypoints());
          setReqList(v);
     }//GEN-LAST:event_visibleWaypointsRadioButton2ActionPerformed
 
@@ -672,7 +676,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void visibleEntsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleEntsRadioButton2ActionPerformed
     	 Vector<GameObject> v = new Vector<GameObject>();
-         v.addAll(dbgBot.kb.getAllVisibleEntities(dbgBot));
+         v.addAll(dbgBot.kb.getAllVisibleEntities());
          setReqList(v);
     }//GEN-LAST:event_visibleEntsRadioButton2ActionPerformed
 

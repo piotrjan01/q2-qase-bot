@@ -10,7 +10,6 @@ import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.navigation.EdgeFailure;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
-import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.ai.waypoint.WaypointMap;
 import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
@@ -20,15 +19,32 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class WorldKB {
 	
-	
+	/**
+	 * Maximum amount of attempts to pickup an item, before
+	 * adding it to pickupFailures list.
+	 */
 	public static final int MAX_PICKUP_FAILURE_COUNT = 1;
 	
-	public static final int MAX_WP_FAILURE_COUNT = 0;
+	/**
+	 * Maximum amount of failures while trying to move from one node
+	 * to another that is tolerated before the edge from the map is deleted.
+	 */
+	public static final int MAX_WP_FAILURE_COUNT = 1;
 	
+	/**
+	 * Maximum amount of entities in the world. Taken from QASE source, expected
+	 * to work ok.
+	 */
 	public static final int ENTS_MAX_COUNT = 1024;
 	
+	/**
+	 * Counts pickup failures for each entity in the world.
+	 */
 	int [] pickupFailures = new int [ENTS_MAX_COUNT];
 	
+	/**
+	 * Counts waypoints edge failures.
+	 */
 	int [][] waypointEdgesFailures;
 	
 
@@ -88,7 +104,12 @@ public class WorldKB {
 		return getAllItems().size();
 	}
 
-	
+	/**
+	 * Returns all active entities of the specified type
+	 * @param et entity type
+	 * @param frameNumber the frame number at which those entities should be active.
+	 * @return
+	 */
 	public Vector<Entity> getActiveEntitiesByType(EntityType et, long frameNumber) {
 		Vector<Entity> ret = new Vector<Entity>();
 		for (Object o : bot.getWorld().getEntities(true)) {
@@ -105,11 +126,10 @@ public class WorldKB {
 	
 	
 	/**
-	 * Returns the list of active KB entries that are within specified range from given position
-	 * @param pos the position 
-	 * @param maxRange maximum range from the position pos
-	 * @param currentFrame current frame at which the entries should be active
-	 * @return
+	 * @param pos position of reference
+	 * @param maxRange the maximal range from position of reference
+	 * @param currentFrame the frame at which the entity should be active
+	 * @return the list of entities that are active and within specified range from given position
 	 */
 	public Vector<Entity> getActiveEntitiesWithinTheRange(Vector3f pos, int maxRange, long currentFrame) {			
 		Vector<Entity> ret = new Vector<Entity>();
@@ -126,6 +146,9 @@ public class WorldKB {
 		
 	}
 	
+	/**
+	 * @return all the items known to be in the world (active and inactive).
+	 */
 	public Vector<Entity> getAllItems() {
 		Vector<Entity> items = new Vector<Entity>();
 		items.addAll(bot.getWorld().getWeapons(false));
@@ -133,7 +156,10 @@ public class WorldKB {
 		return items;
 	}
 	
-	public Vector<Waypoint> getAllVisibleWaypoints(SimpleBot bot) {
+	/**
+	 * @return all the visible waypoints from current bot's position.
+	 */
+	public Vector<Waypoint> getAllVisibleWaypoints() {
 		Vector<Waypoint> ret = new Vector<Waypoint>();
 		Waypoint [] wps = map.getAllNodes();
 		for (Waypoint wp : wps) {
@@ -144,7 +170,10 @@ public class WorldKB {
 		return ret;
 	}
 	
-	public Vector<Entity> getAllVisibleEntities(SimpleBot bot) {
+	/**
+	 * @return all visible entities for the bot.
+	 */
+	public Vector<Entity> getAllVisibleEntities() {
 		Vector<Entity> ret = new Vector<Entity>();
 		for (Object o : bot.getWorld().getEntities(false)) {
 			Entity e = (Entity)o;
@@ -165,10 +194,18 @@ public class WorldKB {
 		return;
 	}
 	
+	/**
+	 * @param from the origin position
+	 * @param to the destination position
+	 * @return the shortest path using bot's map from origin to destination
+	 */
 	public Waypoint [] findShortestPath(Vector3f from, Vector3f to) {
 		return map.findShortestPath(from, to);
 	}
 	
+	/**
+	 * @return a random item from the world (active or not)
+	 */
 	Entity getRandomItem() {
 		Random r = new Random();
 		Vector<Entity> items = getAllItems();
@@ -176,18 +213,34 @@ public class WorldKB {
 		return items.elementAt(ind);
 	}
 	
+	/**
+	 * Marks given entity as failed to be picked up. Increments the failure counter.
+	 * @param e
+	 */
 	void failedToPickup(Entity e) {
 		pickupFailures[e.getNumber()] ++ ;
 	}
 	
+	/**
+	 * Decrements the pickup failure counter for the given entity
+	 * @param e
+	 */
 	void decPickupFailure(Entity e) {
 		pickupFailures[e.getNumber()] -- ;
 	}
 	
-	int getPickupFailureCount(Entity e) {
+	/**
+	 * Returns the failure count for the specified item
+	 * @param e
+	 * @return
+	 */
+	private int getPickupFailureCount(Entity e) {
 		return pickupFailures[e.getNumber()];
 	}
 	
+	/**
+	 * @return all entities that were failed to be picked up at least once
+	 */
 	public Vector<EntityDoublePair> getAllEntsWithPickupFailure() {
 		Vector<EntityDoublePair> ret = new Vector<EntityDoublePair>();
 		for (int i=0; i<ENTS_MAX_COUNT; i++) {
@@ -196,6 +249,10 @@ public class WorldKB {
 		return ret;
 	}
 	
+	/**
+	 * Returns all edges that have failed on the map.
+	 * @return
+	 */
 	public Vector<EdgeFailure> getAllEdgeFailures() {
 		Vector<EdgeFailure> ret = new Vector<EdgeFailure>();
 		for (int i=0; i<waypointEdgesFailures.length; i++) {
@@ -206,6 +263,9 @@ public class WorldKB {
 		return ret;
 	}
 	
+	/**
+	 * Removes all the failing edges from the map.
+	 */
 	public void removeFailingEdgesFromTheMap() {
 		map.unlockMap();
 		Vector<EdgeFailure> fails = getAllEdgeFailures();
@@ -222,6 +282,11 @@ public class WorldKB {
 		map.lockMap();
 	}
 	
+	/**
+	 * Checks whether the entity has a pickable type. 
+	 * @param e
+	 * @return
+	 */
 	private boolean isPickableType(Entity e) {
 		if ( e.getCategory().equalsIgnoreCase(Entity.CAT_ITEMS) ||
 				e.getCategory().equalsIgnoreCase(Entity.CAT_WEAPONS) 
@@ -229,7 +294,10 @@ public class WorldKB {
 		return false;
 	}
 	
-	public void updateEnemyInformation(SimpleBot bot) {
+	/**
+	 * Updates the information on the enemies in the world
+	 */
+	public void updateEnemyInformation() {
 		Vector<Integer> toDelete = new Vector<Integer>(); 
 		Vector enems = bot.getWorld().getOpponents(true);
 		for (Object o : enems) {
@@ -249,6 +317,9 @@ public class WorldKB {
 		
 	}
 	
+	/**
+	 * @return all known information about enemies
+	 */
 	public Vector<EnemyInfo> getAllEnemyInformation() {
 		Vector<EnemyInfo> ret = new Vector<EnemyInfo>();
 		ret.addAll(enemyInformation.values());

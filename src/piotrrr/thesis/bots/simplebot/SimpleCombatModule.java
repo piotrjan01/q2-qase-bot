@@ -14,10 +14,7 @@ public class SimpleCombatModule {
 		float chosenRisk = Float.MAX_VALUE;
 		for (EnemyInfo ei : bot.kb.enemyInformation.values()) {
 			
-			if ( ei.getBestVisibleEnemyPart(bot) == null ) {
-				bot.dtalk.addToLog("no good visible part");
-				continue;
-			}
+			if ( ei.getBestVisibleEnemyPart(bot) == null ) continue;
 					
 			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getPosition());
 			if (risk < chosenRisk) {

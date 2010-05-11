@@ -3,7 +3,6 @@ package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.CombatConfig;
-import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.BasicCommands;
@@ -85,14 +84,6 @@ public class SimpleBot extends BotBase {
 	 * For debug purposes. We can force the bot to use the specified weapon only.
 	 */
 	public int forcedweapon = 0;
-		
-	
-	
-	
-	/**
-	 * Bot's aiming module
-	 */
-	AimingModule aimingModule = new SimpleAimingModule();
 	
 	/**
 	 * Combat modules configuration
@@ -135,7 +126,7 @@ public class SimpleBot extends BotBase {
 			dtalk.addToLog("KB loaded!");
 		}
 		
-		kb.updateEnemyInformation(this);
+		kb.updateEnemyInformation();
 		
 	
 		NavInstructions ni = null;
@@ -165,7 +156,7 @@ public class SimpleBot extends BotBase {
 		
 			
 		
-		FiringInstructions fi = aimingModule.getFiringInstructions(fd, this);
+		FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
 		
 		executeInstructions(ni,	fi);
 		
@@ -247,6 +238,10 @@ public class SimpleBot extends BotBase {
 				"map edges: "+edgs+"\n";
 	}
 	
+	/**
+	 * Returns true if some opponent is visible
+	 * @return
+	 */
 	public boolean isOpponentVisible() {
 		for (Object o : world.getOpponents(true)) {
 			Entity e = (Entity)o;

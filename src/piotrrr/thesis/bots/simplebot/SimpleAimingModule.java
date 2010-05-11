@@ -1,16 +1,23 @@
 package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.common.CommFun;
-import piotrrr.thesis.common.combat.AimingModule;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class SimpleAimingModule implements AimingModule {
+/**
+ * The aiming module
+ * @author Piotr Gwizda³a
+ */
+public class SimpleAimingModule {
 	
-	@Override
-	public FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
+	/**
+	 * Returns the firing instructions
+	 * @param fd firing decision
+	 * @param bot the bot
+	 * @return
+	 */
+	static FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
 		if (fd == null || fd.enemyInfo == null) return null;
 		
 		boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
@@ -26,12 +33,19 @@ public class SimpleAimingModule implements AimingModule {
 			return getFastFiringInstructions(fd, bot);
 		}
 		//we may be predicting well
-		
 		return getPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(fd.gunIndex), 
 				bot.cConfig.isDangerousToShootWith(fd.gunIndex)); 
 	}
 	
-	FiringInstructions getPredictingFiringInstructions(SimpleBot bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
+	/**
+	 * Tries to shoot using the prediction
+	 * @param bot the bot that shoots
+	 * @param fd firing decision
+	 * @param bulletSpeed the speed of the bullets with which the shooting will be performed
+	 * @param careful whether or not has to be careful while firing with current weapon.
+	 * @return
+	 */
+	static FiringInstructions getPredictingFiringInstructions(SimpleBot bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
 		Vector3f playerPos = bot.getBotPosition();
 		Vector3f enemyPos = fd.enemyInfo.getBestVisibleEnemyPart(bot);
 		
@@ -75,7 +89,7 @@ public class SimpleAimingModule implements AimingModule {
 	 * @param playerPos
 	 * @return
 	 */
-	public FiringInstructions getFastFiringInstructions(FiringDecision fd, SimpleBot bot) {
+	static public FiringInstructions getFastFiringInstructions(FiringDecision fd, SimpleBot bot) {
 		Vector3f to = new Vector3f(fd.enemyInfo.getBestVisibleEnemyPart(bot));
 		Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
 		bot.dtalk.addToLog("Fast firing.");
@@ -83,7 +97,13 @@ public class SimpleAimingModule implements AimingModule {
 	}
 	
 	
-	FiringInstructions getNoFiringInstructions(SimpleBot bot, Vector3f enemyPos) {
+	/**
+	 * Don't fire, just look at the enemy.
+	 * @param bot
+	 * @param enemyPos
+	 * @return
+	 */
+	static FiringInstructions getNoFiringInstructions(SimpleBot bot, Vector3f enemyPos) {
 		FiringInstructions ret = new FiringInstructions(CommFun.getNormalizedDirectionVector(bot.getBotPosition(), enemyPos));
 		ret.doFire = false;
 		return ret;
