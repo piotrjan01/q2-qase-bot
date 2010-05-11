@@ -261,42 +261,77 @@ public class BotBase extends NoClipBot {
 		return ret;
 	}
 	
+	/**
+	 * Gets current bot's position
+	 * @return bot's position as a Vector3f
+	 */
 	public Vector3f getBotPosition() {
 		return new Vector3f(world.getPlayer().getPlayerMove().getOrigin());
 	}
 	
+	/**
+	 * Returns the world object - public method allows access from the outside.
+	 * @return
+	 */
 	public World getWorld() {
 		return world;
 	}
 	
+	/**
+	 * Checks if the bot has given item
+	 * @param i inventory index of the item we want to check
+	 * @return true if bot possess the item i
+	 */
 	public boolean botHasItem(int i) {
 		return hasItem(i);
 	}
 	
+	/**
+	 * Public method that returns the current weapon index the bot uses
+	 * @return
+	 */
 	public int getCurrentWeaponIndex() {
 		return getWeaponIndex();
 	}
 	
+	/**
+	 * Public method allowing to change bot's weapon
+	 * @param i the inventory number of the weapon to change to
+	 */
 	public void changeWeaponToIndex(int i) {
 		changeWeaponByInventoryIndex(i);
 	}
 	
+	/**
+	 * Get bot's name
+	 * @return bot's name string.
+	 */
 	public String getBotName() {
 		return getPlayerInfo().getName();
 	}
 
 	/**
-	 * Gives a command to the bot.
-	 * @param cmd
+	 * Gives a command to the bot. BotBase doesn't support any commands,
+	 * but this method can be overloaded in extending classes.
+	 * @param cmd the command the bot should execute.
 	 */
 	public void handleCommand(String cmd) {
 		
 	}
 	
-	public void setPauseLookDirection(Vector3f lookAt) {
+	/**
+	 * Set in which direction the bot should look when paused.
+	 * @param lookAt the position at which the bot should look.
+	 */
+	public void setPauseLookAtPosition(Vector3f lookAt) {
 		pausedLookDir = CommFun.getNormalizedDirectionVector(getBotPosition(), lookAt);
 	}
 	
+	/**
+	 * If the cheats are on, the bot will turn on noclip mode, and fly
+	 * to the given position. 
+	 * @param dst the position where the bot should move.
+	 */
 	public void goToPositionWithNoClipCheating(Vector3f dst) {
 		clipToPosition(dst);
 	}

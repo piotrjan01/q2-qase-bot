@@ -616,7 +616,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (ind < 0 || ind > requiredList.size()) return;
         fullInfo.setText(requiredList.get(ind).toDetailedString());
         Vector3f lookAt = new Vector3f(requiredList.get(ind).getPosition());
-        dbgBot.setPauseLookDirection(lookAt);
+        dbgBot.setPauseLookAtPosition(lookAt);
         distanceLabel.setText(""+CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getPosition()));
     }//GEN-LAST:event_reqListValueChanged
 
