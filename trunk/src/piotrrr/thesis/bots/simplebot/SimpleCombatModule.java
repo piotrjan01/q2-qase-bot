@@ -3,6 +3,7 @@ package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.combat.EnemyInfo;
 import piotrrr.thesis.common.combat.FiringDecision;
 import soc.qase.tools.vecmath.Vector3f;
 

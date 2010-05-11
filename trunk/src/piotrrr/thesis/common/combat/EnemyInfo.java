@@ -1,5 +1,6 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.common.combat;
 
+import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import soc.qase.state.Entity;
@@ -19,27 +20,27 @@ public class EnemyInfo implements GameObject {
 	/**
 	 * The enemie's entity
 	 */
-	Entity ent;
+	public Entity ent;
 	
 	/**
 	 * Last position of the enemy (in last frame before update)
 	 */
-	Vector3f lastPos = null;
+	private Vector3f lastPos = null;
 	
 	/**
 	 * Last frame number at which the enemy information has been updated.
 	 */
-	long lastUpdateFrame = 0L;
+	public long lastUpdateFrame = 0L;
 	
 	/**
 	 * Last prediction error of enemy position predicting.
 	 */
-	float lastPredictionError = Float.MAX_VALUE;
+	public float lastPredictionError = Float.MAX_VALUE;
 	
 	/**
 	 * The position that the enemy is predicted to reach in the next frame.
 	 */
-	Vector3f predictedPos = null;
+	public Vector3f predictedPos = null;
 	
 	//tuned value = 35
 	/**

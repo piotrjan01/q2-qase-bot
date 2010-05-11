@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.smartbot;
 
 
 import piotrrr.thesis.bots.botbase.BotBase;
@@ -19,23 +19,13 @@ import soc.qase.state.Entity;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
-/**
- * This is a simple bot that will be used as a base of other bots as well as 
- * reference in comparative study.
- * @author Piotr Gwizda³a
- */
-public class SimpleBot extends BotBase {
+
+public class SmartBot extends BotBase {
 	
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
 	static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
-
-	/**
-	 * Finite state machine - used to determine bot's needs.
-	 */
-	NeedsFSM fsm;
-	
 	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
@@ -84,9 +74,8 @@ public class SimpleBot extends BotBase {
 	 * @param botName the name of the bot to be created
 	 * @param skinName the name of the skin to be used
 	 */
-	public SimpleBot(String botName, String skinName) {
+	public SmartBot(String botName, String skinName) {
 		super(botName, skinName);
-		fsm = new NeedsFSM(this);
 
 		dtalk = new GeneralDebugTalk(this, 30);
 //		dtalk.active = false;

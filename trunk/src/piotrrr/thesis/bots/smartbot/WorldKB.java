@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.smartbot;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ public class WorldKB {
 	/**
 	 * Bot that owns this KB
 	 */
-	SimpleBot bot = null;
+	SmartBot bot = null;
 	
 	/**
 	 * The map that is used to navigate.
@@ -77,7 +77,7 @@ public class WorldKB {
 	 */
 	static final int TARGET_BLACKLIST_MAX_SIZE = 15;
 	
-	private WorldKB(WaypointMap map, SimpleBot bot) {
+	private WorldKB(WaypointMap map, SmartBot bot) {
 		targetBlacklist = new LinkedList<Entity>();
 		this.map = map;
 		this.bot = bot;
@@ -90,7 +90,7 @@ public class WorldKB {
 	 * @return the knowledge base
 	 */
 	@SuppressWarnings("unchecked")
-	static WorldKB createKB(String mapPath, SimpleBot bot) {
+	static WorldKB createKB(String mapPath, SmartBot bot) {
 		WaypointMap map = WaypointMap.loadMap(mapPath);
 		assert map != null;
 		Dbg.prn("Map path: "+mapPath);
