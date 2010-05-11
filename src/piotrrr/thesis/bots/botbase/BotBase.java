@@ -6,7 +6,6 @@ import java.util.Vector;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.jobs.Job;
 import soc.qase.bot.NoClipBot;
-import soc.qase.bot.ObserverBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
 import soc.qase.state.PlayerMove;
@@ -48,11 +47,23 @@ public class BotBase extends NoClipBot {
 	 */
 	public boolean botPaused = false;
 	
+	/**
+	 * Can be used to switch the bot to no-fire mode, but in
+	 * BotBase is not used. Intended to be used by extending classes.
+	 */
+	public boolean noFire = false;
+	
+	/**
+	 * Can be used to switch the bot to no-movement mode, but in
+	 * BotBase is not used. Intended to be used by extending classes.
+	 */
+	public boolean noMove = false;
+	
 	
 	/**
 	 * Direction where to look when paused.
 	 */
-	Vector3f pausedLookDir = new Vector3f();
+	protected Vector3f pausedLookDir = new Vector3f(0,0,0);
 	
 	/**
 	 * Basic constructor
@@ -70,7 +81,7 @@ public class BotBase extends NoClipBot {
 			updateFrameNumber();
 			runBotJobs();
 			if ( ! botPaused) botLogic();
-			else setBotMovement(new Vector3f(), pausedLookDir, PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_CROUCH);
+			else setBotMovement(new Vector3f(), pausedLookDir, PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_NORMAL);
 		}
 		catch (Exception e) {
 			say("Runtime exception!");

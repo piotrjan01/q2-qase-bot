@@ -82,7 +82,7 @@ public class CommFun {
 			case 20: return "CELLS";
 			case 21: return "ROCKETS";
 			case 22: return "SLUGS";
-			default: return "unknown!";
+			default: return "UNKNOWN";
 		}
 	}
 	

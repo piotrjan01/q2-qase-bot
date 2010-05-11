@@ -44,7 +44,8 @@ public class StuckDetector extends Job {
 		lastFrame = bot.getFrameNumber();
 		
 		//We don't make stuck detection when paused :)
-		if (bot.botPaused) return;
+		if (bot.botPaused || bot.noMove) return;
+		
 		
 		Vector3f pos;
 		try {
