@@ -13,18 +13,19 @@ public class SimpleCombatModule {
 		EnemyInfo chosen = null;
 		float chosenRisk = Float.MAX_VALUE;
 		for (EnemyInfo ei : bot.kb.enemyInformation.values()) {
-			if (ei.getInfoAge(bot.getFrameNumber()) > bot.cConfig.MAX_ENEMY_INFO_AGE.value()) continue;
 			
-			if (ei.predictedPos != null && ! bot.getBsp().isVisible(playerPos, ei.predictedPos)) continue;
-			else if ( ! bot.getBsp().isVisible(playerPos, ei.getPosition())) continue;
-			
+			if ( ei.getBestVisibleEnemyPart(bot) == null ) {
+				bot.dtalk.addToLog("no good visible part");
+				continue;
+			}
+					
 			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getPosition());
 			if (risk < chosenRisk) {
 				chosen = ei;
 				chosenRisk = risk;
 			}
 		}
-		if (chosen == null) return null;
+		if (chosen == null)	return null;
 		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getPosition());
 		return new FiringDecision(chosen, chooseWeapon(bot, distance));
 	}
@@ -42,11 +43,14 @@ public class SimpleCombatModule {
 		RAILGUN = 16, BFG10K = 17, SHELLS = 18, BULLETS = 19, CELLS = 20,
 		ROCKETS = 21, SLUGS = 22;
 		**/
+		
+		if (bot.forcedweapon != 0) return bot.forcedweapon;
+		
 		int maxWeight = -1;
 		int gunInd = 7;
 		for (int i=7; i<18; i++) {
 			if ( ! bot.botHasItem(i) || ! bot.botHasItem(CombatConfig.ammoTable[i])) continue;
-			if (distance < bot.cConfig.MAX_SHORT_DISTANCE.value() && CombatConfig.isBannedForShortDistance(i)) continue;
+			if (distance < bot.cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value() && CombatConfig.isBannedForShortDistance(i)) continue;
 			if (distance > bot.cConfig.MIN_LONG_DISTANCE.value() && CombatConfig.isBannedForLongDistance(i)) continue;
 			int weight = bot.cConfig.getWeaponWeightByInvIndex(i);
 			if (weight > maxWeight) {

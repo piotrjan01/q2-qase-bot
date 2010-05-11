@@ -79,9 +79,15 @@ public class SimpleBot extends BotBase {
 	 * some debug information in the game.
 	 */
 	public GeneralDebugTalk dtalk;
+	
+	
+	/**
+	 * For debug purposes. We can force the bot to use the specified weapon only.
+	 */
+	public int forcedweapon = 0;
 		
 	
-	public boolean noFire = false;
+	
 	
 	/**
 	 * Bot's aiming module
@@ -131,40 +137,37 @@ public class SimpleBot extends BotBase {
 		
 		kb.updateEnemyInformation(this);
 		
-		/**
-		 * This is how we do:
-		 * 1. Find where to go - get plan
-		 * 2. Get move instructions
-		 * 3. Execute movement
-		 * 4. Get firing instructions
-		 * 5. Execute firing
-		 */
-		
-		plan = GlobalNav.establishNewPlan(this, plan);
-		if (plan == null) {
-			// ??
-			return;
+	
+		NavInstructions ni = null;
+		if ( ! noMove) {
+			plan = GlobalNav.establishNewPlan(this, plan);
+			if (plan == null) {
+				// ??
+				return;
+			}
+			assert plan != null;
+			ni = LocalNav.getNavigationInstructions(this);
 		}
-		assert plan != null;
 		
 		
 		
 		FiringDecision fd =  null;
-		if ( ! noFire ) fd = SimpleCombatModule.getFiringDecision(this);
-		
-		if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
-		else {
-			int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE.value()+0.1f);
-			if (getWeaponIndex() != justInCaseWeaponIndex)
-				changeWeaponByInventoryIndex(justInCaseWeaponIndex);
+		if ( ! noFire ) {
+			fd = SimpleCombatModule.getFiringDecision(this);
+			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+			else {
+				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value()+0.1f);
+				if (getWeaponIndex() != justInCaseWeaponIndex)
+					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
+			}
 		}
+		
+		
 			
 		
 		FiringInstructions fi = aimingModule.getFiringInstructions(fd, this);
 		
-		executeInstructions(
-				LocalNav.getNavigationInstructions(this), 
-				fi);
+		executeInstructions(ni,	fi);
 		
 	}
 	
@@ -178,11 +181,11 @@ public class SimpleBot extends BotBase {
 		Vector3f aimDir;
 		Vector3f moveDir;
 		int walk = PlayerMove.WALK_STOPPED;
-		int posture = PlayerMove.POSTURE_CROUCH;
+		int posture = PlayerMove.POSTURE_NORMAL;
 		
 		if (fi != null) aimDir = fi.fireDir;
 		else if (ni != null) aimDir = ni.moveDir;
-		else aimDir = new Vector3f(0,0,0);
+		else aimDir = pausedLookDir;
 		
 		if (ni != null) {
 			moveDir = ni.moveDir;

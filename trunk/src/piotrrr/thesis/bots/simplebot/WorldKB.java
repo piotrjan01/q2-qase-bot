@@ -241,7 +241,7 @@ public class WorldKB {
 			else enemyInformation.put(e.getNumber(), new EnemyInfo(e, bot.getFrameNumber()));
 		}
 		for (EnemyInfo ei : enemyInformation.values()) {
-			if (ei.isOutdated(bot.getFrameNumber())) 
+			if ( ! ei.ent.getActive() || ei.isOutdated(bot.getFrameNumber())) 
 				toDelete.add(ei.ent.getNumber());
 		}
 		for (Integer i : toDelete)

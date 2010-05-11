@@ -3,6 +3,7 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
+import piotrrr.thesis.bots.simplebot.EnemyInfo;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
 
 /**
@@ -63,6 +64,10 @@ public class BasicCommands extends Job {
 		else if (cmd.equals("die")) {
 			bot.consoleCommand("kill");
 		}
+		else if (cmd.startsWith("cmd ")) {
+			String todo = cmd.substring(4);
+			bot.consoleCommand(todo);
+		}
 		else {
 			try {
 			
@@ -74,6 +79,20 @@ public class BasicCommands extends Job {
 				else if (cmd.equals("nofire")) {
 					bot.say("noFire = "+( ! ((SimpleBot)bot).noFire));
 					((SimpleBot)bot).noFire = ! ((SimpleBot)bot).noFire;
+				}
+				else if (cmd.equals("nomove")) {
+					bot.say("noMove = "+( ! ((SimpleBot)bot).noMove));
+					((SimpleBot)bot).noMove = ! ((SimpleBot)bot).noMove;
+				}
+				else if (cmd.startsWith("forcewpn ")) {
+					int wpn = Integer.parseInt(cmd.substring(9));
+					bot.say("forcewpn = "+( ((SimpleBot)bot).forcedweapon));
+					((SimpleBot)bot).forcedweapon = wpn;
+				}
+				else if (cmd.startsWith("sah ")) {
+					int height = Integer.parseInt(cmd.substring(4));
+					bot.say("agentsHeight = "+height);
+					EnemyInfo.agentsHeight = height;
 				}
 				else {
 					bot.say("I don't get this command: "+cmd);

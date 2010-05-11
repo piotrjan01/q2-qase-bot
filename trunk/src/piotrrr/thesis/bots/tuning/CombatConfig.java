@@ -6,7 +6,7 @@ public class CombatConfig {
 	 * Maximum time allowed that the bullet would take to hit the target. 
 	 * If time to hit is grater than this, the shooting is not performed.
 	 */
-	public Param<Integer> MAX_TIME_TO_HIT = new Param<Integer>(7, 3, 15);
+	public Param<Float> MAX_TIME_TO_HIT = new Param<Float>(20f, 3f, 30f);
 	
 	/**
 	 * Maximum error of the prediction to still consider the prediction good
@@ -15,14 +15,19 @@ public class CombatConfig {
 	
 	/**
 	 * The maximal age of enemy information to be considered relevant
-	 * for the firing module.
+	 * for prediction in the firing module.
 	 */
-	public Param<Integer> MAX_ENEMY_INFO_AGE = new Param<Integer>(2, 1, 5);
+	public Param<Integer> MAX_ENEMY_INFO_AGE_4_FIRING = new Param<Integer>(2, 0, 7);
 	
 	/**
-	 * The maximum distance to be still considered as short distance
+	 * The maximum distance to be still considered as short distance when firing
 	 */
-	public Param<Float> MAX_SHORT_DISTANCE = new Param<Float>(400f, 100f, 800f);
+	public Param<Float> MAX_SHORT_DISTANCE_4_FIRING = new Param<Float>(100f, 10f, 500f);
+	
+	/**
+	 * The maximum distance to be still considered as short distance when choosing a weapon
+	 */
+	public Param<Float> MAX_SHORT_DISTANCE_4_WP_CHOICE = new Param<Float>(400f, 100f, 800f);
 	
 	/**
 	 * The minimum distance to be still considered as long distance
@@ -37,22 +42,22 @@ public class CombatConfig {
 	/**
 	 * Weapon preference weight
 	 */
-	public Param<Integer> WP_WEIGHT_SHOTGUN = new Param<Integer>(20, 0, 100);
+	public Param<Integer> WP_WEIGHT_SHOTGUN = new Param<Integer>(30, 0, 100);
 	
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_SUPER_SHOTGUN = new Param<Integer>(40, 0, 100);
+	public Param<Integer> WP_WEIGHT_SUPER_SHOTGUN = new Param<Integer>(50, 0, 100);
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_MACHINEGUN = new Param<Integer>(40, 0, 100);
+	public Param<Integer> WP_WEIGHT_MACHINEGUN = new Param<Integer>(60, 0, 100);
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_CHAINGUN = new Param<Integer>(60, 0, 100);
+	public Param<Integer> WP_WEIGHT_CHAINGUN = new Param<Integer>(80, 0, 100);
 
 	/**
 	 * Weapon preference weight
@@ -67,12 +72,12 @@ public class CombatConfig {
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_ROCKET_LAUNCHER = new Param<Integer>(60, 0, 100);
+	public Param<Integer> WP_WEIGHT_ROCKET_LAUNCHER = new Param<Integer>(40, 0, 100);
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_HYPERBLASTER = new Param<Integer>(70, 0, 100);
+	public Param<Integer> WP_WEIGHT_HYPERBLASTER = new Param<Integer>(50, 0, 100);
 	
 	/**
 	 * Weapon preference weight
@@ -101,6 +106,15 @@ public class CombatConfig {
 			22, //railgun - slugs
 			20 //bfgk - energy cells
 	};
+	
+	
+	/**
+	int BLASTER = 7, SHOTGUN = 8,
+	SUPER_SHOTGUN = 9, MACHINEGUN = 10, CHAINGUN = 11, GRENADES = 12,
+	GRENADE_LAUNCHER = 13, ROCKET_LAUNCHER = 14, HYPERBLASTER = 15,
+	RAILGUN = 16, BFG10K = 17, SHELLS = 18, BULLETS = 19, CELLS = 20,
+	ROCKETS = 21, SLUGS = 22;
+	**/
 	
 	/**
 	 * The guns banned for the distance
