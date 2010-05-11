@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.common.entities;
 
 import piotrrr.thesis.common.GameObject;
 import soc.qase.state.Entity;
@@ -11,9 +11,9 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class EntityDoublePair implements Comparable<EntityDoublePair>, GameObject {
 	
-	Entity ent = null;
+	public Entity ent = null;
 	
-	double dbl = 0.0;
+	public double dbl = 0.0;
 	
 	public EntityDoublePair(Entity e, double dbl) {
 		this.ent = e;

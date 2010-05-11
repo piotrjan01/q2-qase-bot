@@ -1,6 +1,5 @@
 package piotrrr.thesis.common.combat;
 
-import piotrrr.thesis.bots.simplebot.EnemyInfo;
 
 public class FiringDecision {
 	

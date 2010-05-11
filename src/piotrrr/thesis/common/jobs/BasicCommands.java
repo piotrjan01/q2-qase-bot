@@ -3,8 +3,8 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.simplebot.EnemyInfo;
 import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.common.combat.EnemyInfo;
 
 /**
  * The job that implements bot's perception and reaction do basic commands given
