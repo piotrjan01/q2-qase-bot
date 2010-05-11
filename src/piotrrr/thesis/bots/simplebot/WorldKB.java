@@ -47,7 +47,7 @@ public class WorldKB {
 	/**
 	 * Counts waypoints edge failures.
 	 */
-	int [][] waypointEdgesFailures;
+	public int [][] waypointEdgesFailures;
 	
 
 	/**
@@ -58,7 +58,7 @@ public class WorldKB {
 	/**
 	 * The map that is used to navigate.
 	 */
-	WaypointMap map = null;
+	public WaypointMap map = null;
 	
 	/**
 	 * The black list of pickup things. If the bot decides to pickup something, 
@@ -70,7 +70,7 @@ public class WorldKB {
 	/**
 	 * Stores information on the enemies
 	 */
-	HashMap<Integer, EnemyInfo> enemyInformation = new HashMap<Integer, EnemyInfo>();
+	public HashMap<Integer, EnemyInfo> enemyInformation = new HashMap<Integer, EnemyInfo>();
 	
 	/**
 	 * The maximum size of pickupBlaclist
@@ -190,7 +190,7 @@ public class WorldKB {
 	 * Adds the given entry to black-list
 	 * @param e
 	 */
-	void addToBlackList(Entity ent) {
+	public void addToBlackList(Entity ent) {
 		targetBlacklist.add(ent);
 		if (targetBlacklist.size() > TARGET_BLACKLIST_MAX_SIZE) targetBlacklist.pop();
 		return;
@@ -208,7 +208,7 @@ public class WorldKB {
 	/**
 	 * @return a random item from the world (active or not)
 	 */
-	Entity getRandomItem() {
+	public Entity getRandomItem() {
 		Random r = new Random();
 		Vector<Entity> items = getAllItems();
 		int ind = ((r.nextInt() % items.size()) + items.size()) % items.size();
@@ -219,7 +219,7 @@ public class WorldKB {
 	 * Marks given entity as failed to be picked up. Increments the failure counter.
 	 * @param e
 	 */
-	void failedToPickup(Entity e) {
+	public void failedToPickup(Entity e) {
 		pickupFailures[e.getNumber()] ++ ;
 	}
 	
@@ -227,7 +227,7 @@ public class WorldKB {
 	 * Decrements the pickup failure counter for the given entity
 	 * @param e
 	 */
-	void decPickupFailure(Entity e) {
+	public void decPickupFailure(Entity e) {
 		pickupFailures[e.getNumber()] -- ;
 	}
 	

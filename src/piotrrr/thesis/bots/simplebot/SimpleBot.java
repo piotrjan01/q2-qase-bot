@@ -5,6 +5,8 @@ import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
+import piotrrr.thesis.common.combat.SimpleAimingModule;
+import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.GeneralDebugTalk;
 import piotrrr.thesis.common.jobs.StateReporter;
@@ -45,17 +47,17 @@ public class SimpleBot extends BotBase {
 	/**
 	 * Bot's current navigation plan
 	 */
-	NavPlan plan = null;
+	public NavPlan plan = null;
 	
 	/**
 	 * The job that reports the bot's state and state changes.
 	 */
-	StateReporter stateReporter;
+	public StateReporter stateReporter;
 	
 	/**
 	 * The job that detects when the bot is stuck.
 	 */
-	StuckDetector stuckDetector;
+	public StuckDetector stuckDetector;
 	
 	/**
 	 * The job that handles basic commands.
@@ -77,7 +79,7 @@ public class SimpleBot extends BotBase {
 	/**
 	 * Combat modules configuration
 	 */
-	CombatConfig cConfig = new CombatConfig();
+	public CombatConfig cConfig = new CombatConfig();
 
 	/**
 	 * Basic constructor.

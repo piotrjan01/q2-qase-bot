@@ -1,8 +1,7 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.common.combat;
 
+import piotrrr.thesis.bots.simplebot.SimpleBot;
 import piotrrr.thesis.common.CommFun;
-import piotrrr.thesis.common.combat.FiringDecision;
-import piotrrr.thesis.common.combat.FiringInstructions;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
@@ -17,7 +16,7 @@ public class SimpleAimingModule {
 	 * @param bot the bot
 	 * @return
 	 */
-	static FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
+	public static FiringInstructions getFiringInstructions(FiringDecision fd, SimpleBot bot) {
 		if (fd == null || fd.enemyInfo == null) return null;
 		
 		boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
