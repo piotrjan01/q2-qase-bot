@@ -2,10 +2,13 @@ package piotrrr.thesis.bots.simplebot;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
+/**
+ * This class stores the information about the enemies in the game.
+ * @author Piotr Gwizda³a
+ */
 public class EnemyInfo implements GameObject {
 	
 	/**
@@ -13,22 +16,41 @@ public class EnemyInfo implements GameObject {
 	 */
 	public static final int MAX_ENEMY_INFO_AGE = 200;
 	
+	/**
+	 * The enemie's entity
+	 */
 	Entity ent;
 	
+	/**
+	 * Last position of the enemy (in last frame before update)
+	 */
 	Vector3f lastPos = null;
 	
+	/**
+	 * Last frame number at which the enemy information has been updated.
+	 */
 	long lastUpdateFrame = 0L;
 	
+	/**
+	 * Last prediction error of enemy position predicting.
+	 */
 	float lastPredictionError = Float.MAX_VALUE;
 	
+	/**
+	 * The position that the enemy is predicted to reach in the next frame.
+	 */
 	Vector3f predictedPos = null;
 	
 	//tuned value = 35
+	/**
+	 * The height of the agent. It is used to tell whether some part of enemies
+	 * body is visible from given point.
+	 */
 	public static int agentsHeight = 35;
 	
 	public EnemyInfo(Entity ent, long frame) {
 		this.ent = ent.deepCopy();
-		this.lastUpdateFrame = frame;
+		this.lastUpdateFrame = frame-1;
 		this.updateEnemyInfo(ent, frame);
 	}
 
@@ -57,7 +79,7 @@ public class EnemyInfo implements GameObject {
 				"last position: "+lastPos+"\n"+
 				"predicted position: "+predictedPos+"\n"+
 				"last prediction error: "+lastPredictionError+"\n"+
-				"movement: "+getMovement()+"\n"+
+				"movement: "+getMovementDistance()+"\n"+
 				"gun: "+CommFun.getGunName(ent.getWeaponInventoryIndex())+"\n"+
 				"gun nr: "+ent.getWeaponInventoryIndex()+"\n"+
 				"entity: "+ent.getCategory()+"."+ent.getType()+"."+ent.getSubType()+"\n"+
@@ -69,29 +91,35 @@ public class EnemyInfo implements GameObject {
 	}
 	
 	public boolean updateEnemyInfo(Entity e, long frameNumber) {
+		//If it is not the same entity, we exit
 		if (ent.getNumber() != e.getNumber()) return false;
 		if ( ! ent.getName().equalsIgnoreCase(e.getName())) return false;
 		
-		//if (e.getActive() == ent.getActive() && e.getPosition().equals(ent.getPosition())) return false;
-		
+
+		//new last position is the current position (will be used next time).
 		lastPos = ent.getPosition();
+		//we copy the whole entity
 		ent = e.deepCopy();
+		//if we suspect the opponent is dead, we mark it as inactive (some QASE bug ?)
 		if (CommFun.getGunName(ent.getWeaponInventoryIndex()).equals("UNKNOWN"))
 			ent.setActive(false);
+		//we set the new last update time
 		lastUpdateFrame = frameNumber;
 		
+		//we calculate last prediction error
 		lastPredictionError = getPredictionError();
-		
+
+		//We predict the position
 		predictedPos = predictPositionBasingOnMovement();
 		
-//		if ( ! getSounds().equals("")) {
-//			Dbg.err("Sound!\n"+getSounds()+"\n"+toDetailedString());
-//		}
-//		
 		return true;
 		
 	}
 	
+	/**
+	 * 
+	 * @return The predicted enemy position in next frame
+	 */
 	private Vector3f predictPositionBasingOnMovement() {
 		Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, getPosition());
 		Vector3f ret = CommFun.cloneVector(getPosition());
@@ -99,14 +127,22 @@ public class EnemyInfo implements GameObject {
 		return ret;
 	}
 	
+	/**
+	 * The error of the prediction
+	 * @return
+	 */
 	private float getPredictionError() {
 		if (predictedPos == null) return Float.MAX_VALUE;
-		return CommFun.getDifferenceBetweenVectors(getPosition(), predictedPos);
+		return CommFun.getDistanceBetweenPositions(getPosition(), predictedPos);
 	}
 	
-	private float getMovement() {
+	/**
+	 * The movement between last position and current position 
+	 * @return
+	 */
+	private float getMovementDistance() {
 		if (lastPos == null) return Float.MAX_VALUE;
-		return CommFun.getDifferenceBetweenVectors(lastPos, getPosition());
+		return CommFun.getDistanceBetweenPositions(lastPos, getPosition());
 	}
 	
 	@Override
@@ -115,14 +151,29 @@ public class EnemyInfo implements GameObject {
 		return ent.getName();
 	}
 	
-	public long getInfoAge(long currentFrame) {
+	/**
+	 * Calculates the age of the information
+	 * @param currentFrame
+	 * @return
+	 */
+	private long getInfoAge(long currentFrame) {
 		return currentFrame - lastUpdateFrame;
 	}
 	
+	/**
+	 * Checks if the information is out of date
+	 * @param currentFrame the current frame in the game
+	 * @return true if information is out of date
+	 */
 	public boolean isOutdated(long currentFrame) {
 		return (getInfoAge(currentFrame) > MAX_ENEMY_INFO_AGE);
 	}
 	
+	/**
+	 * Returns the position of the best visible part of the enemy to shoot at.
+	 * @param bot the bot that is looking at the enemy.
+	 * @return the position of such part (it is emenie's head, feet or body).
+	 */
 	public Vector3f getBestVisibleEnemyPart(SimpleBot bot) {
 		Vector3f botPos = new Vector3f(bot.getBotPosition());
 		botPos.z += agentsHeight / 2;
@@ -131,11 +182,9 @@ public class EnemyInfo implements GameObject {
 		}
 		if ( bot.getBsp().isVisible(botPos, getPosition())) return getPosition();
 		else if ( bot.getBsp().isVisible(botPos, getPositionFeet())) {
-			bot.dtalk.addToLog("gettin feet pos: "+getPosition()+" -> "+getPositionFeet());
 			return getPositionFeet();
 		}
 		else if ( bot.getBsp().isVisible(botPos, getPositionHead())) {
-			bot.dtalk.addToLog("gettin head pos: "+getPosition()+" -> "+getPositionHead());
 			return getPositionHead();
 		}
 		else return null;

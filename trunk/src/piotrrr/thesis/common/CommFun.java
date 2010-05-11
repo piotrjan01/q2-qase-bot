@@ -46,7 +46,7 @@ public class CommFun {
 	 * Gets the predicted movement vector based on two positions.
 	 * @param from - beginning of the movement
 	 * @param to - actual position of the movement
-	 * @return the vector connecting actual position of the movement with the predicted position.
+	 * @return the vector that added to position from, would end at position to (returns to - from)
 	 */
 	public static Vector3f getMovementBetweenVectors(Vector3f from, Vector3f to) {
 		return new Vector3f((to.x-from.x), (to.y-from.y), (to.z - from.z));
@@ -91,10 +91,5 @@ public class CommFun {
 		ret.x = v.x; ret.y = v.y; ret.z = v.z;
 		return ret;
 	}
-	
-	public static float getDifferenceBetweenVectors(Vector3f a, Vector3f b) {
-		return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+Math.abs(a.z-b.z);
-	}
-	
 
 }

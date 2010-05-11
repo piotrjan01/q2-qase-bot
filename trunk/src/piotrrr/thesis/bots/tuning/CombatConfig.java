@@ -17,7 +17,7 @@ public class CombatConfig {
 	 * The maximal age of enemy information to be considered relevant
 	 * for prediction in the firing module.
 	 */
-	public Param<Integer> MAX_ENEMY_INFO_AGE_4_FIRING = new Param<Integer>(2, 0, 7);
+	public Param<Integer> MAX_ENEMY_INFO_AGE_4_FIRING = new Param<Integer>(2, 0, 5);
 	
 	/**
 	 * The maximum distance to be still considered as short distance when firing
