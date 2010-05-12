@@ -1,10 +1,16 @@
 package piotrrr.thesis.bots.referencebot;
 
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.common.combat.FiringDecision;
+import piotrrr.thesis.common.combat.FiringInstructions;
+import piotrrr.thesis.common.combat.SimpleAimingModule;
+import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.StateReporter;
+import piotrrr.thesis.common.navigation.NavInstructions;
+import piotrrr.thesis.common.navigation.WorldKB;
 import soc.qase.ai.waypoint.Waypoint;
 
-public class ReferenceBot extends WPMapBot {
+public class ReferenceBot extends MapBotBase {
 	
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -27,6 +33,49 @@ public class ReferenceBot extends WPMapBot {
 		stateReporter = new StateReporter(this);
 		addBotJob(dtalk);
 		addBotJob(stateReporter);
+	}
+	
+	
+	@Override
+	protected void botLogic() {
+		super.botLogic();
+		
+		if (botPaused) return;
+		
+		if (kb == null) { 
+			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
+			assert kb != null;
+			dtalk.addToLog("KB loaded!");
+		}
+		
+		kb.updateEnemyInformation();
+		
+	
+		NavInstructions ni = null;
+		if ( ! noMove) {
+			plan = globalNav.establishNewPlan(this, plan);
+			if (plan == null) {
+				// ??
+				return;
+			}
+			assert plan != null;
+			ni = localNav.getNavigationInstructions(this);
+		}
+		
+		FiringDecision fd =  null;
+		if ( ! noFire ) {
+			fd = SimpleCombatModule.getFiringDecision(this);
+			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+			else {
+				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value()+0.1f);
+				if (getWeaponIndex() != justInCaseWeaponIndex)
+					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
+			}
+		}
+		
+		FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
+		
+		executeInstructions(ni,	fi);
 	}
 	
 	/**

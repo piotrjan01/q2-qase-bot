@@ -1,6 +1,6 @@
 package piotrrr.thesis.common.combat;
 
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import soc.qase.state.Entity;
@@ -175,7 +175,7 @@ public class EnemyInfo implements GameObject {
 	 * @param bot the bot that is looking at the enemy.
 	 * @return the position of such part (it is emenie's head, feet or body).
 	 */
-	public Vector3f getBestVisibleEnemyPart(WPMapBot bot) {
+	public Vector3f getBestVisibleEnemyPart(MapBotBase bot) {
 		Vector3f botPos = new Vector3f(bot.getBotPosition());
 		botPos.z += agentsHeight / 2;
 		if (ent.isCrouching()) {

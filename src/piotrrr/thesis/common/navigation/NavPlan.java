@@ -1,7 +1,6 @@
 package piotrrr.thesis.common.navigation;
 
 import soc.qase.ai.waypoint.Waypoint;
-import soc.qase.ai.waypoint.WaypointItem;
 import soc.qase.state.Entity;
 
 /**

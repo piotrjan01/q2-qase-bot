@@ -1,17 +1,20 @@
 package piotrrr.thesis.bots.referencebot;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.navigation.LocalNav;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class ReferenceBotLocalNav {
+public class ReferenceBotLocalNav extends LocalNav {
 	
 	public static final int acceptableDistance = 40;
 
-	public static NavInstructions getNavigationInstructions(WPMapBot bot) {
+	@Override
+	public NavInstructions getNavigationInstructions(MapBotBase bot) {
 		
 		NavPlan plan = bot.plan;
 		

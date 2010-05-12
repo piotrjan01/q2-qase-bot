@@ -3,15 +3,15 @@ package piotrrr.thesis.bots.wpmapbot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.CombatConfig;
-import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
-import piotrrr.thesis.common.combat.SimpleAimingModule;
-import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.GeneralDebugTalk;
 import piotrrr.thesis.common.jobs.StuckDetector;
+import piotrrr.thesis.common.navigation.GlobalNav;
+import piotrrr.thesis.common.navigation.LocalNav;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
+import piotrrr.thesis.common.navigation.WorldKB;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Action;
@@ -24,12 +24,12 @@ import soc.qase.tools.vecmath.Vector3f;
  * This is a basic bot that uses WaypointMap and WorldKB to store knowledge.
  * @author Piotr Gwizda³a
  */
-public class WPMapBot extends BotBase {
+public class MapBotBase extends BotBase {
 	
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
+	protected static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
 	
 	
 	/**
@@ -68,13 +68,23 @@ public class WPMapBot extends BotBase {
 	 * Combat modules configuration
 	 */
 	public CombatConfig cConfig = new CombatConfig();
+	
+	/**
+	 * The global navigation module of the bot
+	 */
+	protected GlobalNav globalNav;
+	
+	/**
+	 * The local navigation module of the bot
+	 */
+	protected LocalNav localNav;
 
 	/**
 	 * Basic constructor.
 	 * @param botName the name of the bot to be created
 	 * @param skinName the name of the skin to be used
 	 */
-	public WPMapBot(String botName, String skinName) {
+	public MapBotBase(String botName, String skinName) {
 		super(botName, skinName);
 		dtalk = new GeneralDebugTalk(this, 30);
 //		dtalk.active = false;
@@ -84,53 +94,15 @@ public class WPMapBot extends BotBase {
 		addBotJob(dtalk);
 		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
+		
+		globalNav = new GlobalNav();
+		localNav = new LocalNav();
 	}
 
 	@Override
 	protected void botLogic() {
-		super.botLogic();
 		
-		if (botPaused) return;
-		
-		if (kb == null) { 
-			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
-			assert kb != null;
-			dtalk.addToLog("KB loaded!");
-		}
-		
-		kb.updateEnemyInformation();
-		
-	
-		NavInstructions ni = null;
-		if ( ! noMove) {
-			plan = GlobalNav.establishNewPlan(this, plan);
-			if (plan == null) {
-				// ??
-				return;
-			}
-			assert plan != null;
-			ni = LocalNav.getNavigationInstructions(this);
-		}
-		
-		
-		
-		FiringDecision fd =  null;
-		if ( ! noFire ) {
-			fd = SimpleCombatModule.getFiringDecision(this);
-			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
-			else {
-				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value()+0.1f);
-				if (getWeaponIndex() != justInCaseWeaponIndex)
-					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
-			}
-		}
-		
-		
-			
-		
-		FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
-		
-		executeInstructions(ni,	fi);
+		//MapBotBase doesn't do anything
 		
 	}
 	
@@ -139,7 +111,7 @@ public class WPMapBot extends BotBase {
 	 * Executes the instructions got from the plan.
 	 * @param ni - navigation instructions.
 	 */
-	private void executeInstructions(NavInstructions ni, FiringInstructions fi) {
+	protected void executeInstructions(NavInstructions ni, FiringInstructions fi) {
 		//Do the navigation and look ad good direction
 		Vector3f aimDir;
 		Vector3f moveDir;

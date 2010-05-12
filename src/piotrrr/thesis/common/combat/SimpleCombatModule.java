@@ -2,13 +2,13 @@ package piotrrr.thesis.common.combat;
 
 
 import piotrrr.thesis.bots.tuning.CombatConfig;
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import soc.qase.tools.vecmath.Vector3f;
 
 public class SimpleCombatModule {
 	
-	public static FiringDecision getFiringDecision(WPMapBot bot) {
+	public static FiringDecision getFiringDecision(MapBotBase bot) {
 		Vector3f playerPos = bot.getBotPosition();
 		EnemyInfo chosen = null;
 		float chosenRisk = Float.MAX_VALUE;
@@ -32,7 +32,7 @@ public class SimpleCombatModule {
 	/**
 	 * Chooses weapons considering the distance to the enemy.
 	 */
-	public static int chooseWeapon(WPMapBot bot, float distance) {
+	public static int chooseWeapon(MapBotBase bot, float distance) {
 		/**
 		int BLASTER = 7, SHOTGUN = 8,
 		SUPER_SHOTGUN = 9, MACHINEGUN = 10, CHAINGUN = 11, GRENADES = 12,

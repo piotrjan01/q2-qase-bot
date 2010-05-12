@@ -13,9 +13,9 @@ import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * The global navigation module of the WPMapBot.
+ * The global navigation module of the MapBotBase.
  * @author Piotr Gwizda³a
- * @see WPMapBot
+ * @see MapBotBase
  */
 public class SmartBotGlobalNav {
 	

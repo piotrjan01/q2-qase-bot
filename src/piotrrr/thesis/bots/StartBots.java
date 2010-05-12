@@ -1,7 +1,7 @@
 package piotrrr.thesis.bots;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.jobs.ShutdownJob;
 
@@ -17,7 +17,7 @@ import piotrrr.thesis.common.jobs.ShutdownJob;
 public class StartBots {
 	
 	public static String quakePath = "H:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2";
-	public static String botName = "WPMapBot";
+	public static String botName = "MapBotBase";
 	public static String skinName = "male/voodoo";
 //	public static String serverIP = "127.0.0.1";
 	public static String serverIP = "192.168.0.103";
@@ -26,27 +26,27 @@ public class StartBots {
 	public static void addBots(int num) {
 		BotBase bot;
 		for (int i=0; i<num; i++) {
-			bot = new WPMapBot(botName+"-"+(i+1), skinName);
+			bot = new MapBotBase(botName+"-"+(i+1), skinName);
 			bot.connect(serverIP, serverPort);
 			Runtime.getRuntime().addShutdownHook(new ShutdownJob(bot));
 		}
 	}
 	
 	public static void aimingExperiments1() {
-		WPMapBot bot = new WPMapBot(botName, skinName);
+		MapBotBase bot = new MapBotBase(botName, skinName);
 		bot.connect(serverIP, serverPort);
 		
-		bot = new WPMapBot(botName+"-t1", skinName);
+		bot = new MapBotBase(botName+"-t1", skinName);
 		bot.dtalk.active = false;
 		bot.addBotJob(new HitsReporter(bot));
 		bot.connect(serverIP, serverPort);
 		
-		bot = new WPMapBot(botName+"-t2", skinName);
+		bot = new MapBotBase(botName+"-t2", skinName);
 		bot.dtalk.active = false;
 		bot.addBotJob(new HitsReporter(bot));
 		bot.connect(serverIP, serverPort);
 		
-		bot = new WPMapBot(botName+"-t3", skinName);
+		bot = new MapBotBase(botName+"-t3", skinName);
 		bot.dtalk.active = false;
 		bot.addBotJob(new HitsReporter(bot));
 		bot.connect(serverIP, serverPort);

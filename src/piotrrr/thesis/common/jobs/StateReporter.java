@@ -1,7 +1,6 @@
 package piotrrr.thesis.common.jobs;
 
-import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.referencebot.ReferenceBot;
 
 /**
  * This job reports bot's state changes.
@@ -14,16 +13,19 @@ public class StateReporter extends Job {
 	 */
 	String lastStateName = "";
 	
+	ReferenceBot bot;
+	
 	public boolean stateHasChanged = false;
 	
-	public StateReporter(BotBase bot) {
+	public StateReporter(ReferenceBot bot) {
 		super(bot);
-		lastStateName = ((WPMapBot)bot).getCurrentStateName();
+		this.bot = bot;
+		lastStateName = bot.getCurrentStateName();
 	}
 	
 	@Override
 	public void run() {
-		String stateName = ((WPMapBot)bot).getCurrentStateName();
+		String stateName = bot.getCurrentStateName();
 		if (stateName.equals(lastStateName)) {
 			stateHasChanged = false;
 			return;

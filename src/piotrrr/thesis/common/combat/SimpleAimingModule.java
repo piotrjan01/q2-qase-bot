@@ -1,6 +1,6 @@
 package piotrrr.thesis.common.combat;
 
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -16,7 +16,7 @@ public class SimpleAimingModule {
 	 * @param bot the bot
 	 * @return
 	 */
-	public static FiringInstructions getFiringInstructions(FiringDecision fd, WPMapBot bot) {
+	public static FiringInstructions getFiringInstructions(FiringDecision fd, MapBotBase bot) {
 		if (fd == null || fd.enemyInfo == null) return null;
 		
 		boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
@@ -44,7 +44,7 @@ public class SimpleAimingModule {
 	 * @param careful whether or not has to be careful while firing with current weapon.
 	 * @return
 	 */
-	static FiringInstructions getPredictingFiringInstructions(WPMapBot bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
+	static FiringInstructions getPredictingFiringInstructions(MapBotBase bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
 		Vector3f playerPos = bot.getBotPosition();
 		Vector3f enemyPos = fd.enemyInfo.getBestVisibleEnemyPart(bot);
 		
@@ -88,7 +88,7 @@ public class SimpleAimingModule {
 	 * @param playerPos
 	 * @return
 	 */
-	static public FiringInstructions getFastFiringInstructions(FiringDecision fd, WPMapBot bot) {
+	static public FiringInstructions getFastFiringInstructions(FiringDecision fd, MapBotBase bot) {
 		Vector3f to = new Vector3f(fd.enemyInfo.getBestVisibleEnemyPart(bot));
 		Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
 		bot.dtalk.addToLog("Fast firing.");
@@ -102,7 +102,7 @@ public class SimpleAimingModule {
 	 * @param enemyPos
 	 * @return
 	 */
-	static FiringInstructions getNoFiringInstructions(WPMapBot bot, Vector3f enemyPos) {
+	static FiringInstructions getNoFiringInstructions(MapBotBase bot, Vector3f enemyPos) {
 		FiringInstructions ret = new FiringInstructions(CommFun.getNormalizedDirectionVector(bot.getBotPosition(), enemyPos));
 		ret.doFire = false;
 		return ret;
