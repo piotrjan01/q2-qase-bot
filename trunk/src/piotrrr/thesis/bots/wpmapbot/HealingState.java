@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.wpmapbot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.entities.EntityType;

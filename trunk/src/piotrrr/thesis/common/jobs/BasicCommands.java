@@ -3,7 +3,7 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.bots.wpmapbot.WPMapBot;
 import piotrrr.thesis.common.combat.EnemyInfo;
 
 /**
@@ -77,17 +77,17 @@ public class BasicCommands extends Job {
 				}
 				
 				else if (cmd.equals("nofire")) {
-					bot.say("noFire = "+( ! ((SimpleBot)bot).noFire));
-					((SimpleBot)bot).noFire = ! ((SimpleBot)bot).noFire;
+					bot.say("noFire = "+( ! ((WPMapBot)bot).noFire));
+					((WPMapBot)bot).noFire = ! ((WPMapBot)bot).noFire;
 				}
 				else if (cmd.equals("nomove")) {
-					bot.say("noMove = "+( ! ((SimpleBot)bot).noMove));
-					((SimpleBot)bot).noMove = ! ((SimpleBot)bot).noMove;
+					bot.say("noMove = "+( ! ((WPMapBot)bot).noMove));
+					((WPMapBot)bot).noMove = ! ((WPMapBot)bot).noMove;
 				}
 				else if (cmd.startsWith("forcewpn ")) {
 					int wpn = Integer.parseInt(cmd.substring(9));
-					bot.say("forcewpn = "+( ((SimpleBot)bot).forcedweapon));
-					((SimpleBot)bot).forcedweapon = wpn;
+					bot.say("forcewpn = "+( ((WPMapBot)bot).forcedweapon));
+					((WPMapBot)bot).forcedweapon = wpn;
 				}
 				else if (cmd.startsWith("sah ")) {
 					int height = Integer.parseInt(cmd.substring(4));

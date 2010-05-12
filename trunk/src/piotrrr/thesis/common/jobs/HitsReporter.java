@@ -1,7 +1,7 @@
 package piotrrr.thesis.common.jobs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.bots.wpmapbot.WPMapBot;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.state.Entity;
 
@@ -19,14 +19,14 @@ public class HitsReporter extends Job {
 	
 	public HitsReporter(BotBase bot) {
 		super(bot);
-		lastHealth = ((SimpleBot)bot).getBotHealth();
-		lastArmor = ((SimpleBot)bot).getBotArmor();
+		lastHealth = ((WPMapBot)bot).getBotHealth();
+		lastArmor = ((WPMapBot)bot).getBotArmor();
 	}
 	
 	@Override
 	public void run() {
-		float h = ((SimpleBot)bot).getBotHealth();
-		float a = ((SimpleBot)bot).getBotArmor();
+		float h = ((WPMapBot)bot).getBotHealth();
+		float a = ((WPMapBot)bot).getBotArmor();
 		
 		if (h < lastHealth || a < lastArmor) {
 			Dbg.prn(bot.getBotName()+":\t==> BOT HIT: lost h: "+(lastHealth-h)+" lost a: "+(lastArmor-a));

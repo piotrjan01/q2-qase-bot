@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.wpmapbot;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.navigation.NavInstructions;
@@ -11,7 +11,7 @@ public class LocalNav {
 	
 	public static final int acceptableDistance = 40;
 
-	public static NavInstructions getNavigationInstructions(SimpleBot bot) {
+	public static NavInstructions getNavigationInstructions(WPMapBot bot) {
 		
 		NavPlan plan = bot.plan;
 		

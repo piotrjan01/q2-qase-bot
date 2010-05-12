@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.wpmapbot;
 
 import java.util.LinkedList;
 
