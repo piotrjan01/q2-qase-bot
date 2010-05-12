@@ -1,7 +1,7 @@
 package piotrrr.thesis.common.jobs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.wpmapbot.WPMapBot;
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.tools.vecmath.Vector3f;
@@ -31,7 +31,7 @@ public class StuckDetector extends Job {
 		super(bot);
 		this.period = period;
 		this.lastFrame = bot.getFrameNumber();
-		//lastPos = ((WPMapBot)bot).getBotPosition();
+		//lastPos = ((MapBotBase)bot).getBotPosition();
 		//lastlastPos = lastPos;
 	}
 	
@@ -74,7 +74,7 @@ public class StuckDetector extends Job {
 		lastPos = pos;
 		
 		if (distance <= EPSILON) {
-			((WPMapBot)bot).dtalk.addToLog("I'm stuck!");
+			((MapBotBase)bot).dtalk.addToLog("I'm stuck!");
 			isStuck = true;
 		}
 		else isStuck = false;

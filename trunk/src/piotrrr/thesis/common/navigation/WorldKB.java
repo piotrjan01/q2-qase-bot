@@ -1,15 +1,15 @@
-package piotrrr.thesis.bots.smartbot;
+package piotrrr.thesis.common.navigation;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Vector;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.combat.EnemyInfo;
 import piotrrr.thesis.common.entities.EntityDoublePair;
 import piotrrr.thesis.common.entities.EntityType;
-import piotrrr.thesis.common.navigation.EdgeFailure;
 import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.ai.waypoint.WaypointMap;
@@ -47,18 +47,18 @@ public class WorldKB {
 	/**
 	 * Counts waypoints edge failures.
 	 */
-	int [][] waypointEdgesFailures;
+	public int [][] waypointEdgesFailures;
 	
 
 	/**
 	 * Bot that owns this KB
 	 */
-	SmartBot bot = null;
+	MapBotBase bot = null;
 	
 	/**
 	 * The map that is used to navigate.
 	 */
-	WaypointMap map = null;
+	public WaypointMap map = null;
 	
 	/**
 	 * The black list of pickup things. If the bot decides to pickup something, 
@@ -70,14 +70,14 @@ public class WorldKB {
 	/**
 	 * Stores information on the enemies
 	 */
-	HashMap<Integer, EnemyInfo> enemyInformation = new HashMap<Integer, EnemyInfo>();
+	public HashMap<Integer, EnemyInfo> enemyInformation = new HashMap<Integer, EnemyInfo>();
 	
 	/**
 	 * The maximum size of pickupBlaclist
 	 */
 	static final int TARGET_BLACKLIST_MAX_SIZE = 15;
 	
-	private WorldKB(WaypointMap map, SmartBot bot) {
+	private WorldKB(WaypointMap map, MapBotBase bot) {
 		targetBlacklist = new LinkedList<Entity>();
 		this.map = map;
 		this.bot = bot;
@@ -89,8 +89,7 @@ public class WorldKB {
 	 * @param map - the map
 	 * @return the knowledge base
 	 */
-	@SuppressWarnings("unchecked")
-	static WorldKB createKB(String mapPath, SmartBot bot) {
+	public static WorldKB createKB(String mapPath, MapBotBase bot) {
 		WaypointMap map = WaypointMap.loadMap(mapPath);
 		assert map != null;
 		Dbg.prn("Map path: "+mapPath);
@@ -102,7 +101,7 @@ public class WorldKB {
 	 * Returns the number of Entities being stored in KB.
 	 * @return
 	 */
-	int getKBSize() {
+	public int getKBSize() {
 		return getAllItems().size();
 	}
 
@@ -151,6 +150,7 @@ public class WorldKB {
 	/**
 	 * @return all the items known to be in the world (active and inactive).
 	 */
+	@SuppressWarnings("unchecked")
 	public Vector<Entity> getAllItems() {
 		Vector<Entity> items = new Vector<Entity>();
 		items.addAll(bot.getWorld().getWeapons(false));
@@ -190,7 +190,7 @@ public class WorldKB {
 	 * Adds the given entry to black-list
 	 * @param e
 	 */
-	void addToBlackList(Entity ent) {
+	public void addToBlackList(Entity ent) {
 		targetBlacklist.add(ent);
 		if (targetBlacklist.size() > TARGET_BLACKLIST_MAX_SIZE) targetBlacklist.pop();
 		return;
@@ -208,7 +208,7 @@ public class WorldKB {
 	/**
 	 * @return a random item from the world (active or not)
 	 */
-	Entity getRandomItem() {
+	public Entity getRandomItem() {
 		Random r = new Random();
 		Vector<Entity> items = getAllItems();
 		int ind = ((r.nextInt() % items.size()) + items.size()) % items.size();
@@ -219,7 +219,7 @@ public class WorldKB {
 	 * Marks given entity as failed to be picked up. Increments the failure counter.
 	 * @param e
 	 */
-	void failedToPickup(Entity e) {
+	public void failedToPickup(Entity e) {
 		pickupFailures[e.getNumber()] ++ ;
 	}
 	
@@ -227,7 +227,7 @@ public class WorldKB {
 	 * Decrements the pickup failure counter for the given entity
 	 * @param e
 	 */
-	void decPickupFailure(Entity e) {
+	public void decPickupFailure(Entity e) {
 		pickupFailures[e.getNumber()] -- ;
 	}
 	
@@ -299,6 +299,7 @@ public class WorldKB {
 	/**
 	 * Updates the information on the enemies in the world
 	 */
+	@SuppressWarnings("unchecked")
 	public void updateEnemyInformation() {
 		Vector<Integer> toDelete = new Vector<Integer>(); 
 		Vector enems = bot.getWorld().getOpponents(true);

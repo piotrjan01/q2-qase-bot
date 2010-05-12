@@ -3,33 +3,41 @@ package piotrrr.thesis.bots.referencebot;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityDoublePair;
 import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
+import piotrrr.thesis.common.navigation.GlobalNav;
 import piotrrr.thesis.common.navigation.NavPlan;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * The global navigation module of the WPMapBot.
+ * The global navigation module of the MapBotBase.
  * @author Piotr Gwizda³a
- * @see WPMapBot
+ * @see MapBotBase
  */
-public class ReferenceBotGlobalNav {
+public class ReferenceBotGlobalNav extends GlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.1;
 	
 	public static final int maximalDistance = 200;
 	
-	/**
-	 * Returns the new plan that the bot should follow
-	 * @param bot the bot for which the plan is being established
-	 * @param oldPlan the bot's old plan
-	 * @return the new plan for the bot (can be the same as the oldPlan)
-	 */
-	static NavPlan establishNewPlan(WPMapBot bot, NavPlan oldPlan) {
+	@Override
+	public NavPlan establishNewPlan(MapBotBase referenceBot, NavPlan oldPlan) {
+		
+		ReferenceBot bot;
+		
+		try {
+			bot = (ReferenceBot)referenceBot;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	
 		/**
 		 * When do we change the plan?
@@ -170,7 +178,7 @@ public class ReferenceBotGlobalNav {
 	 * @param bot the bot for whom we search for the plan
 	 * @return the navigation plan with just wan waypoint that is close to the bot - so called spontaneous plan.
 	 */
-	static NavPlan getSpontaneousPlan(WPMapBot bot) {
+	static NavPlan getSpontaneousPlan(MapBotBase bot) {
 		NavPlan newPlan = null;
 		
 		Vector<Entity> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
@@ -213,7 +221,7 @@ public class ReferenceBotGlobalNav {
 	 * @param bot
 	 * @return the random spontaneous decision.
 	 */
-	static NavPlan getSpontaneousAntiStuckPlan(WPMapBot bot) {
+	static NavPlan getSpontaneousAntiStuckPlan(MapBotBase bot) {
 		Entity re = bot.kb.getRandomItem();
 		bot.kb.decPickupFailure(re);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
@@ -235,7 +243,7 @@ public class ReferenceBotGlobalNav {
 	 * @return distance between from and to following the shortest path on the map. 
 	 * Double.MAX_VALUE is returned in case there is no path.
 	 */
-	static double getDistanceFollowingMap(WPMapBot bot, Vector3f from, Vector3f to) {
+	static double getDistanceFollowingMap(MapBotBase bot, Vector3f from, Vector3f to) {
 		double distance = 0.0d;
 		Waypoint [] path = bot.kb.map.findShortestPath(from, to);
 		if (path == null) {
