@@ -13,9 +13,9 @@ import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * The global navigation module of the SimpleBot.
+ * The global navigation module of the WPMapBot.
  * @author Piotr Gwizda³a
- * @see SimpleBot
+ * @see WPMapBot
  */
 public class GlobalNav {
 	

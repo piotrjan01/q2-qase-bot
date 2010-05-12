@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.wpmapbot;
 
 import java.util.TreeSet;
 import java.util.Vector;
@@ -13,9 +13,9 @@ import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * The global navigation module of the SimpleBot.
+ * The global navigation module of the WPMapBot.
  * @author Piotr Gwizda³a
- * @see SimpleBot
+ * @see WPMapBot
  */
 public class GlobalNav {
 	
@@ -29,7 +29,7 @@ public class GlobalNav {
 	 * @param oldPlan the bot's old plan
 	 * @return the new plan for the bot (can be the same as the oldPlan)
 	 */
-	static NavPlan establishNewPlan(SimpleBot bot, NavPlan oldPlan) {
+	static NavPlan establishNewPlan(WPMapBot bot, NavPlan oldPlan) {
 	
 		/**
 		 * When do we change the plan?
@@ -170,7 +170,7 @@ public class GlobalNav {
 	 * @param bot the bot for whom we search for the plan
 	 * @return the navigation plan with just wan waypoint that is close to the bot - so called spontaneous plan.
 	 */
-	static NavPlan getSpontaneousPlan(SimpleBot bot) {
+	static NavPlan getSpontaneousPlan(WPMapBot bot) {
 		NavPlan newPlan = null;
 		
 		Vector<Entity> entries = bot.kb.getActiveEntitiesWithinTheRange(bot.getBotPosition(), maximalDistance, bot.getFrameNumber());
@@ -213,7 +213,7 @@ public class GlobalNav {
 	 * @param bot
 	 * @return the random spontaneous decision.
 	 */
-	static NavPlan getSpontaneousAntiStuckPlan(SimpleBot bot) {
+	static NavPlan getSpontaneousAntiStuckPlan(WPMapBot bot) {
 		Entity re = bot.kb.getRandomItem();
 		bot.kb.decPickupFailure(re);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
@@ -235,7 +235,7 @@ public class GlobalNav {
 	 * @return distance between from and to following the shortest path on the map. 
 	 * Double.MAX_VALUE is returned in case there is no path.
 	 */
-	static double getDistanceFollowingMap(SimpleBot bot, Vector3f from, Vector3f to) {
+	static double getDistanceFollowingMap(WPMapBot bot, Vector3f from, Vector3f to) {
 		double distance = 0.0d;
 		Waypoint [] path = bot.kb.map.findShortestPath(from, to);
 		if (path == null) {

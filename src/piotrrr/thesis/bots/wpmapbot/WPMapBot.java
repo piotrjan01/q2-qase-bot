@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.simplebot;
+package piotrrr.thesis.bots.wpmapbot;
 
 
 import piotrrr.thesis.bots.botbase.BotBase;
@@ -22,11 +22,10 @@ import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * This is a simple bot that will be used as a base of other bots as well as 
- * reference in comparative study.
+ * This is a basic bot that uses WaypointMap and WorldKB to store knowledge.
  * @author Piotr Gwizda³a
  */
-public class SimpleBot extends BotBase {
+public class WPMapBot extends BotBase {
 	
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
@@ -86,7 +85,7 @@ public class SimpleBot extends BotBase {
 	 * @param botName the name of the bot to be created
 	 * @param skinName the name of the skin to be used
 	 */
-	public SimpleBot(String botName, String skinName) {
+	public WPMapBot(String botName, String skinName) {
 		super(botName, skinName);
 		fsm = new NeedsFSM(this);
 

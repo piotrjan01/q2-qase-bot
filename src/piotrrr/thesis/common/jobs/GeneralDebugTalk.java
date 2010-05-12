@@ -1,7 +1,7 @@
 package piotrrr.thesis.common.jobs;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.bots.wpmapbot.WPMapBot;
 import piotrrr.thesis.tools.Dbg;
 
 /**
@@ -36,7 +36,7 @@ public class GeneralDebugTalk extends Job {
 		
 		float h = bot.getBotHealth();
 		float a = bot.getBotArmor();
-		String st = ((SimpleBot)bot).getCurrentStateName();
+		String st = ((WPMapBot)bot).getCurrentStateName();
 		
 		String say = toSay+"  H="+h+" A="+a+" St="+st;
 		bot.say(say);

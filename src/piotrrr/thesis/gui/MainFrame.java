@@ -17,7 +17,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 
 import piotrrr.thesis.bots.StartBots;
-import piotrrr.thesis.bots.simplebot.SimpleBot;
+import piotrrr.thesis.bots.wpmapbot.WPMapBot;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.DebugStepJob;
@@ -591,7 +591,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectDebugedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectDebugedButtonActionPerformed
-    	SimpleBot bot = new SimpleBot("DebuggedBot", StartBots.skinName);
+    	WPMapBot bot = new WPMapBot("DebuggedBot", StartBots.skinName);
     	bot.addBotJob(new HitsReporter(bot));
 		bot.connect(StartBots.serverIP, StartBots.serverPort);
 		stepJob = new DebugStepJob(bot, this);
@@ -602,7 +602,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
     	int num = Integer.parseInt(nrBotsField.getText());
     	for (int i=0; i<num; i++) {
-    		SimpleBot bot = new SimpleBot("AnotherBot-"+i, StartBots.skinName);
+    		WPMapBot bot = new WPMapBot("AnotherBot-"+i, StartBots.skinName);
     		bot.dtalk.active = false;
     		bot.addBotJob(new HitsReporter(bot));
     		bot.connect(StartBots.serverIP, StartBots.serverPort);	
@@ -626,11 +626,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (dbgBot != null) dbgBot.disconnect();
-        for (SimpleBot b : anotherBots) b.disconnect();
+        for (WPMapBot b : anotherBots) b.disconnect();
     }//GEN-LAST:event_formWindowClosing
 
     private void pauseAnotherBotsToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseAnotherBotsToggleActionPerformed
-       for (SimpleBot b : anotherBots) {
+       for (WPMapBot b : anotherBots) {
            b.botPaused = pauseAnotherBotsToggle.isSelected();
        }
     }//GEN-LAST:event_pauseAnotherBotsToggleActionPerformed
@@ -640,7 +640,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_discDbgButtonActionPerformed
 
     private void discAnotherBotsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discAnotherBotsButtonActionPerformed
-    	for (SimpleBot b : anotherBots) b.disconnect();
+    	for (WPMapBot b : anotherBots) b.disconnect();
     }//GEN-LAST:event_discAnotherBotsButtonActionPerformed
 
     private void sendCommandToDBGButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendCommandToDBGButtonActionPerformed
@@ -650,7 +650,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void sendCommandToAnothersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendCommandToAnothersButtonActionPerformed
     	String cmd = jTextField1.getText();
-    	for (SimpleBot b : anotherBots) b.handleCommand(cmd);
+    	for (WPMapBot b : anotherBots) b.handleCommand(cmd);
     }//GEN-LAST:event_sendCommandToAnothersButtonActionPerformed
 
     private void allEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allEntsRadioButton1ActionPerformed
@@ -767,9 +767,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton visibleWaypointsRadioButton2;
     // End of variables declaration//GEN-END:variables
     
-    private SimpleBot dbgBot = null;
+    private WPMapBot dbgBot = null;
     
-    private Vector<SimpleBot> anotherBots = new Vector<SimpleBot>();
+    private Vector<WPMapBot> anotherBots = new Vector<WPMapBot>();
     
     private Vector<GameObject> requiredList = new Vector<GameObject>();
     
