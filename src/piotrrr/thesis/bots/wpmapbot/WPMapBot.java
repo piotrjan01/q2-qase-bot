@@ -9,7 +9,6 @@ import piotrrr.thesis.common.combat.SimpleAimingModule;
 import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.GeneralDebugTalk;
-import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
@@ -31,11 +30,6 @@ public class WPMapBot extends BotBase {
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
 	static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
-
-	/**
-	 * Finite state machine - used to determine bot's needs.
-	 */
-	NeedsFSM fsm;
 	
 	
 	/**
@@ -47,11 +41,6 @@ public class WPMapBot extends BotBase {
 	 * Bot's current navigation plan
 	 */
 	public NavPlan plan = null;
-	
-	/**
-	 * The job that reports the bot's state and state changes.
-	 */
-	public StateReporter stateReporter;
 	
 	/**
 	 * The job that detects when the bot is stuck.
@@ -87,19 +76,12 @@ public class WPMapBot extends BotBase {
 	 */
 	public WPMapBot(String botName, String skinName) {
 		super(botName, skinName);
-		fsm = new NeedsFSM(this);
-
 		dtalk = new GeneralDebugTalk(this, 30);
 //		dtalk.active = false;
 		
-		stateReporter = new StateReporter(this);
 		stuckDetector = new StuckDetector(this, 5);
-		
 		basicCommands = new BasicCommands(this, "Player");
-		
 		addBotJob(dtalk);
-		
-		addBotJob(stateReporter);
 		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
 	}
@@ -187,14 +169,7 @@ public class WPMapBot extends BotBase {
 	}
 	
 	
-	/**
-	 * Returns the current name of the state of bot's finite state machine.
-	 * @return state name
-	 */
-	public String getCurrentStateName() {
-		String stateName =  fsm.getCurrentStateName();
-		return stateName.substring(stateName.lastIndexOf(".")+1);
-	}
+	
 	
 	@Override
 	public void respawn() {
@@ -220,7 +195,6 @@ public class WPMapBot extends BotBase {
 		return "Bot name: "+getBotName()+"\n"+
 				"health: "+getBotHealth()+"\n"+
 				"armor: "+getBotArmor()+"\n"+
-				"state name: "+getCurrentStateName()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
 				"KB size: "+kb.getKBSize()+"\n"+
 				"position: "+getBotPosition()+"\n"+

@@ -102,7 +102,7 @@ public class WorldKB {
 	 * Returns the number of Entities being stored in KB.
 	 * @return
 	 */
-	int getKBSize() {
+	public int getKBSize() {
 		return getAllItems().size();
 	}
 

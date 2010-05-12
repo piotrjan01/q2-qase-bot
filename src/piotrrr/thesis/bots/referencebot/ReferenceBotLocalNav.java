@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.smartbot;
+package piotrrr.thesis.bots.referencebot;
 
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.navigation.NavInstructions;
@@ -7,11 +7,11 @@ import piotrrr.thesis.tools.Dbg;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class LocalNav {
+public class ReferenceBotLocalNav {
 	
 	public static final int acceptableDistance = 40;
 
-	public static NavInstructions getNavigationInstructions(SmartBot bot) {
+	public static NavInstructions getNavigationInstructions(WPMapBot bot) {
 		
 		NavPlan plan = bot.plan;
 		
