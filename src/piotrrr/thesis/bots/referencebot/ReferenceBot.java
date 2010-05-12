@@ -16,16 +16,11 @@ public class ReferenceBot extends MapBotBase {
 	 * Finite state machine - used to determine bot's needs.
 	 */
 	NeedsFSM fsm;
-	
 
 	/**
 	 * The job that reports the bot's state and state changes.
 	 */
 	public StateReporter stateReporter;
-	
-	
-	
-	
 
 	public ReferenceBot(String botName, String skinName) {
 		super(botName, skinName);
@@ -33,6 +28,9 @@ public class ReferenceBot extends MapBotBase {
 		stateReporter = new StateReporter(this);
 		addBotJob(dtalk);
 		addBotJob(stateReporter);
+		
+		globalNav = new ReferenceBotGlobalNav();
+		localNav = new ReferenceBotLocalNav();
 	}
 	
 	

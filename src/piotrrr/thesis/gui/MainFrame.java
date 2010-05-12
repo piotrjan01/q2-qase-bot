@@ -16,7 +16,8 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
 
-import piotrrr.thesis.bots.StartBots;
+import piotrrr.thesis.bots.BotsConfig;
+import piotrrr.thesis.bots.referencebot.ReferenceBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
@@ -591,9 +592,9 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectDebugedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectDebugedButtonActionPerformed
-    	MapBotBase bot = new MapBotBase("DebuggedBot", StartBots.skinName);
+    	ReferenceBot bot = new ReferenceBot("DebuggedBot", BotsConfig.skinName);
     	bot.addBotJob(new HitsReporter(bot));
-		bot.connect(StartBots.serverIP, StartBots.serverPort);
+		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);
 		stepJob = new DebugStepJob(bot, this);
 		bot.addBotJob(stepJob);
 		dbgBot = bot;
@@ -602,10 +603,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
     	int num = Integer.parseInt(nrBotsField.getText());
     	for (int i=0; i<num; i++) {
-    		MapBotBase bot = new MapBotBase("AnotherBot-"+i, StartBots.skinName);
+    		ReferenceBot bot = new ReferenceBot("ReferenceBot-"+i, BotsConfig.skinName);
     		bot.dtalk.active = false;
     		bot.addBotJob(new HitsReporter(bot));
-    		bot.connect(StartBots.serverIP, StartBots.serverPort);	
+    		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);	
     		anotherBots.add(bot);
     	}
     }//GEN-LAST:event_connectOthersButtonActionPerformed
@@ -708,7 +709,7 @@ public class MainFrame extends javax.swing.JFrame {
     * @param args the command line arguments
     */
     public static void main(String args[]) {
-    	System.setProperty("QUAKE2", StartBots.quakePath);
+    	System.setProperty("QUAKE2", BotsConfig.quakePath);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainFrame mf = new MainFrame();
@@ -767,9 +768,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton visibleWaypointsRadioButton2;
     // End of variables declaration//GEN-END:variables
     
-    private MapBotBase dbgBot = null;
+    private ReferenceBot dbgBot = null;
     
-    private Vector<MapBotBase> anotherBots = new Vector<MapBotBase>();
+    private Vector<ReferenceBot> anotherBots = new Vector<ReferenceBot>();
     
     private Vector<GameObject> requiredList = new Vector<GameObject>();
     
