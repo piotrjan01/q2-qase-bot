@@ -17,7 +17,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * @author Piotr Gwizda³a
  * @see WPMapBot
  */
-public class GlobalNav {
+public class SmartBotGlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.1;
 	
@@ -58,10 +58,10 @@ public class GlobalNav {
 			bot.kb.addToBlackList(oldPlan.dest);
 			talk = "plan change: old plan is done!";
 		}
-		else if (bot.stateReporter.stateHasChanged) {
-			changePlan = true;
-			talk = "plan change: state changed";
-		}
+//		else if (bot.stateReporter.stateHasChanged) {
+//			changePlan = true;
+//			talk = "plan change: state changed";
+//		}
 		//if the bot is stuck
 		else if (bot.stuckDetector.isStuck) {
 			changePlan = true;
