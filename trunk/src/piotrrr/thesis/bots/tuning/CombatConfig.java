@@ -1,93 +1,130 @@
 package piotrrr.thesis.bots.tuning;
 
-public class CombatConfig {
+import java.lang.reflect.Field;
+
+
+public class CombatConfig implements Config {
 	
 	/**
 	 * Maximum time allowed that the bullet would take to hit the target. 
 	 * If time to hit is grater than this, the shooting is not performed.
 	 */
-	public Param<Float> MAX_TIME_TO_HIT = new Param<Float>(20f, 3f, 30f);
+	public float maxTimeToHit = 20f;
+	public float maxTimeToHit_MIN = 3f;
+	public float maxTimeToHit_MAX = 30f;
 	
 	/**
 	 * Maximum error of the prediction to still consider the prediction good
 	 */
-	public Param<Float> MAX_PREDICTION_ERROR = new Param<Float>(60f, 10f, 200f);
+	public float maxPredictionError = 60f;
+	public float maxPredictionError_MIN = 10f;
+	public float maxPredictionError_MAX = 200f;
 	
 	/**
 	 * The maximal age of enemy information to be considered relevant
 	 * for prediction in the firing module.
 	 */
-	public Param<Integer> MAX_ENEMY_INFO_AGE_4_FIRING = new Param<Integer>(2, 0, 5);
+	public int maxEnemyInfoAge4Firing = 2;
+	public int maxEnemyInfoAge4Firing_MIN = 0;
+	public int maxEnemyInfoAge4Firing_MAX = 5;
 	
 	/**
 	 * The maximum distance to be still considered as short distance when firing
 	 */
-	public Param<Float> MAX_SHORT_DISTANCE_4_FIRING = new Param<Float>(100f, 10f, 500f);
+	public float maxShortDistance4Firing = 100f;
+	public float maxShortDistance4Firing_MIN = 10f;
+	public float maxShortDistance4Firing_MAX = 500f;
 	
 	/**
 	 * The maximum distance to be still considered as short distance when choosing a weapon
 	 */
-	public Param<Float> MAX_SHORT_DISTANCE_4_WP_CHOICE = new Param<Float>(400f, 100f, 800f);
+	public float maxShortDistance4WpChoice = 400f;
+	public float maxShortDistance4WpChoice_MIN = 100f;
+	public float maxShortDistance4WpChoice_MAX = 800f;
 	
 	/**
 	 * The minimum distance to be still considered as long distance
 	 */
-	public Param<Float> MIN_LONG_DISTANCE = new Param<Float>(800f, 500f, 1200f);
+	public float minLongDistance = 800f;
+	public float minLongDistance_MIN = 500f;
+	public float minLongDistance_MAX = 1200f;
 	
 	/**
 	 * Weapon preference weight
 	 */
-	public Param<Integer> WP_WEIGHT_BLASTER = new Param<Integer>(10, 0, 100);
+	public int wpWBlaster = 10;
+	public int wpWBlaster_MIN = 0;
+	public int wpWBlaster_MAX = 100;
 	
 	/**
 	 * Weapon preference weight
 	 */
-	public Param<Integer> WP_WEIGHT_SHOTGUN = new Param<Integer>(30, 0, 100);
+	public int wpWShotgun = 30;
+	public int wpWShotgun_MIN = 0;
+	public int wpWShotgun_MAX = 100;
 	
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_SUPER_SHOTGUN = new Param<Integer>(50, 0, 100);
+	public int wpWSuperShotgun = 50;
+	public int wpWSuperShotgun_MIN = 0;
+	public int wpWSuperShotgun_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_MACHINEGUN = new Param<Integer>(60, 0, 100);
+	public int wpWMachinegun = 60;
+	public int wpWMachinegun_MIN = 0;
+	public int wpWMachinegun_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_CHAINGUN = new Param<Integer>(80, 0, 100);
+	public int wpWChaingun = 80;
+	public int wpWChaingun_MIN = 0;
+	public int wpWChaingun_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_GRENADES = new Param<Integer>(0, 0, 100);
+	public int wpWGrenades = 0;
+	public int wpWGrenades_MIN = 0;
+	public int wpWGrenades_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_GRENADE_LAUNCHER = new Param<Integer>(0, 0, 100);
+	public int wpWGrenadeLauncher = 0;
+	public int wpWGrenadeLauncher_MIN = 0;
+	public int wpWGrenadeLauncher_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_ROCKET_LAUNCHER = new Param<Integer>(40, 0, 100);
+	public int wpWRocketLauncher = 40;
+	public int wpWRocketLauncher_MIN = 0;
+	public int wpWRocketLauncher_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_HYPERBLASTER = new Param<Integer>(50, 0, 100);
+	public int wpWHyperblaster = 50;
+	public int wpWHyperblaster_MIN = 0;
+	public int wpWHyperblaster_MAX = 100;
 	
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_RAILGUN = new Param<Integer>(90, 0, 100);
+	public int wpWRailgun = 90;
+	public int wpWRailgun_MIN = 0;
+	public int wpWRailgun_MAX = 100;
 	
 	/**
 	 * Weapon preference weight
 	 */	
-	public Param<Integer> WP_WEIGHT_BFG10K = new Param<Integer>(40, 0, 100);
+	public int wpWBFG10K = 40;
+	public int wpWBFG10K_MIN = 0;
+	public int wpWBFG10KMax_MAX = 100;
 	
 	
 	/**
@@ -160,27 +197,27 @@ public class CombatConfig {
 		
 		switch (ind) {
 		case 7:
-			return WP_WEIGHT_BLASTER.value();
+			return wpWBlaster;
 		case 8:
-			return WP_WEIGHT_SHOTGUN.value();
+			return wpWShotgun;
 		case 9:
-			return WP_WEIGHT_SUPER_SHOTGUN.value();
+			return wpWSuperShotgun;
 		case 10:
-			return WP_WEIGHT_MACHINEGUN.value();
+			return wpWMachinegun;
 		case 11:
-			return WP_WEIGHT_CHAINGUN.value();
+			return wpWChaingun;
 		case 12:
-			return WP_WEIGHT_GRENADES.value();
+			return wpWGrenades;
 		case 13:
-			return WP_WEIGHT_GRENADE_LAUNCHER.value();
+			return wpWGrenadeLauncher;
 		case 14:
-			return WP_WEIGHT_ROCKET_LAUNCHER.value();
+			return wpWRocketLauncher;
 		case 15:
-			return WP_WEIGHT_HYPERBLASTER.value();
+			return wpWHyperblaster;
 		case 16:
-			return WP_WEIGHT_RAILGUN.value();
+			return wpWRailgun;
 		case 17:
-			return WP_WEIGHT_BFG10K.value();
+			return wpWBFG10K;
 		default:
 			return 0;
 		}
@@ -237,5 +274,36 @@ public class CombatConfig {
 		}
 		return bspeed;
 	}
+	
+	@Override
+	public float getParameter(String name) throws Exception {
+		for (Field f : CombatConfig.class.getDeclaredFields()) {
+			if (f.getName().equals(name)) return (Float)f.get(this);
+		}
+		throw new Exception("Unknown field name!");
+	}
+
+	@Override
+	public float getParameterMax(String name) throws Exception {
+		name = name+"_MAX";
+		return getParameter(name);
+	}
+
+	@Override
+	public float getParameterMin(String name) throws Exception {
+		name = name+"_MIN";
+		return getParameter(name);
+	}
+
+	@Override
+	public boolean isParameterInteger(String name) throws Exception {
+		for (Field f : CombatConfig.class.getDeclaredFields()) {
+			if (f.getName().equals(name)) {
+				return (f.getType().equals(Integer.class) || f.getType().equals(int.class));
+			}
+		}
+		throw new Exception("Unknown field name!");
+	}
+	
 	
 }

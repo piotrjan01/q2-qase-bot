@@ -17,8 +17,8 @@ public class EdgeFailure implements GameObject {
 	}
 
 	@Override
-	public Vector3f getPosition() {
-		return dst.getPosition();
+	public Vector3f getObjectPosition() {
+		return dst.getObjectPosition();
 	}
 
 	@Override

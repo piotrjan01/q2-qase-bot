@@ -7,7 +7,6 @@ import piotrrr.thesis.common.combat.SimpleAimingModule;
 import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.navigation.NavInstructions;
-import piotrrr.thesis.common.navigation.WorldKB;
 import soc.qase.ai.waypoint.Waypoint;
 
 public class ReferenceBot extends MapBotBase {
@@ -24,9 +23,10 @@ public class ReferenceBot extends MapBotBase {
 
 	public ReferenceBot(String botName, String skinName) {
 		super(botName, skinName);
+		
 		fsm = new NeedsFSM(this);
+		
 		stateReporter = new StateReporter(this);
-		addBotJob(dtalk);
 		addBotJob(stateReporter);
 		
 		globalNav = new ReferenceBotGlobalNav();
@@ -37,17 +37,6 @@ public class ReferenceBot extends MapBotBase {
 	@Override
 	protected void botLogic() {
 		super.botLogic();
-		
-		if (botPaused) return;
-		
-		if (kb == null) { 
-			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
-			assert kb != null;
-			dtalk.addToLog("KB loaded!");
-		}
-		
-		kb.updateEnemyInformation();
-		
 	
 		NavInstructions ni = null;
 		if ( ! noMove) {
@@ -65,7 +54,7 @@ public class ReferenceBot extends MapBotBase {
 			fd = SimpleCombatModule.getFiringDecision(this);
 			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
 			else {
-				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value()+0.1f);
+				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.maxShortDistance4WpChoice+0.1f);
 				if (getWeaponIndex() != justInCaseWeaponIndex)
 					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
 			}
@@ -86,22 +75,17 @@ public class ReferenceBot extends MapBotBase {
 	}
 	
 	@Override
-	public String toString() {
-		
-		int edgs = 0;
-		for (Waypoint wp : kb.map.getAllNodes()) {
-			edgs += wp.getEdges().length;
-		}
+	public String toDetailedString() {
 		
 		return "Bot name: "+getBotName()+"\n"+
 				"health: "+getBotHealth()+"\n"+
 				"armor: "+getBotArmor()+"\n"+
 				"state name: "+getCurrentStateName()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
-				"KB size: "+kb.getKBSize()+"\n"+
 				"position: "+getBotPosition()+"\n"+
-				"map wps: "+kb.map.getAllNodes().length+"\n"+
-				"map edges: "+edgs+"\n";
+				kb.toString();
 	}
+	
+	
 
 }

@@ -7,6 +7,6 @@ public interface GameObject {
 	
 	String toDetailedString();
 	
-	Vector3f getPosition();
+	Vector3f getObjectPosition();
 
 }

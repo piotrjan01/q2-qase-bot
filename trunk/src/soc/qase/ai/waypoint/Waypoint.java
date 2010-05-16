@@ -103,7 +103,7 @@ public class Waypoint implements Serializable, GameObject
 /**	Obtain the position of this waypoint.
  *	@return a Vector3f indicating the position of this waypoint */
 /*-------------------------------------------------------------------*/
-	public Vector3f getPosition()
+	public Vector3f getObjectPosition()
 	{
 		return new Vector3f(pos);
 	}

@@ -66,10 +66,14 @@ public class BasicCommands extends Job {
 		}
 		else if (cmd.startsWith("cmd ")) {
 			String todo = cmd.substring(4);
+			bot.say("Passing the command to console: "+todo);
 			bot.consoleCommand(todo);
 		}
 		else {
 			try {
+				
+				//We cover the field casting it to MapBotBase
+				MapBotBase bot = (MapBotBase)this.bot;
 			
 				if (cmd.equals("pausebot")) {
 					bot.say("pause = "+(!bot.botPaused));
@@ -77,17 +81,17 @@ public class BasicCommands extends Job {
 				}
 				
 				else if (cmd.equals("nofire")) {
-					bot.say("noFire = "+( ! ((MapBotBase)bot).noFire));
-					((MapBotBase)bot).noFire = ! ((MapBotBase)bot).noFire;
+					bot.say("noFire = "+( ! bot.noFire));
+					bot.noFire = ! bot.noFire;
 				}
 				else if (cmd.equals("nomove")) {
-					bot.say("noMove = "+( ! ((MapBotBase)bot).noMove));
-					((MapBotBase)bot).noMove = ! ((MapBotBase)bot).noMove;
+					bot.say("noMove = "+( ! bot.noMove));
+					bot.noMove = ! bot.noMove;
 				}
 				else if (cmd.startsWith("forcewpn ")) {
 					int wpn = Integer.parseInt(cmd.substring(9));
-					bot.say("forcewpn = "+( ((MapBotBase)bot).forcedweapon));
-					((MapBotBase)bot).forcedweapon = wpn;
+					bot.say("forced weapon = "+bot.forcedweapon);
+					bot.forcedweapon = wpn;
 				}
 				else if (cmd.startsWith("sah ")) {
 					int height = Integer.parseInt(cmd.substring(4));

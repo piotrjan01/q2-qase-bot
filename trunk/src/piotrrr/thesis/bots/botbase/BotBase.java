@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.Job;
 import soc.qase.bot.NoClipBot;
 import soc.qase.file.bsp.BSPParser;
@@ -15,7 +16,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * The bot that is used as super class for all the other bots.
  * @author Piotr Gwizda³a
  */
-public class BotBase extends NoClipBot {
+public class BotBase extends NoClipBot implements GameObject {
 	
 	/**
 	 * Stores all the jobs of the bot, that he runs every frame.
@@ -334,6 +335,21 @@ public class BotBase extends NoClipBot {
 	 */
 	public void goToPositionWithNoClipCheating(Vector3f dst) {
 		clipToPosition(dst);
+	}
+	
+	@Override
+	public String toString() {
+		return getBotName();
+	}
+	
+	@Override
+	public String toDetailedString() {
+		return toString();
+	}
+
+	@Override
+	public Vector3f getObjectPosition() {
+		return new Vector3f(getPosition());
 	}
 
 }
