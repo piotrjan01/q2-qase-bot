@@ -129,13 +129,13 @@ public String toString() {
 }
 
 @Override
-public Vector3f getPosition() {
-	return getNode().getPosition();
+public Vector3f getObjectPosition() {
+	return getNode().getObjectPosition();
 }
 
 @Override
 public String toDetailedString() {
-	return "pos: "+getPosition()+"\n"+
+	return "pos: "+getObjectPosition()+"\n"+
 			"cat/type: "+toString()+"\n"+
 			"\nWaypoint:\n"+node.toDetailedString();
 			

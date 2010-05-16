@@ -13,7 +13,6 @@ import piotrrr.thesis.common.navigation.NavInstructions;
 import piotrrr.thesis.common.navigation.NavPlan;
 import piotrrr.thesis.common.navigation.WorldKB;
 import piotrrr.thesis.tools.Dbg;
-import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Action;
 import soc.qase.state.Angles;
 import soc.qase.state.Entity;
@@ -102,6 +101,16 @@ public class MapBotBase extends BotBase {
 	@Override
 	protected void botLogic() {
 		
+		if (botPaused) return;
+		
+		if (kb == null) { 
+			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
+			assert kb != null;
+			dtalk.addToLog("KB loaded!");
+		}
+		
+		kb.updateEnemyInformation();
+		
 		//MapBotBase doesn't do anything
 		
 	}
@@ -157,21 +166,14 @@ public class MapBotBase extends BotBase {
 	}
 	
 	@Override
-	public String toString() {
-		
-		int edgs = 0;
-		for (Waypoint wp : kb.map.getAllNodes()) {
-			edgs += wp.getEdges().length;
-		}
+	public String toDetailedString() {
 		
 		return "Bot name: "+getBotName()+"\n"+
 				"health: "+getBotHealth()+"\n"+
 				"armor: "+getBotArmor()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
-				"KB size: "+kb.getKBSize()+"\n"+
 				"position: "+getBotPosition()+"\n"+
-				"map wps: "+kb.map.getAllNodes().length+"\n"+
-				"map edges: "+edgs+"\n";
+				kb.toString();
 	}
 	
 	/**
@@ -181,7 +183,7 @@ public class MapBotBase extends BotBase {
 	public boolean isOpponentVisible() {
 		for (Object o : world.getOpponents(true)) {
 			Entity e = (Entity)o;
-			if (getBsp().isVisible(getBotPosition(), e.getPosition())) return true;
+			if (getBsp().isVisible(getBotPosition(), e.getObjectPosition())) return true;
 		}
 		return false;
 	}

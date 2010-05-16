@@ -91,8 +91,8 @@ public class WorldKB {
 	 */
 	public static WorldKB createKB(String mapPath, MapBotBase bot) {
 		WaypointMap map = WaypointMap.loadMap(mapPath);
-		assert map != null;
 		Dbg.prn("Map path: "+mapPath);
+		assert map != null;
 		WorldKB ret = new WorldKB(map, bot);
 		return ret;
 	}
@@ -139,7 +139,7 @@ public class WorldKB {
 			if ( ! isPickableType(e)) continue;
 			if (targetBlacklist.contains(e)) continue;
 			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
-			double dist = CommFun.getDistanceBetweenPositions(pos, e.getPosition());
+			double dist = CommFun.getDistanceBetweenPositions(pos, e.getObjectPosition());
 			if (dist > maxRange) continue;
 			ret.add(e);
 		}
@@ -165,7 +165,7 @@ public class WorldKB {
 		Vector<Waypoint> ret = new Vector<Waypoint>();
 		Waypoint [] wps = map.getAllNodes();
 		for (Waypoint wp : wps) {
-			if (bot.getBsp().isVisible(bot.getBotPosition(), wp.getPosition())) {
+			if (bot.getBsp().isVisible(bot.getBotPosition(), wp.getObjectPosition())) {
 				ret.add(wp);
 			}
 		}
@@ -179,7 +179,7 @@ public class WorldKB {
 		Vector<Entity> ret = new Vector<Entity>();
 		for (Object o : bot.getWorld().getEntities(false)) {
 			Entity e = (Entity)o;
-			if ( ! bot.getBsp().isVisible(bot.getBotPosition(), e.getPosition())) continue;
+			if ( ! bot.getBsp().isVisible(bot.getBotPosition(), e.getObjectPosition())) continue;
 			ret.add(e);
 		}
 		return ret;
@@ -327,6 +327,25 @@ public class WorldKB {
 		Vector<EnemyInfo> ret = new Vector<EnemyInfo>();
 		ret.addAll(enemyInformation.values());
 		return ret;
+	}
+	
+	@Override
+	public String toString() {
+		
+		int edges = 0;
+		if (map != null) {
+			for (Waypoint w : map.getAllNodes()) 
+				edges += w.getEdges().length;
+		}
+		
+		return "Knowledge base info: \n"+
+				"size: "+getKBSize()+"\n"+
+				"blacklist size: "+targetBlacklist.size()+"\n"+
+				"enemy info size: "+getAllEnemyInformation().size()+"\n"+
+				"nodes on map: "+map.getAllNodes().length+"\n"+
+				"edges on map: "+edges+"\n"+
+				"edge failures size: "+getAllEdgeFailures().size()+"\n"+
+				"pickup failures size: "+getAllEntsWithPickupFailure().size()+"\n";
 	}
 	
 

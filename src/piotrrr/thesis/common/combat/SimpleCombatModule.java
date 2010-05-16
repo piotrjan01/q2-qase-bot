@@ -16,14 +16,14 @@ public class SimpleCombatModule {
 			
 			if ( ei.getBestVisibleEnemyPart(bot) == null ) continue;
 					
-			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getPosition());
+			float risk = CommFun.getDistanceBetweenPositions(playerPos, ei.getObjectPosition());
 			if (risk < chosenRisk) {
 				chosen = ei;
 				chosenRisk = risk;
 			}
 		}
 		if (chosen == null)	return null;
-		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getPosition());
+		float distance = CommFun.getDistanceBetweenPositions(playerPos, chosen.getObjectPosition());
 		return new FiringDecision(chosen, chooseWeapon(bot, distance));
 	}
 	
@@ -47,8 +47,8 @@ public class SimpleCombatModule {
 		int gunInd = 7;
 		for (int i=7; i<18; i++) {
 			if ( ! bot.botHasItem(i) || ! bot.botHasItem(CombatConfig.ammoTable[i])) continue;
-			if (distance < bot.cConfig.MAX_SHORT_DISTANCE_4_WP_CHOICE.value() && CombatConfig.isBannedForShortDistance(i)) continue;
-			if (distance > bot.cConfig.MIN_LONG_DISTANCE.value() && CombatConfig.isBannedForLongDistance(i)) continue;
+			if (distance < bot.cConfig.maxShortDistance4WpChoice && CombatConfig.isBannedForShortDistance(i)) continue;
+			if (distance > bot.cConfig.minLongDistance && CombatConfig.isBannedForLongDistance(i)) continue;
 			int weight = bot.cConfig.getWeaponWeightByInvIndex(i);
 			if (weight > maxWeight) {
 				maxWeight = weight;

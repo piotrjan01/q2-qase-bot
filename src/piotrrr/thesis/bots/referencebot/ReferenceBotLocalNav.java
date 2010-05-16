@@ -24,7 +24,7 @@ public class ReferenceBotLocalNav extends LocalNav {
 		
 		
 		//If we are next to destination.
-		if (CommFun.getDistanceBetweenPositions(plan.dest.getPosition(), playerPos)
+		if (CommFun.getDistanceBetweenPositions(plan.dest.getObjectPosition(), playerPos)
 				<= acceptableDistance) {
 			plan.done = true;
 			return null;
@@ -34,7 +34,7 @@ public class ReferenceBotLocalNav extends LocalNav {
 		//TODO: why the path can be null? ????
 		//If the path is null, we can't do anything.
 		if (plan.path == null) {
-			plan.path = bot.kb.findShortestPath(playerPos, plan.dest.getPosition());
+			plan.path = bot.kb.findShortestPath(playerPos, plan.dest.getObjectPosition());
 			if (plan.path == null) {
 				Dbg.err("Path is null!");
 				return null;
@@ -44,7 +44,7 @@ public class ReferenceBotLocalNav extends LocalNav {
 		int posture = PlayerMove.POSTURE_NORMAL;
 		
 		//If we are close enough to waypoint, consider the next one.
-		if (plan.pathIndex < plan.path.length && CommFun.getDistanceBetweenPositions(plan.path[plan.pathIndex].getPosition(), playerPos)
+		if (plan.pathIndex < plan.path.length && CommFun.getDistanceBetweenPositions(plan.path[plan.pathIndex].getObjectPosition(), playerPos)
 				<= acceptableDistance) {
 			plan.pathIndex++;
 		}
@@ -52,9 +52,9 @@ public class ReferenceBotLocalNav extends LocalNav {
 		if (plan.pathIndex >= plan.path.length) { 
 			//If we have already went through all the path, 
 			//we set ourselves towards destination
-			desiredPos = plan.dest.getPosition();
+			desiredPos = plan.dest.getObjectPosition();
 		}
-		else desiredPos = plan.path[plan.pathIndex].getPosition();
+		else desiredPos = plan.path[plan.pathIndex].getObjectPosition();
 		
 		movDir = CommFun.getNormalizedDirectionVector(playerPos, desiredPos);
 		

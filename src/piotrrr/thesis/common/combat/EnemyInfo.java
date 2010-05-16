@@ -56,18 +56,18 @@ public class EnemyInfo implements GameObject {
 	}
 
 	@Override
-	public Vector3f getPosition() {
-		return ent.getPosition();
+	public Vector3f getObjectPosition() {
+		return ent.getObjectPosition();
 	}
 	
 	public Vector3f getPositionHead() {
-		Vector3f r = new Vector3f(ent.getPosition());
+		Vector3f r = new Vector3f(ent.getObjectPosition());
 		r.z += agentsHeight/2;
 		return r;
 	}
 	
 	public Vector3f getPositionFeet() {
-		Vector3f r = new Vector3f(ent.getPosition());
+		Vector3f r = new Vector3f(ent.getObjectPosition());
 		r.z -= agentsHeight/2;
 		return r;
 	}
@@ -76,7 +76,7 @@ public class EnemyInfo implements GameObject {
 	public String toDetailedString() {
 		return "Enemy name: "+ent.getName()+"\n"+
 				"last update frame: "+lastUpdateFrame+"\n"+
-				"position: "+ent.getPosition()+"\n"+
+				"position: "+ent.getObjectPosition()+"\n"+
 				"last position: "+lastPos+"\n"+
 				"predicted position: "+predictedPos+"\n"+
 				"last prediction error: "+lastPredictionError+"\n"+
@@ -98,7 +98,7 @@ public class EnemyInfo implements GameObject {
 		
 
 		//new last position is the current position (will be used next time).
-		lastPos = ent.getPosition();
+		lastPos = ent.getObjectPosition();
 		//we copy the whole entity
 		ent = e.deepCopy();
 		//if we suspect the opponent is dead, we mark it as inactive (some QASE bug ?)
@@ -122,8 +122,8 @@ public class EnemyInfo implements GameObject {
 	 * @return The predicted enemy position in next frame
 	 */
 	private Vector3f predictPositionBasingOnMovement() {
-		Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, getPosition());
-		Vector3f ret = CommFun.cloneVector(getPosition());
+		Vector3f movement = CommFun.getMovementBetweenVectors(lastPos, getObjectPosition());
+		Vector3f ret = CommFun.cloneVector(getObjectPosition());
 		ret.add(movement);
 		return ret;
 	}
@@ -134,7 +134,7 @@ public class EnemyInfo implements GameObject {
 	 */
 	private float getPredictionError() {
 		if (predictedPos == null) return Float.MAX_VALUE;
-		return CommFun.getDistanceBetweenPositions(getPosition(), predictedPos);
+		return CommFun.getDistanceBetweenPositions(getObjectPosition(), predictedPos);
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class EnemyInfo implements GameObject {
 	 */
 	private float getMovementDistance() {
 		if (lastPos == null) return Float.MAX_VALUE;
-		return CommFun.getDistanceBetweenPositions(lastPos, getPosition());
+		return CommFun.getDistanceBetweenPositions(lastPos, getObjectPosition());
 	}
 	
 	@Override
@@ -181,7 +181,7 @@ public class EnemyInfo implements GameObject {
 		if (ent.isCrouching()) {
 			if ( bot.getBsp().isVisible(botPos, getPositionFeet())) return getPositionFeet();
 		}
-		if ( bot.getBsp().isVisible(botPos, getPosition())) return getPosition();
+		if ( bot.getBsp().isVisible(botPos, getObjectPosition())) return getObjectPosition();
 		else if ( bot.getBsp().isVisible(botPos, getPositionFeet())) {
 			return getPositionFeet();
 		}

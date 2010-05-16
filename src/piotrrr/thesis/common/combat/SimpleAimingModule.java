@@ -20,14 +20,14 @@ public class SimpleAimingModule {
 		if (fd == null || fd.enemyInfo == null) return null;
 		
 		boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
-		Vector3f noFiringLook = fd.enemyInfo.predictedPos == null ? fd.enemyInfo.getPosition() : fd.enemyInfo.predictedPos;
+		Vector3f noFiringLook = fd.enemyInfo.predictedPos == null ? fd.enemyInfo.getObjectPosition() : fd.enemyInfo.predictedPos;
 		if (reloading) return getNoFiringInstructions(bot, noFiringLook);
 		
-		if (fd.enemyInfo.lastUpdateFrame + bot.cConfig.MAX_ENEMY_INFO_AGE_4_FIRING.value() < bot.getFrameNumber()) 
+		if (fd.enemyInfo.lastUpdateFrame + bot.cConfig.maxEnemyInfoAge4Firing < bot.getFrameNumber()) 
 			return getNoFiringInstructions(bot, noFiringLook);
 		
 		
-		if (fd.enemyInfo.lastPredictionError > bot.cConfig.MAX_PREDICTION_ERROR.value()) {
+		if (fd.enemyInfo.lastPredictionError > bot.cConfig.maxPredictionError) {
 			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
 			return getFastFiringInstructions(fd, bot);
 		}
@@ -50,7 +50,7 @@ public class SimpleAimingModule {
 		
 		float distance = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
 		
-		if (distance < bot.cConfig.MAX_SHORT_DISTANCE_4_FIRING.value()) {
+		if (distance < bot.cConfig.maxShortDistance4Firing) {
 			bot.dtalk.addToLog("Target is very close. Fast firing.");
 			return getFastFiringInstructions(fd, bot);
 		}
@@ -60,7 +60,7 @@ public class SimpleAimingModule {
 		if (timeToHit < 1) timeToHit = 1f;
 		
 		//If it is too big - quit
-		if (timeToHit > bot.cConfig.MAX_TIME_TO_HIT.value()) {
+		if (timeToHit > bot.cConfig.maxTimeToHit) {
 			bot.dtalk.addToLog("Target too far. No shooting.");
 			return getNoFiringInstructions(bot, enemyPos);
 		}
@@ -68,12 +68,12 @@ public class SimpleAimingModule {
 		//We add to enemy position the movement that the enemy is predicted to do in timeToHit.
 		Vector3f hitPoint = CommFun.cloneVector(enemyPos);
 		//movement is between bot position, not the visible part of the bot
-		Vector3f movement = CommFun.getMovementBetweenVectors(fd.enemyInfo.getPosition(), fd.enemyInfo.predictedPos);
+		Vector3f movement = CommFun.getMovementBetweenVectors(fd.enemyInfo.getObjectPosition(), fd.enemyInfo.predictedPos);
 		movement = CommFun.multiplyVectorByScalar(movement, timeToHit);
 		hitPoint.add(movement);
 		
-		if ( careful &&  bot.getBsp().getObstacleDistance(playerPos, hitPoint, 20.0f, bot.cConfig.MAX_SHORT_DISTANCE_4_FIRING.value()*2) 
-				< bot.cConfig.MAX_SHORT_DISTANCE_4_FIRING.value()) {
+		if ( careful &&  bot.getBsp().getObstacleDistance(playerPos, hitPoint, 20.0f, bot.cConfig.maxShortDistance4Firing*2) 
+				< bot.cConfig.maxShortDistance4Firing) {
 			bot.dtalk.addToLog("Being careful. No shooting!");
 			return getNoFiringInstructions(bot, enemyPos);
 		}

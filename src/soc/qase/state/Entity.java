@@ -668,14 +668,14 @@ public class Entity implements GameObject
 	}
 
 @Override
-public Vector3f getPosition() {
+public Vector3f getObjectPosition() {
 	return getOrigin().toVector3f();
 }
 
 @Override
 public String toDetailedString() {
 	return "entity: "+getCategory()+"."+getType()+"."+getSubType()+"\n"+
-			"position: "+getPosition()+"\n"+
+			"position: "+getObjectPosition()+"\n"+
 			"entity number: "+entityNumber+"\n"+
 			"skin: "+getSkin()+"\n"+
 			"active: "+getActive()+"\n"+

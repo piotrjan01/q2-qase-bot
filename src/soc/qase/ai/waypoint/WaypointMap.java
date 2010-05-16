@@ -598,7 +598,7 @@ public class WaypointMap implements Serializable
 		waypointMatrix = new float[nodes.size()][3];
 
 		for(int i = 0; i < nodes.size(); i++)
-			waypointMatrix[i] = getNode(i).getPosition().toArray();
+			waypointMatrix[i] = getNode(i).getObjectPosition().toArray();
 	}
 
 /*-------------------------------------------------------------------*/
@@ -662,7 +662,7 @@ public class WaypointMap implements Serializable
 
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			curDist = location.distance(((Waypoint)nodes.elementAt(i)).getPosition());
+			curDist = location.distance(((Waypoint)nodes.elementAt(i)).getObjectPosition());
 
 			if(curDist < minDist)
 			{
@@ -1156,7 +1156,7 @@ public class WaypointMap implements Serializable
 			{
 				if(edgeMatrix[i][j])
 				{
-					dist = (((Waypoint)nodes.elementAt(i)).getPosition().distance(((Waypoint)nodes.elementAt(j)).getPosition()));
+					dist = (((Waypoint)nodes.elementAt(i)).getObjectPosition().distance(((Waypoint)nodes.elementAt(j)).getObjectPosition()));
 
 					predMatrix[i][j] = i;
 					costMatrix[i][j] = dist;
