@@ -7,9 +7,9 @@ import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityDoublePair;
 import piotrrr.thesis.common.entities.EntityType;
-import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 import piotrrr.thesis.common.navigation.GlobalNav;
 import piotrrr.thesis.common.navigation.NavPlan;
+import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
@@ -19,7 +19,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * @author Piotr Gwizda³a
  * @see MapBotBase
  */
-public class SmartBotGlobalNav extends GlobalNav {
+public class SmartBotGlobalNav implements GlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.1;
 	
@@ -31,8 +31,10 @@ public class SmartBotGlobalNav extends GlobalNav {
 	 * @param oldPlan the bot's old plan
 	 * @return the new plan for the bot (can be the same as the oldPlan)
 	 */
-	@SuppressWarnings("null")
-	static NavPlan establishNewPlan(SmartBot bot, NavPlan oldPlan) {
+	@Override
+	public NavPlan establishNewPlan(MapBotBase smartBot, NavPlan oldPlan) {
+		
+		SmartBot bot = (SmartBot)smartBot;
 	
 		/**
 		 * When do we change the plan?
@@ -88,20 +90,10 @@ public class SmartBotGlobalNav extends GlobalNav {
 		//If no spontaneous plans available, we continue with old one...
 		if (! changePlan) return oldPlan;
 		
+		//Get the entity ranking:
+		TreeSet<EntityDoublePair> ranking = SmartBotEntityRanking.getEntityRanking(bot);	
 		
-		TreeSet<EntityDoublePair> ranking = new TreeSet<EntityDoublePair>();
-		//FIXME:
-		EntityTypeDoublePair [] ents = null; //bot.fsm.getDesiredEntities();
-		for (EntityTypeDoublePair etdp : ents) {
-			Vector<Entity> items  = bot.kb.getActiveEntitiesByType(etdp.t, bot.getFrameNumber());
-			for (Entity item : items) {
-				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), item.getObjectPosition());
-				if (distance == Double.MAX_VALUE) continue;
-				double rank = 10000*etdp.d / distance; //the weight divided by distance
-				ranking.add(new EntityDoublePair(item, rank));
-			}
-		}
-		
+//		Dbg.prn(SmartBotEntityRanking.getRankingDebugInfo(bot));
 		
 		if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
 			Entity wp = bot.kb.getRandomItem();

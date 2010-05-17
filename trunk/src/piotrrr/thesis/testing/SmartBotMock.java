@@ -31,5 +31,11 @@ public class SmartBotMock extends SmartBot {
 	public void setArmor(float armor) {
 		this.armor = armor;
 	}
+	
+	@Override
+	public float getAmmunitionState(int gunIndex) {
+		// TODO Auto-generated method stub
+		return 0.7f;
+	}
 
 }

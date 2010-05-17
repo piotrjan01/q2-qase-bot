@@ -3,6 +3,7 @@ package piotrrr.thesis.bots.wpmapbot;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.CombatConfig;
+import piotrrr.thesis.bots.tuning.WeaponConfig;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.GeneralDebugTalk;
@@ -30,7 +31,6 @@ public class MapBotBase extends BotBase {
 	 */
 	protected static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
 	
-	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
 	 */
@@ -57,7 +57,6 @@ public class MapBotBase extends BotBase {
 	 */
 	public GeneralDebugTalk dtalk;
 	
-	
 	/**
 	 * For debug purposes. We can force the bot to use the specified weapon only.
 	 */
@@ -69,14 +68,19 @@ public class MapBotBase extends BotBase {
 	public CombatConfig cConfig = new CombatConfig();
 	
 	/**
+	 * Weapon preference configuration
+	 */
+	public WeaponConfig wConfig = new WeaponConfig();
+	
+	/**
 	 * The global navigation module of the bot
 	 */
-	protected GlobalNav globalNav;
+	protected GlobalNav globalNav = null;
 	
 	/**
 	 * The local navigation module of the bot
 	 */
-	protected LocalNav localNav;
+	protected LocalNav localNav = null;
 
 	/**
 	 * Basic constructor.
@@ -94,8 +98,6 @@ public class MapBotBase extends BotBase {
 		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
 		
-		globalNav = new GlobalNav();
-		localNav = new LocalNav();
 	}
 
 	@Override

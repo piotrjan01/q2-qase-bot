@@ -1,9 +1,6 @@
 package piotrrr.thesis.bots.tuning;
 
-import java.lang.reflect.Field;
-
-
-public class CombatConfig implements Config {
+public class CombatConfig extends Config {
 	
 	/**
 	 * Maximum time allowed that the bullet would take to hit the target. 
@@ -49,101 +46,6 @@ public class CombatConfig implements Config {
 	public float minLongDistance_MIN = 500f;
 	public float minLongDistance_MAX = 1200f;
 	
-	/**
-	 * Weapon preference weight
-	 */
-	public int wpWBlaster = 10;
-	public int wpWBlaster_MIN = 0;
-	public int wpWBlaster_MAX = 100;
-	
-	/**
-	 * Weapon preference weight
-	 */
-	public int wpWShotgun = 30;
-	public int wpWShotgun_MIN = 0;
-	public int wpWShotgun_MAX = 100;
-	
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWSuperShotgun = 50;
-	public int wpWSuperShotgun_MIN = 0;
-	public int wpWSuperShotgun_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWMachinegun = 60;
-	public int wpWMachinegun_MIN = 0;
-	public int wpWMachinegun_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWChaingun = 80;
-	public int wpWChaingun_MIN = 0;
-	public int wpWChaingun_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWGrenades = 0;
-	public int wpWGrenades_MIN = 0;
-	public int wpWGrenades_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWGrenadeLauncher = 0;
-	public int wpWGrenadeLauncher_MIN = 0;
-	public int wpWGrenadeLauncher_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWRocketLauncher = 40;
-	public int wpWRocketLauncher_MIN = 0;
-	public int wpWRocketLauncher_MAX = 100;
-
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWHyperblaster = 50;
-	public int wpWHyperblaster_MIN = 0;
-	public int wpWHyperblaster_MAX = 100;
-	
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWRailgun = 90;
-	public int wpWRailgun_MIN = 0;
-	public int wpWRailgun_MAX = 100;
-	
-	/**
-	 * Weapon preference weight
-	 */	
-	public int wpWBFG10K = 40;
-	public int wpWBFG10K_MIN = 0;
-	public int wpWBFG10KMax_MAX = 100;
-	
-	
-	/**
-	 * The table that specifies which gun uses which ammunition type.
-	 */
-	public static final int [] ammoTable = { 0, 0, 0, 0, 0, 0, 0,
-			7, //blaster - ammo for blaster is just blaster himself
-			18, //shotgun
-			18, //ss
-			19, //mgun
-			19, //chgun
-			12, // granades - ammo for granates are granates themselves
-			12, //g launcher
-			21, //r launcher
-			20, //hyperblaster - energy cells
-			22, //railgun - slugs
-			20 //bfgk - energy cells
-	};
-	
 	
 	/**
 	int BLASTER = 7, SHOTGUN = 8,
@@ -185,43 +87,7 @@ public class CombatConfig implements Config {
 		return false;
 	}
 	
-	public int getWeaponWeightByInvIndex(int ind) {
-		
-		/**
-		int BLASTER = 7, SHOTGUN = 8,
-		SUPER_SHOTGUN = 9, MACHINEGUN = 10, CHAINGUN = 11, GRENADES = 12,
-		GRENADE_LAUNCHER = 13, ROCKET_LAUNCHER = 14, HYPERBLASTER = 15,
-		RAILGUN = 16, BFG10K = 17, SHELLS = 18, BULLETS = 19, CELLS = 20,
-		ROCKETS = 21, SLUGS = 22;
-		**/
-		
-		switch (ind) {
-		case 7:
-			return wpWBlaster;
-		case 8:
-			return wpWShotgun;
-		case 9:
-			return wpWSuperShotgun;
-		case 10:
-			return wpWMachinegun;
-		case 11:
-			return wpWChaingun;
-		case 12:
-			return wpWGrenades;
-		case 13:
-			return wpWGrenadeLauncher;
-		case 14:
-			return wpWRocketLauncher;
-		case 15:
-			return wpWHyperblaster;
-		case 16:
-			return wpWRailgun;
-		case 17:
-			return wpWBFG10K;
-		default:
-			return 0;
-		}
-	}
+	
 	
 	public boolean isDangerousToShootWith(int gunIndex) {
 		switch (gunIndex) {
@@ -275,35 +141,7 @@ public class CombatConfig implements Config {
 		return bspeed;
 	}
 	
-	@Override
-	public float getParameter(String name) throws Exception {
-		for (Field f : CombatConfig.class.getDeclaredFields()) {
-			if (f.getName().equals(name)) return (Float)f.get(this);
-		}
-		throw new Exception("Unknown field name!");
-	}
-
-	@Override
-	public float getParameterMax(String name) throws Exception {
-		name = name+"_MAX";
-		return getParameter(name);
-	}
-
-	@Override
-	public float getParameterMin(String name) throws Exception {
-		name = name+"_MIN";
-		return getParameter(name);
-	}
-
-	@Override
-	public boolean isParameterInteger(String name) throws Exception {
-		for (Field f : CombatConfig.class.getDeclaredFields()) {
-			if (f.getName().equals(name)) {
-				return (f.getType().equals(Integer.class) || f.getType().equals(int.class));
-			}
-		}
-		throw new Exception("Unknown field name!");
-	}
+	
 	
 	
 }
