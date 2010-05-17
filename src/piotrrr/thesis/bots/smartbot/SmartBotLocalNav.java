@@ -1,5 +1,6 @@
 package piotrrr.thesis.bots.smartbot;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.navigation.LocalNav;
 import piotrrr.thesis.common.navigation.NavInstructions;
@@ -8,11 +9,14 @@ import piotrrr.thesis.tools.Dbg;
 import soc.qase.state.PlayerMove;
 import soc.qase.tools.vecmath.Vector3f;
 
-public class SmartBotLocalNav extends LocalNav {
+public class SmartBotLocalNav implements LocalNav {
 	
 	public static final int acceptableDistance = 40;
 
-	public static NavInstructions getNavigationInstructions(SmartBot bot) {
+	@Override
+	public NavInstructions getNavigationInstructions(MapBotBase smartBot) {
+		
+		SmartBot bot = (SmartBot)smartBot;
 		
 		NavPlan plan = bot.plan;
 		

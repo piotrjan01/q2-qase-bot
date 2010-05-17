@@ -66,6 +66,10 @@ public class BotBase extends NoClipBot implements GameObject {
 	 */
 	protected Vector3f pausedLookDir = new Vector3f(0,0,0);
 	
+	public static final int maxHealth = 100;
+	
+	public static final int maxArmor = 100;
+	
 	/**
 	 * Basic constructor
 	 * @param botName name of the bot to be created.

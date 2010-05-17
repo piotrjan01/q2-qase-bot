@@ -741,7 +741,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void connectDebugedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectDebugedButtonActionPerformed
     	if (dbgBot != null) return;
-    	ReferenceBot bot = new ReferenceBot("DebuggedBot", BotsConfig.skinName);
+    	SmartBot bot = new SmartBot("DebuggedBot", BotsConfig.skinName);
     	bot.addBotJob(new HitsReporter(bot));
 		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);
 		stepJob = new DebugStepJob(bot, this);
@@ -808,7 +808,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void allEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allEntsRadioButton1ActionPerformed
       Vector<GameObject> v = new Vector<GameObject>();
+      //FIXMe:
       v.addAll(dbgBot.kb.getAllItems());
+//      v.addAll(dbgBot.kb.getAllPickableEntities());
       setReqList(v);
     }//GEN-LAST:event_allEntsRadioButton1ActionPerformed
 
@@ -965,7 +967,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton visibleWaypointsRadioButton2;
     // End of variables declaration//GEN-END:variables
     
-    private ReferenceBot dbgBot = null;
+    private SmartBot dbgBot = null;
     
     private Vector<MapBotBase> bots = new Vector<MapBotBase>();
     

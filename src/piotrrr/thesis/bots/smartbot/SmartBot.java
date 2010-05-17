@@ -7,6 +7,8 @@ import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.combat.SimpleAimingModule;
 import piotrrr.thesis.common.combat.SimpleCombatModule;
+import piotrrr.thesis.common.navigation.NavInstructions;
+import piotrrr.thesis.tools.Dbg;
 
 
 public class SmartBot extends MapBotBase {
@@ -23,17 +25,17 @@ public class SmartBot extends MapBotBase {
 	protected void botLogic() {
 		super.botLogic();
 		
-//		NavInstructions ni = null;
-//		if ( ! noMove) {
-//			plan = globalNav.establishNewPlan(this, plan);
-//			if (plan == null) {
-//				// ??
-//				return;
-//			}
-//			assert plan != null;
-//			ni = localNav.getNavigationInstructions(this);
-//		}
-//		
+		NavInstructions ni = null;
+		if ( ! noMove) {
+			plan = globalNav.establishNewPlan(this, plan);
+			if (plan == null) {
+				Dbg.prn("plan is null....");
+				return;
+			}
+			assert plan != null;
+			ni = localNav.getNavigationInstructions(this);
+		}
+
 		FiringDecision fd =  null;
 		if ( ! noFire ) {
 			fd = SimpleCombatModule.getFiringDecision(this);
@@ -47,7 +49,7 @@ public class SmartBot extends MapBotBase {
 		
 		FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
 		
-		executeInstructions(null, fi);
+		executeInstructions(ni, fi);
 	}
 		
 }

@@ -185,6 +185,18 @@ public class WorldKB {
 		return ret;
 	}
 	
+	public Vector<Entity> getAllPickableEntities() {
+		Vector<Entity> ret = new Vector<Entity>();
+		for (Object o : bot.getWorld().getEntities(true)) {
+			Entity e = (Entity)o;
+			if ( ! isPickableType(e)) continue;
+			if (targetBlacklist.contains(e)) continue;
+			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			ret.add(e);
+		}
+		return ret;
+	}
+	
 	
 	/**
 	 * Adds the given entry to black-list
@@ -269,8 +281,9 @@ public class WorldKB {
 	 * Removes all the failing edges from the map.
 	 */
 	public void removeFailingEdgesFromTheMap() {
-		map.unlockMap();
 		Vector<EdgeFailure> fails = getAllEdgeFailures();
+		if (fails.size() == 0) return;
+		map.unlockMap();
 		for (EdgeFailure f : fails) {
 			if (f.failCount > MAX_WP_FAILURE_COUNT) {
 				int src = map.indexOf(f.src);

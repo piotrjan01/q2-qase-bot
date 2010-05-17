@@ -19,7 +19,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * @author Piotr Gwizda³a
  * @see MapBotBase
  */
-public class ReferenceBotGlobalNav extends GlobalNav {
+public class ReferenceBotGlobalNav implements GlobalNav {
 	
 	public static final double PLAN_TIME_PER_DIST = 0.1;
 	

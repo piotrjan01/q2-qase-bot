@@ -28,7 +28,8 @@ public class HitsReporter extends Job {
 		float a = ((MapBotBase)bot).getBotArmor();
 		
 		if (h < lastHealth || a < lastArmor) {
-			Dbg.prn(bot.getBotName()+":\t==> BOT HIT: lost h: "+(lastHealth-h)+" lost a: "+(lastArmor-a));
+			//FIXME:
+//			Dbg.prn(bot.getBotName()+":\t==> BOT HIT: lost h: "+(lastHealth-h)+" lost a: "+(lastArmor-a));
 		}
 		
 		lastHealth = h;

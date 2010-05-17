@@ -85,7 +85,7 @@ public class CombatConfigTest {
 	public void isParameterInteger() {
 		boolean ex = false;
 		try {
-			assertTrue( cnf.isParameterInteger("wpWBlaster"));
+			assertTrue( cnf.isParameterInteger("maxEnemyInfoAge4Firing"));
 			assertTrue( ! cnf.isParameterInteger("maxPredictionError"));
 		} catch (Exception e) {
 			ex = true;

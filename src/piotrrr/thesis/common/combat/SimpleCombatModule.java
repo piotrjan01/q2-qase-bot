@@ -2,6 +2,7 @@ package piotrrr.thesis.common.combat;
 
 
 import piotrrr.thesis.bots.tuning.CombatConfig;
+import piotrrr.thesis.bots.tuning.WeaponConfig;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import soc.qase.tools.vecmath.Vector3f;
@@ -46,10 +47,10 @@ public class SimpleCombatModule {
 		int maxWeight = -1;
 		int gunInd = 7;
 		for (int i=7; i<18; i++) {
-			if ( ! bot.botHasItem(i) || ! bot.botHasItem(CombatConfig.ammoTable[i])) continue;
+			if ( ! bot.botHasItem(i) || ! bot.botHasItem(WeaponConfig.ammoTable[i])) continue;
 			if (distance < bot.cConfig.maxShortDistance4WpChoice && CombatConfig.isBannedForShortDistance(i)) continue;
 			if (distance > bot.cConfig.minLongDistance && CombatConfig.isBannedForLongDistance(i)) continue;
-			int weight = bot.cConfig.getWeaponWeightByInvIndex(i);
+			int weight = bot.wConfig.getWeaponWeightByInvIndex(i);
 			if (weight > maxWeight) {
 				maxWeight = weight;
 				gunInd = i;
