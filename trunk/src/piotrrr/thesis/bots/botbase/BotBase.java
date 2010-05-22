@@ -60,6 +60,11 @@ public class BotBase extends NoClipBot implements GameObject {
 	 */
 	public boolean noMove = false;
 	
+	/**
+	 * Messages received from the server.
+	 */
+	protected Vector messages = null;
+	
 	
 	/**
 	 * Direction where to look when paused.
@@ -83,10 +88,12 @@ public class BotBase extends NoClipBot implements GameObject {
 	public void runAI(World world) {
 		try {
 			this.world = world;
+			messages = world.getMessages();
 			updateFrameNumber();
 			runBotJobs();
 			if ( ! botPaused) botLogic();
 			else setBotMovement(new Vector3f(), pausedLookDir, PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_NORMAL);
+			messages = null;
 		}
 		catch (Exception e) {
 			say("Runtime exception!");
@@ -256,8 +263,9 @@ public class BotBase extends NoClipBot implements GameObject {
 	@SuppressWarnings("unchecked")
 	public Vector<String> getMessages(String prefix) {
 		Vector<String> ret = new Vector<String>();
-		Vector<String> msgs = world.getMessages();
+		Vector<String> msgs = messages;
 		if (msgs == null) return null;
+		if (prefix.equals("")) return msgs;
 		for (String s : msgs) {
 			if (s.startsWith(prefix)) {
 				ret.add(s.substring(prefix.length()));

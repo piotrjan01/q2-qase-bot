@@ -20,35 +20,6 @@ import soc.qase.tools.vecmath.Vector3f;
  * @author Piotr Gwizda³a
  */
 public class WorldKB {
-	
-	/**
-	 * Maximum amount of attempts to pickup an item, before
-	 * adding it to pickupFailures list.
-	 */
-	public static final int MAX_PICKUP_FAILURE_COUNT = 1;
-	
-	/**
-	 * Maximum amount of failures while trying to move from one node
-	 * to another that is tolerated before the edge from the map is deleted.
-	 */
-	public static final int MAX_WP_FAILURE_COUNT = 1;
-	
-	/**
-	 * Maximum amount of entities in the world. Taken from QASE source, expected
-	 * to work ok.
-	 */
-	public static final int ENTS_MAX_COUNT = 1024;
-	
-	/**
-	 * Counts pickup failures for each entity in the world.
-	 */
-	int [] pickupFailures = new int [ENTS_MAX_COUNT];
-	
-	/**
-	 * Counts waypoints edge failures.
-	 */
-	public int [][] waypointEdgesFailures;
-	
 
 	/**
 	 * Bot that owns this KB
@@ -81,7 +52,6 @@ public class WorldKB {
 		targetBlacklist = new LinkedList<Entity>();
 		this.map = map;
 		this.bot = bot;
-		waypointEdgesFailures = new int [map.getAllNodes().length][map.getAllNodes().length];
 	}
 	
 	/**
@@ -119,7 +89,8 @@ public class WorldKB {
 			if ( ! et.equals(itType) ) continue;
 			if (e.isPlayerEntity() && e.getName().equals(bot.getBotName())) continue;
 			if (targetBlacklist.contains(e)) continue;
-			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+//			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			if ( ! e.isReachable(bot)) continue;
 			ret.add(e);
 		}
 		return ret;
@@ -138,7 +109,8 @@ public class WorldKB {
 			Entity e = (Entity)o;
 			if ( ! isPickableType(e)) continue;
 			if (targetBlacklist.contains(e)) continue;
-			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+//			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			if ( ! e.isReachable(bot)) continue;
 			double dist = CommFun.getDistanceBetweenPositions(pos, e.getObjectPosition());
 			if (dist > maxRange) continue;
 			ret.add(e);
@@ -191,7 +163,8 @@ public class WorldKB {
 			Entity e = (Entity)o;
 			if ( ! isPickableType(e)) continue;
 			if (targetBlacklist.contains(e)) continue;
-			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+//			if (getPickupFailureCount(e) > MAX_PICKUP_FAILURE_COUNT) continue;
+			if ( ! e.isReachable(bot)) continue;
 			ret.add(e);
 		}
 		return ret;
@@ -227,75 +200,19 @@ public class WorldKB {
 		return items.elementAt(ind);
 	}
 	
-	/**
-	 * Marks given entity as failed to be picked up. Increments the failure counter.
-	 * @param e
-	 */
-	public void failedToPickup(Entity e) {
-		pickupFailures[e.getNumber()] ++ ;
-	}
 	
 	/**
-	 * Decrements the pickup failure counter for the given entity
-	 * @param e
+	 * @return all entities that are unreachable
 	 */
-	public void decPickupFailure(Entity e) {
-		pickupFailures[e.getNumber()] -- ;
-	}
-	
-	/**
-	 * Returns the failure count for the specified item
-	 * @param e
-	 * @return
-	 */
-	private int getPickupFailureCount(Entity e) {
-		return pickupFailures[e.getNumber()];
-	}
-	
-	/**
-	 * @return all entities that were failed to be picked up at least once
-	 */
-	public Vector<EntityDoublePair> getAllEntsWithPickupFailure() {
-		Vector<EntityDoublePair> ret = new Vector<EntityDoublePair>();
-		for (int i=0; i<ENTS_MAX_COUNT; i++) {
-			if (pickupFailures[i] != 0) ret.add(new EntityDoublePair(bot.getWorld().getEntity(i), pickupFailures[i]));
+	public Vector<Entity> getAllEntsWithPickupFailure() {
+		Vector<Entity> ret = new Vector<Entity>();
+		for (Entity e : getAllItems()) {
+			if ( ! e.isReachable(bot)) ret.add(e);
 		}
 		return ret;
 	}
 	
-	/**
-	 * Returns all edges that have failed on the map.
-	 * @return
-	 */
-	public Vector<EdgeFailure> getAllEdgeFailures() {
-		Vector<EdgeFailure> ret = new Vector<EdgeFailure>();
-		for (int i=0; i<waypointEdgesFailures.length; i++) {
-			for (int j=0; j<waypointEdgesFailures[0].length; j++) {
-				if (waypointEdgesFailures[i][j] != 0) ret.add(new EdgeFailure(map.getNode(i), map.getNode(j), waypointEdgesFailures[i][j]));
-			}
-		}
-		return ret;
-	}
-	
-	/**
-	 * Removes all the failing edges from the map.
-	 */
-	public void removeFailingEdgesFromTheMap() {
-		Vector<EdgeFailure> fails = getAllEdgeFailures();
-		if (fails.size() == 0) return;
-		map.unlockMap();
-		for (EdgeFailure f : fails) {
-			if (f.failCount > MAX_WP_FAILURE_COUNT) {
-				int src = map.indexOf(f.src);
-				int dst = map.indexOf(f.dst);
-				waypointEdgesFailures[src][dst] = 0;
-				map.getEdgeMatrix();
-				boolean result = f.src.removeEdge(f.dst);
-				assert result == true;
-			}
-		}
-		map.lockMap();
-	}
+
 	
 	/**
 	 * Checks whether the entity has a pickable type. 
@@ -316,6 +233,7 @@ public class WorldKB {
 	public void updateEnemyInformation() {
 		Vector<Integer> toDelete = new Vector<Integer>(); 
 		Vector enems = bot.getWorld().getOpponents(true);
+		
 		for (Object o : enems) {
 			Entity e = (Entity)o;
 			if (enemyInformation.containsKey(e.getNumber())) {
@@ -324,12 +242,19 @@ public class WorldKB {
 			}
 			else enemyInformation.put(e.getNumber(), new EnemyInfo(e, bot.getFrameNumber()));
 		}
+		int otd = 0;
+		int ina = 0;
 		for (EnemyInfo ei : enemyInformation.values()) {
-			if ( ! ei.ent.getActive() || ei.isOutdated(bot.getFrameNumber())) 
+			if ( /*! ei.ent.getActive() ||*/ ei.isOutdated(bot.getFrameNumber())) 
 				toDelete.add(ei.ent.getNumber());
+			if (ei.isOutdated(bot.getFrameNumber())) otd++;
+			if (!ei.ent.getActive()) ina++;
 		}
+//		Dbg.prn("enemies size: "+enemyInformation.size()+" to delete: "+toDelete.size()+" ina="+ina+" outd="+otd);
 		for (Integer i : toDelete)
 			enemyInformation.remove(i);
+		
+//		assert (enemyInformation.size() == 0) : "enems is not empty, huh? enems size="+enems.size();
 		
 	}
 	
@@ -357,9 +282,12 @@ public class WorldKB {
 				"enemy info size: "+getAllEnemyInformation().size()+"\n"+
 				"nodes on map: "+map.getAllNodes().length+"\n"+
 				"edges on map: "+edges+"\n"+
-				"edge failures size: "+getAllEdgeFailures().size()+"\n"+
 				"pickup failures size: "+getAllEntsWithPickupFailure().size()+"\n";
 	}
+	
+	
+	
+
 	
 
 }

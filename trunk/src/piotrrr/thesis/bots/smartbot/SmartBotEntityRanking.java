@@ -28,59 +28,99 @@ public class SmartBotEntityRanking {
 	public static String getRankingDebugInfo(SmartBot bot) {
 		TreeSet<EntityDoublePair> ranking = getEntityRanking(bot);
 		int count = 0;
-		String t = "\n"+bot.getBotName()+", h="+bot.getBotHealth()+", a="+bot.getBotArmor();
-		t += "\ndef-hlh="+getBotHealthDeficiency(bot, 0);
-		t += " def-arm="+getBotArmorDeficiency(bot, 0);
-		t += "\ndef-amm="+getBotAmmoDeficiency(bot, 0);
-		t += " def-wpn="+getBotWeaponDeficiency(bot, 0);
-		t += " ranking-size="+ranking.size();
-		for (EntityDoublePair ed : ranking) {
+		String t = "\n";
+//		t += bot.getBotName()+", h="+bot.getBotHealth()+", a="+bot.getBotArmor();
+//		t += "\ndef-hlh="+getBotHealthDeficiency(bot, 0);
+//		t += " def-arm="+getBotArmorDeficiency(bot, 0);
+//		t += "\ndef-amm="+getBotAmmoDeficiency(bot, 0);
+//		t += " def-wpn="+getBotWeaponDeficiency(bot, 0);
+//		t += " ranking-size="+ranking.size()+"\n";
+		for (EntityDoublePair ed : ranking.descendingSet()) {
 			count++;
 			if (count > 5) break;
-			t += "\n"+count+": ent="+ed.ent.toString()+" rank="+ed.dbl;
-			t += "\nben-hlh="+getItemHealthBenefit(bot, ed.ent);
-			t += " ben-arm="+getItemArmorBenefit(bot, ed.ent);
-			t += "\nben-amm="+getItemAmmoBenefit(bot, ed.ent);
-			t += " ben-wpn="+getItemWeaponBenefit(bot, ed.ent);
-			t += "\nenemy-cost="+getEnemyCost(bot, ed.ent);
-			t += "\ndistance="+SmartBotGlobalNav.getDistanceFollowingMap(bot, bot.getBotPosition(), ed.ent.getObjectPosition());
+//			t += "\n"+count+": ent="+ed.ent.toString()+" rank="+ed.dbl;
+//			t += "\nben-hlh="+getItemHealthBenefit(bot, ed.ent);
+//			t += " ben-arm="+getItemArmorBenefit(bot, ed.ent);
+//			t += "\nben-amm="+getItemAmmoBenefit(bot, ed.ent);
+//			t += " ben-wpn="+getItemWeaponBenefit(bot, ed.ent);
+//			t += "\nenemy-cost="+getEnemyCost(bot, ed.ent);
+//			t += "\ndistance="+SmartBotGlobalNav.getDistanceFollowingMap(bot, bot.getBotPosition(), ed.ent.getObjectPosition());
+//			t += "\n";
+			
+			Entity e = ed.ent;
+			NavConfig c = bot.nConfig;
+			float h = c.healthWeight*getItemHealthBenefit(bot, e)*getBotHealthDeficiency(bot, 0);
+			float arm = c.armorWeight*getItemArmorBenefit(bot, e)*getBotArmorDeficiency(bot, 0) ;
+			float w = c.weaponsWeight*getItemWeaponBenefit(bot, e)*getBotWeaponDeficiency(bot, 0);
+			float amm = c.ammoWeight*getItemAmmoBenefit(bot, e)*getBotAmmoDeficiency(bot, 0) ;
+			float ec = c.enemyCostWeight*getEnemyCost(bot, e) ;
+			float dist = c.distanceWeight*getDistanceFactor(bot, e);
+			
+			float rank = Math.abs(h)+Math.abs(arm)+Math.abs(w)+Math.abs(amm)+Math.abs(ec)+Math.abs(dist);
+			
+			t += "\ndef-hlh="+getBotHealthDeficiency(bot, 0);
+			t += " def-arm="+getBotArmorDeficiency(bot, 0);
+			t += " def-amm="+getBotAmmoDeficiency(bot, 0);
+			t += " def-wpn="+getBotWeaponDeficiency(bot, 0);
+			t += e.toString()+":\n h="+ftoperc(h/rank)+"% arm="+ftoperc(arm/rank)+"% w="+ftoperc(w/rank)+
+			"% amm="+ftoperc(amm/rank)+"% ec="+ftoperc(ec/rank)+"% dist="+ftoperc(dist/rank)+"%";
+			
+			
 		}
 		return t;
 	}
 	
+	private static int ftoperc(float f) {
+		return (int)(f*100);
+	}
+	
+	
+	
 	public static float getRankForEntity(SmartBot bot, Entity e) {
 		NavConfig c = bot.nConfig;
-		float rank = c.healthWeight*(getItemHealthBenefit(bot, e) + getBotHealthDeficiency(bot, 0));
-		rank += c.armorWeight*(getItemArmorBenefit(bot, e) + getBotArmorDeficiency(bot, 0));
-		rank += c.weaponsWeight*(getItemWeaponBenefit(bot, e) + getBotWeaponDeficiency(bot, 0));
-		rank += c.ammoWeight*(getItemAmmoBenefit(bot, e) + getBotAmmoDeficiency(bot, 0));
+		float rank = c.healthWeight*getItemHealthBenefit(bot, e)*getBotHealthDeficiency(bot, 0);
+		rank += c.armorWeight*getItemArmorBenefit(bot, e)*getBotArmorDeficiency(bot, 0);
+		rank += c.weaponsWeight*getItemWeaponBenefit(bot, e)*getBotWeaponDeficiency(bot, 0);
+		rank += c.ammoWeight*getItemAmmoBenefit(bot, e)*getBotAmmoDeficiency(bot, 0);
 		rank -= c.enemyCostWeight*getEnemyCost(bot, e);
-		rank -= c.distanceWeight*SmartBotGlobalNav.getDistanceFollowingMap(bot, bot.getBotPosition(), e.getObjectPosition());
+		rank -= c.distanceWeight*getDistanceFactor(bot, e);
 		return rank;
+	}
+	
+	public static float getDistanceFactor(SmartBot bot, Entity e) {
+		float dist = (float) SmartBotGlobalNav.getDistanceFollowingMap(bot, bot.getBotPosition(), e.getObjectPosition());
+		float ret = dist / NavConfig.MAX_DISTANCE;
+		if (ret > 1) ret = 1;
+		// !!! increased by health deficiency percent
+		return ret*(1+getBotHealthDeficiency(bot, 0));
 	}
 	
 	public static float getEnemyCost(SmartBot bot, Entity e) {
 		float riskyDistance = 400;
 		float cost = 0;
+		
 		Waypoint [] path = bot.kb.map.findShortestPath(bot.getBotPosition(), e.getObjectPosition());
 		if (path == null) return Float.MAX_VALUE;
+		float costMax = path.length;
 		for (EnemyInfo en : bot.kb.getAllEnemyInformation()) {
 			for (Waypoint w : path) {
 				float dist = CommFun.getDistanceBetweenPositions(w.getObjectPosition(), en.getObjectPosition()); 
 				if (dist < riskyDistance) 
-					cost += riskyDistance / dist; 
+					cost += 1 - dist / riskyDistance; 
 			}
 		}
-		return cost;
+		return cost/costMax;
 	}
 	
 	public static float getBotHealthDeficiency(SmartBot bot, int addedHealth) {
 		float h = bot.getBotHealth() + addedHealth;
+		if (h > BotBase.maxHealth) h = BotBase.maxHealth;
 		return 1f - h / (float)BotBase.maxHealth;
 	}
 	
 	public static float getBotArmorDeficiency(SmartBot bot, int addedArmor) {
 		float a = bot.getBotArmor() + addedArmor;
+		if (a > BotBase.maxArmor) a = BotBase.maxArmor;
 		return 1f - a / (float)BotBase.maxArmor;
 	}
 	
@@ -111,7 +151,9 @@ public class SmartBotEntityRanking {
 			ownedWeapons += bot.wConfig.getWeaponWeightByInvIndex(addedWeaponIndex);
 		}
 		
-		return 1f - ownedWeapons / (weightSum * bot.nConfig.weaponDeficiencyTolerance); 
+		float ret = 1f - ownedWeapons / (weightSum * bot.nConfig.weaponDeficiencyTolerance);
+		if (ret < 0) ret = 0;
+		return ret;  
 		
 	}
 	
@@ -144,8 +186,9 @@ public class SmartBotEntityRanking {
 		}
 		
 //		Dbg.prn("owned ammo: "+ownedAmmo+" max ammo: "+maxAmmo);
-		
-		return 1f - ownedAmmo / maxAmmo; 
+		float ret = 1f - ownedAmmo / maxAmmo; 
+		if (ret < 0) ret = 0;
+		return  ret;
 		
 	}
 	

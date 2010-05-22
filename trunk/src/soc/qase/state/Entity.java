@@ -8,7 +8,11 @@ package soc.qase.state;
 
 import java.util.*;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
+import piotrrr.thesis.common.combat.EnemyInfo;
+import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.com.message.*;
 import soc.qase.info.*;
 import soc.qase.tools.vecmath.Vector3f;
@@ -685,8 +689,14 @@ public String toDetailedString() {
 			"respawn time: "+getRespawnTime()+"\n";
 }
 
-public Config getConfig() {
-	return config;
+public boolean isReachable(MapBotBase bot) {
+	Waypoint wp = bot.kb.map.findClosestWaypoint(getObjectPosition());
+	float dist = CommFun.getDistanceBetweenPositions(wp.getObjectPosition(), getObjectPosition());
+	float obstDist = bot.getBsp().getObstacleDistance(wp.getObjectPosition(), getObjectPosition(), EnemyInfo.agentsHeight/6, 2*dist);
+	if (obstDist < dist) return false;
+	if (Math.abs(wp.getObjectPosition().z-getObjectPosition().z) > EnemyInfo.agentsHeight/3) return false;
+	return true;
 }
+
 
 }
