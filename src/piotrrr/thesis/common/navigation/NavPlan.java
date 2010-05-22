@@ -1,5 +1,6 @@
 package piotrrr.thesis.common.navigation;
 
+import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 
@@ -31,9 +32,10 @@ public class NavPlan {
 	 */
 	public Waypoint [] path;
 	
-	public NavPlan(Entity dest, long deadline) {
+	public NavPlan(MapBotBase bot, Entity dest, long timeout) {
 		this.dest = dest;
-		this.deadline = deadline;
+		this.path = bot.kb.findShortestPath(bot.getBotPosition(), dest.getObjectPosition());
+		this.deadline = bot.getFrameNumber()+timeout;
 	}
 	
 }

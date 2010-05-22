@@ -22,8 +22,8 @@ public class EntityDoublePair implements Comparable<EntityDoublePair>, GameObjec
 
 	@Override
 	public int compareTo(EntityDoublePair o) {
-		if (this.dbl > o.dbl) return -1;
-		if (this.dbl < o.dbl) return 1;
+		if (this.dbl > o.dbl) return 1;
+		if (this.dbl < o.dbl) return -1;
 		return 0;
 	}
 

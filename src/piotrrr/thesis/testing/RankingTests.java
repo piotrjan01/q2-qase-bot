@@ -87,7 +87,7 @@ public class RankingTests {
 		
 		float rv = SmartBotEntityRanking.getItemHealthBenefit(bot, e);
 //		Dbg.prn(rv);
-		float ev = 0.249f;
+		float ev = 0.199f;
 		assertTrue( floatsEqual(rv, ev));
 		
 	}

@@ -23,6 +23,7 @@ import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
+import piotrrr.thesis.common.jobs.BasicMeasuresJob;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.jobs.HitsReporter;
 import soc.qase.tools.vecmath.Vector3f;
@@ -746,6 +747,7 @@ public class MainFrame extends javax.swing.JFrame {
 		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);
 		stepJob = new DebugStepJob(bot, this);
 		bot.addBotJob(stepJob);
+		bot.addBotJob(new BasicMeasuresJob(bot));
 		dbgBot = bot;
     }//GEN-LAST:event_connectDebugedButtonActionPerformed
 
@@ -842,9 +844,9 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_pickupFailuresRadioButton1ActionPerformed
 
     private void edgeFailuresRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgeFailuresRadioButtonActionPerformed
-    	Vector<GameObject> v = new Vector<GameObject>();
-        v.addAll(dbgBot.kb.getAllEdgeFailures());
-        setReqList(v);
+//    	Vector<GameObject> v = new Vector<GameObject>();
+//        v.addAll(dbgBot.kb.getAllEdgeFailures());
+//        setReqList(v);
     }//GEN-LAST:event_edgeFailuresRadioButtonActionPerformed
 
     private void goToButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToButtonActionPerformed

@@ -28,7 +28,7 @@ public class SimpleAimingModule {
 		
 		
 		if (fd.enemyInfo.lastPredictionError > bot.cConfig.maxPredictionError) {
-			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
+//			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
 			return getFastFiringInstructions(fd, bot);
 		}
 		//we may be predicting well
@@ -51,7 +51,7 @@ public class SimpleAimingModule {
 		float distance = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
 		
 		if (distance < bot.cConfig.maxShortDistance4Firing) {
-			bot.dtalk.addToLog("Target is very close. Fast firing.");
+//			bot.dtalk.addToLog("Target is very close. Fast firing.");
 			return getFastFiringInstructions(fd, bot);
 		}
 		
@@ -61,7 +61,7 @@ public class SimpleAimingModule {
 		
 		//If it is too big - quit
 		if (timeToHit > bot.cConfig.maxTimeToHit) {
-			bot.dtalk.addToLog("Target too far. No shooting.");
+//			bot.dtalk.addToLog("Target too far. No shooting.");
 			return getNoFiringInstructions(bot, enemyPos);
 		}
 		
@@ -74,10 +74,10 @@ public class SimpleAimingModule {
 		
 		if ( careful &&  bot.getBsp().getObstacleDistance(playerPos, hitPoint, 20.0f, bot.cConfig.maxShortDistance4Firing*2) 
 				< bot.cConfig.maxShortDistance4Firing) {
-			bot.dtalk.addToLog("Being careful. No shooting!");
+//			bot.dtalk.addToLog("Being careful. No shooting!");
 			return getNoFiringInstructions(bot, enemyPos);
 		}
-		bot.dtalk.addToLog("Prediction shooting: @"+fd.enemyInfo.ent.getName()+" gun: "+CommFun.getGunName(fd.gunIndex)+"\n pred mov: "+movement+" timeToHit: "+timeToHit+" dist: "+distance+" bspeed: "+bulletSpeed);
+//		bot.dtalk.addToLog("Prediction shooting: @"+fd.enemyInfo.ent.getName()+" gun: "+CommFun.getGunName(fd.gunIndex)+"\n pred mov: "+movement+" timeToHit: "+timeToHit+" dist: "+distance+" bspeed: "+bulletSpeed);
 		return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint));
 	}
 	
@@ -91,7 +91,7 @@ public class SimpleAimingModule {
 	static public FiringInstructions getFastFiringInstructions(FiringDecision fd, MapBotBase bot) {
 		Vector3f to = new Vector3f(fd.enemyInfo.getBestVisibleEnemyPart(bot));
 		Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
-		bot.dtalk.addToLog("Fast firing.");
+//		bot.dtalk.addToLog("Fast firing.");
 		return new FiringInstructions(fireDir);
 	}
 	

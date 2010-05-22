@@ -50,29 +50,27 @@ public class SmartBotGlobalNav implements GlobalNav {
 		
 		boolean changePlan = false;
 		
-		String talk = "";
+//		String talk = "";
 		
 		if (oldPlan == null) {
 			changePlan = true;
-			talk = "plan change: no plan!";
+//			talk = "plan change: no plan!";
 		}
 		else if (oldPlan.done) {
 			changePlan = true;
 			bot.kb.addToBlackList(oldPlan.dest);
-			talk = "plan change: old plan is done!";
+//			talk = "plan change: old plan is done!";
 		}
 		//if the bot is stuck
 		else if (bot.stuckDetector.isStuck) {
-			processFailedPlan(bot, false);
 			return getSpontaneousAntiStuckPlan(bot);
 		}
 		//if we timed out with the plan
 		else if (oldPlan.deadline <= bot.getFrameNumber()) { 
 			changePlan = true;
-			processFailedPlan(bot, true);
 		}
 		
-		if (talk != "" ) bot.dtalk.addToLog(talk);
+//		if (talk != "" ) bot.dtalk.addToLog(talk);
 		
 		/**
 		 * What do we do when we decide to change the plan?
@@ -92,23 +90,32 @@ public class SmartBotGlobalNav implements GlobalNav {
 		
 		//Get the entity ranking:
 		TreeSet<EntityDoublePair> ranking = SmartBotEntityRanking.getEntityRanking(bot);	
+		bot.dtalk.addToLog(SmartBotEntityRanking.getRankingDebugInfo(bot));
 		
-//		Dbg.prn(SmartBotEntityRanking.getRankingDebugInfo(bot));
+		while ((plan == null || plan.path == null)) {
+			
+			if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
+				Entity wp = bot.kb.getRandomItem();
+				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getObjectPosition());
+				bot.dtalk.addToLog("ranking size = 0, going for random item!");
+				plan = new NavPlan(bot, wp, (int)(PLAN_TIME_PER_DIST*distance));
+//				plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
+				if (plan.path == null) return getSpontaneousAntiStuckPlan(bot);
+				return plan;
+			}
 		
-		if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
-			Entity wp = bot.kb.getRandomItem();
-			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getObjectPosition());
-			bot.dtalk.addToLog("ranking size = 0, going for random item");
-			plan = new NavPlan(wp, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
-		}
-		else {
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().ent.getObjectPosition());
-			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+" et: "+EntityType.getEntityType(ranking.last().ent)+" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
-			plan = new NavPlan(ranking.last().ent, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*distance));
+			int lower = (ranking.size() >= 2) ? (int)(ranking.lower(ranking.last()).dbl) : 0;
+			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+
+					" > "+lower+
+					" et: "+EntityType.getEntityType(ranking.last().ent)+
+					" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
+			plan = new NavPlan(bot, ranking.last().ent, (int)(PLAN_TIME_PER_DIST*distance));
+			
+//			plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
+			ranking.pollLast();
+			
 		}
-		
-		plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
-		
 		return plan;
 	}
 	
@@ -142,13 +149,13 @@ public class SmartBotGlobalNav implements GlobalNav {
 		
 		bot.kb.addToBlackList(chosen);
 		
-		newPlan = new NavPlan(chosen, bot.getFrameNumber()+(int)(PLAN_TIME_PER_DIST*maximalDistance));
+		newPlan = new NavPlan(bot, chosen, (int)(PLAN_TIME_PER_DIST*maximalDistance));
 		newPlan.path = new Waypoint[1];
 		newPlan.path[0] = new Waypoint(chosen.getObjectPosition());
 		newPlan.isSpontaneos = true;
 		
-		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getObjectPosition());
-		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.toString()+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
+//		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getObjectPosition());
+//		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.toString()+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
 		
 		return newPlan;
 	}
@@ -162,15 +169,14 @@ public class SmartBotGlobalNav implements GlobalNav {
 	 */
 	static NavPlan getSpontaneousAntiStuckPlan(SmartBot bot) {
 		Entity re = bot.kb.getRandomItem();
-		bot.kb.decPickupFailure(re);
 		int timeout = (int)(80*PLAN_TIME_PER_DIST);
-		NavPlan ret = new NavPlan(re, bot.getFrameNumber()+timeout);
+		NavPlan ret = new NavPlan(bot, re, timeout);
 		ret.path = new Waypoint[1];
 		ret.path[0] = new Waypoint(re.getObjectPosition());
 		ret.isSpontaneos = true;
 //		int wpInd = bot.kb.map.indexOf(random.getNode());
 		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), re.getObjectPosition());
-		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: dist: "+distance+" timeout: "+timeout);
+//		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: dist: "+distance+" timeout: "+timeout);
 		return ret;
 	}
 	
@@ -195,49 +201,6 @@ public class SmartBotGlobalNav implements GlobalNav {
 			pos = wp.getObjectPosition();
 		}
 		return distance;
-	}
-	
-	
-	/**
-	 * Processes the failed plan. The remembers if it failed to reach
-	 * for the specific entity or if it failed to go from one waypoint
-	 * to another. This information will be used later to remove some 
-	 * entities from KB or some edges from waypoint map.
-	 * @param bot the bot that has failed the plan
-	 * @param checkIfTheBotIsFarFromThePath if true, we mark the failure
-	 * of the edge on the map only if the bot is far from the waypoints
-	 * the edge is supposed to connect.
-	 */
-	static void processFailedPlan(MapBotBase bot, boolean checkIfTheBotIsFarFromThePath) {
-		NavPlan oldPlan = bot.plan;
-		String talk = "plan change: bot is stuck <--------------------- \n";
-		//if we are at the end of the path:
-		if (oldPlan != null && 
-			oldPlan.path != null && 
-			(oldPlan.isSpontaneos || oldPlan.pathIndex >= oldPlan.path.length-1)) {
-			//we mark that this item failed to be picked
-			bot.kb.failedToPickup(oldPlan.dest);
-			talk += " at the end of the path";
-		}
-		//if we were in the middle of the path:
-		else {
-			talk += " in the middle of the path";
-			//if there is no opponent visible (we are not stuck because of him)
-			if (oldPlan != null && oldPlan.path != null && ! bot.isOpponentVisible() && 
-					oldPlan.pathIndex > 0 && 
-					oldPlan.pathIndex < oldPlan.path.length) {
-				Waypoint src = oldPlan.path[oldPlan.pathIndex-1];
-				Waypoint dst = oldPlan.path[oldPlan.pathIndex];
-				if ( checkIfTheBotIsFarFromThePath && 
-					CommFun.getDistanceBetweenPositions(bot.getBotPosition(), src.getObjectPosition()) > 200 &&
-					CommFun.getDistanceBetweenPositions(bot.getBotPosition(), dst.getObjectPosition()) > 200)
-				//we mark that the edge between those waypoints have failed
-				bot.kb.waypointEdgesFailures[bot.kb.map.indexOf(src)][bot.kb.map.indexOf(dst)]++;
-				else if ( ! checkIfTheBotIsFarFromThePath)
-					bot.kb.waypointEdgesFailures[bot.kb.map.indexOf(src)][bot.kb.map.indexOf(dst)]++;
-			}
-		}
-		bot.dtalk.addToLog(talk);
 	}
 	
 }

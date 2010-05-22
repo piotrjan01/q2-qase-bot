@@ -29,7 +29,7 @@ public class MapBotBase extends BotBase {
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	protected static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\from-demo\\";
+	protected static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\";
 	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
@@ -156,10 +156,8 @@ public class MapBotBase extends BotBase {
 	
 	@Override
 	public void respawn() {
-		kb.removeFailingEdgesFromTheMap();
 		super.respawn();
 		plan = null;
-		Dbg.prn(getBotName()+": I DIED!");
 	}
 	
 	@Override
