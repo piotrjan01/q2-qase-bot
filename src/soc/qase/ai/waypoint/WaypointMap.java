@@ -6,6 +6,7 @@
 package soc.qase.ai.waypoint;
 
 import java.util.Vector;
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -1196,6 +1197,14 @@ public class WaypointMap implements Serializable
 	public Vector getItemNodes() {
 		return itemNodes;
 	}
+	
+//	private void writeObject(ObjectOutputStream out) throws IOException {
+//		out.defaultWriteObject(); 
+//	}
+//	
+//	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+//		
+//	}
 	
 
 }

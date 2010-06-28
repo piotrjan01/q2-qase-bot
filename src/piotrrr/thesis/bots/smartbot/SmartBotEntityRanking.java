@@ -1,7 +1,6 @@
 package piotrrr.thesis.bots.smartbot;
 
 import java.util.TreeSet;
-import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.NavConfig;
@@ -9,7 +8,6 @@ import piotrrr.thesis.bots.tuning.WeaponConfig;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.combat.EnemyInfo;
 import piotrrr.thesis.common.entities.EntityDoublePair;
-import piotrrr.thesis.tools.Dbg;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 
