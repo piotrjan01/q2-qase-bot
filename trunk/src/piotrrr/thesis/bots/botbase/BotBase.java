@@ -6,6 +6,7 @@ import java.util.Vector;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.Job;
+import piotrrr.thesis.common.stats.BotStatistic;
 import soc.qase.bot.NoClipBot;
 import soc.qase.file.bsp.BSPParser;
 import soc.qase.state.PlayerGun;
@@ -14,7 +15,7 @@ import soc.qase.state.World;
 import soc.qase.tools.vecmath.Vector3f;
 /**
  * The bot that is used as super class for all the other bots.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class BotBase extends NoClipBot implements GameObject {
 	
@@ -74,6 +75,8 @@ public class BotBase extends NoClipBot implements GameObject {
 	public static final int maxHealth = 100;
 	
 	public static final int maxArmor = 100;
+
+        public BotStatistic stats = new BotStatistic();
 	
 	/**
 	 * Basic constructor

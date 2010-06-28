@@ -4,7 +4,7 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * Common functions that may be used by bots.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class CommFun {
 	
@@ -85,6 +85,38 @@ public class CommFun {
 			default: return "UNKNOWN";
 		}
 	}
+
+        public static String getGunName(String message) {
+		if (message.contains("super shotgun")) {
+                    return "super shoutgun";
+                }
+                else if (message.contains("machinegunned")) {
+                    return "machinegun";
+                }
+                else if (message.contains("blasted")) {
+                    return "blaster";
+                }
+                else if (message.contains("gunned down")) {
+                    return "shotgun";
+                }
+                else if (message.contains("railed")) {
+                    return "railgun";
+                }
+                else if (message.contains("hyperblaster")) {
+                    return "hyperblaster";
+                }
+                else if (message.contains("chaingun")) {
+                    return "chaingun";
+                }
+                else if (message.contains("rocket")) {
+                    return "rocket launcher";
+                }
+                else {
+                    return "other";
+                }
+
+	}
+
 	
 	public static Vector3f cloneVector(Vector3f v) {
 		Vector3f ret = new Vector3f();
