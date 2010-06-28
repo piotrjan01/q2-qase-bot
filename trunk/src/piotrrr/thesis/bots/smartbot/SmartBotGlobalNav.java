@@ -105,11 +105,11 @@ public class SmartBotGlobalNav implements GlobalNav {
 			}
 		
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().ent.getObjectPosition());
-			int lower = (ranking.size() >= 2) ? (int)(ranking.lower(ranking.last()).dbl) : 0;
-			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+
-					" > "+lower+
-					" et: "+EntityType.getEntityType(ranking.last().ent)+
-					" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
+//			int lower = (ranking.size() >= 2) ? (int)(ranking.lower(ranking.last()).dbl) : 0;
+//			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+
+//					" > "+lower+
+//					" et: "+EntityType.getEntityType(ranking.last().ent)+
+//					" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
 			plan = new NavPlan(bot, ranking.last().ent, (int)(PLAN_TIME_PER_DIST*distance));
 			
 //			plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
