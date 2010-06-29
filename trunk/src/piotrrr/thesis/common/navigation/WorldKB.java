@@ -17,7 +17,7 @@ import soc.qase.state.Entity;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class WorldKB {
 
@@ -247,6 +247,7 @@ public class WorldKB {
 		for (EnemyInfo ei : enemyInformation.values()) {
 			if ( /*! ei.ent.getActive() ||*/ ei.isOutdated(bot.getFrameNumber())) 
 				toDelete.add(ei.ent.getNumber());
+                        if (! bot.friendlyFire && isFriend(ei)) toDelete.add(ei.ent.getNumber());
 			if (ei.isOutdated(bot.getFrameNumber())) otd++;
 			if (!ei.ent.getActive()) ina++;
 		}
@@ -257,6 +258,20 @@ public class WorldKB {
 //		assert (enemyInformation.size() == 0) : "enems is not empty, huh? enems size="+enems.size();
 		
 	}
+
+        public boolean isFriend(EnemyInfo ei) {
+            try {
+                String ep = ei.ent.getName();
+                ep = ep.substring(0, ep.indexOf("-"));
+
+                String fp = bot.getBotName();
+                fp = fp.substring(0, fp.indexOf("-"));
+
+                return ep.equals(fp);
+            } catch (Exception e) {
+                return false;
+            }
+        }
 	
 	/**
 	 * @return all known information about enemies

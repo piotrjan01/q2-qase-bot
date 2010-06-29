@@ -12,8 +12,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.TreeSet;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
@@ -34,8 +32,6 @@ public class BotStatistic implements Serializable {
             this.gunUsed = gunUsed;
             this.time = time;
         }
-
-
     }
 
     public static class Pickup implements Serializable {
@@ -55,6 +51,21 @@ public class BotStatistic implements Serializable {
     public LinkedList<Kill> kills = new LinkedList<Kill>();
 
     public LinkedList<Pickup> pickups = new LinkedList<BotStatistic.Pickup>();
+
+    public String statsInfo = "no-info";
+
+    private static BotStatistic instance = null;
+
+
+
+    public static BotStatistic getInstance() {
+        return instance;
+    }
+
+    public static BotStatistic createNewInstance() {
+        instance = new BotStatistic();
+        return instance;
+    }
 
     public void addKill(long time, String killer, String victim, String gun) {
         kills.add(new Kill(killer, victim, gun, time));

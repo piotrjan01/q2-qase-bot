@@ -16,7 +16,7 @@ public class SmartBotEntityRanking {
 	public static TreeSet<EntityDoublePair> getEntityRanking(SmartBot bot) {
 		TreeSet<EntityDoublePair> ret = new TreeSet<EntityDoublePair>();
 		for (Entity e : bot.kb.getAllPickableEntities()) {
-			float rank = getRankForEntity(bot, e);
+			float rank = -getRankForEntity(bot, e);
 			ret.add(new EntityDoublePair(e, rank));
 //			Dbg.prn("add: "+e.toString()+" rank: "+rank+" ranking-size: "+ret.size());
 		}

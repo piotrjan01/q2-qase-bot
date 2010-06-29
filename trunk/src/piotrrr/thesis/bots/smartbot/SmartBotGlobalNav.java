@@ -16,7 +16,7 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * The global navigation module of the MapBotBase.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  * @see MapBotBase
  */
 public class SmartBotGlobalNav implements GlobalNav {
@@ -90,14 +90,14 @@ public class SmartBotGlobalNav implements GlobalNav {
 		
 		//Get the entity ranking:
 		TreeSet<EntityDoublePair> ranking = SmartBotEntityRanking.getEntityRanking(bot);	
-		bot.dtalk.addToLog(SmartBotEntityRanking.getRankingDebugInfo(bot));
+//		bot.dtalk.addToLog(SmartBotEntityRanking.getRankingDebugInfo(bot));
 		
 		while ((plan == null || plan.path == null)) {
 			
 			if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
 				Entity wp = bot.kb.getRandomItem();
 				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getObjectPosition());
-				bot.dtalk.addToLog("ranking size = 0, going for random item!");
+//				bot.dtalk.addToLog("ranking size = 0, going for random item!");
 				plan = new NavPlan(bot, wp, (int)(PLAN_TIME_PER_DIST*distance));
 //				plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
 				if (plan.path == null) return getSpontaneousAntiStuckPlan(bot);

@@ -3,30 +3,31 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.smartbot.SmartBot;
-import piotrrr.thesis.bots.smartbot.SmartBotEntityRanking;
 import piotrrr.thesis.bots.tuning.FileLogger;
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.stats.BotStatistic;
 
-public class BasicMeasuresJob extends Job {
+public class GlobalKillsStatsJob extends Job {
 
-	public BasicMeasuresJob(BotBase bot) {
+	public GlobalKillsStatsJob(BotBase bot) {
 		super(bot);
-		killsLog.addToLog("Starting the measurement,null,null\n");
 	}
 	
-	FileLogger killsLog = new FileLogger("kills.csv");
+	FileLogger killsLog = null;
 	
 	
 	@Override
 	public void run() {
 		super.run();
-//		logKillsToFile();
                 logKillsToStats();
 	}
 	
 
 	private void logKillsToFile() {
+                if (killsLog == null) {
+                    killsLog = new FileLogger("kills.csv");
+                    killsLog.addToLog("Starting the measurement,null,null\n");
+                }
 		Vector<String> commands = bot.getMessages("");
 		if (commands == null) return;
 		for (String cmd : commands) {
@@ -54,13 +55,25 @@ public class BasicMeasuresJob extends Job {
                             String killer = cmd.substring(cmd.indexOf(" by ")+4);
 			    if (killer.indexOf("'s") != -1)
 					killer = killer.substring(0, killer.indexOf("'s"));
-                            bot.stats.addKill(
+                            BotStatistic.getInstance().addKill(
                                     bot.getFrameNumber(),
                                     killer,
                                     victim,
                                     CommFun.getGunName(cmd)
                                 );
 			}
+                        else if (cmd.contains("rocket") && cmd.contains("ate")) {
+                            String victim = cmd.substring(0, cmd.indexOf(" ate "));
+                            String killer = cmd.substring(cmd.indexOf(" ate ")+5);
+			    if (killer.indexOf("'s") != -1)
+					killer = killer.substring(0, killer.indexOf("'s"));
+                            BotStatistic.getInstance().addKill(
+                                    bot.getFrameNumber(),
+                                    killer,
+                                    victim,
+                                    CommFun.getGunName(cmd)
+                                );
+                        }
 		}
 
 	}

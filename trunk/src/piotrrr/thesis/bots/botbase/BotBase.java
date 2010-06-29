@@ -76,7 +76,9 @@ public class BotBase extends NoClipBot implements GameObject {
 	
 	public static final int maxArmor = 100;
 
-        public BotStatistic stats = new BotStatistic();
+        private int lastWorldFrame = 0;
+
+        public boolean friendlyFire = false;
 	
 	/**
 	 * Basic constructor
@@ -87,9 +89,12 @@ public class BotBase extends NoClipBot implements GameObject {
 		super(botName, skinName);
 	}
 
+
 	@Override
 	public void runAI(World world) {
 		try {
+                        if ( world.getFrame() != 1 + lastWorldFrame ) say("LOST FRAMES: "+(world.getFrame()-lastWorldFrame));
+                        lastWorldFrame = world.getFrame();
 			this.world = world;
 			messages = world.getMessages();
 			updateFrameNumber();

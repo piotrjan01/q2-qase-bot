@@ -239,5 +239,48 @@ public class StatsChartsFactory {
         return cp;
     }
 
+     public static ChartPanel getWhoKillsWhomBarChart(BotStatistic stat) {
+
+        TreeMap<String, TreeMap<String, Integer>> map = new TreeMap<String, TreeMap<String, Integer>>();
+
+        DefaultCategoryDataset ds = new DefaultCategoryDataset();
+
+        for (String p : stat.getAllBotsNames()) {
+            TreeMap<String, Integer> tm = new TreeMap<String, Integer>();
+            for (String bn : stat.getAllBotsNames()) {
+                tm.put(bn, 0);
+            }
+            map.put(p, tm);
+        }
+
+        for (Kill k : stat.kills) {
+            TreeMap<String, Integer> tm = map.get(k.killer);
+            int c = tm.get(k.victim);
+            tm.remove(k.victim);
+            tm.put(k.victim, c+1);
+        }
+
+        for (String bn : map.keySet()) {
+            TreeMap<String, Integer> usage = map.get(bn);
+            for (String wpn : usage.keySet()) {
+                ds.addValue((Number)usage.get(wpn), wpn, bn);
+            }
+        }
+
+        JFreeChart c = ChartFactory.createStackedBarChart(
+                "Who how often killed whom",
+                "Killer bot",
+                "Kills by bot",
+                ds,
+                PlotOrientation.VERTICAL,
+                true, true, true);
+
+
+
+        ChartPanel cp = new ChartPanel(c);
+        return cp;
+    }
+
+
 
 }
