@@ -1,5 +1,6 @@
 package piotrrr.thesis.bots.referencebot;
 
+import piotrrr.thesis.common.fsm.NeedsFSM;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;

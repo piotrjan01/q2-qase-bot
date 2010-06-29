@@ -1,5 +1,6 @@
 package piotrrr.thesis.bots.rlbot;
 
+import piotrrr.thesis.common.fsm.NeedsFSM;
 import piotrrr.thesis.bots.referencebot.*;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.combat.FiringDecision;
@@ -9,7 +10,7 @@ import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.navigation.NavInstructions;
 
-public class RlBot extends MapBotBase {
+public class RLBot extends MapBotBase {
 	
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -21,7 +22,7 @@ public class RlBot extends MapBotBase {
 	 */
 	public StateReporter stateReporter;
 
-	public RlBot(String botName, String skinName) {
+	public RLBot(String botName, String skinName) {
 		super(botName, skinName);
 		
 		fsm = new NeedsFSM(this);
