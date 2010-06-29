@@ -1,11 +1,11 @@
-package piotrrr.thesis.bots.referencebot;
+package piotrrr.thesis.common.fsm;
 
 
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 
 /**
  * The interface of the state that can be used by NeedsFSM.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  * @see NeedsFSM
  */
 public class State {

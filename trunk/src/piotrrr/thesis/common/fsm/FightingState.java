@@ -1,13 +1,14 @@
-package piotrrr.thesis.bots.referencebot;
+package piotrrr.thesis.common.fsm;
 
 
+import piotrrr.thesis.bots.referencebot.*;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.common.entities.EntityType;
 import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 
 /**
  * This state should be used by bot when it is searching for enemies to fight.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 class FightingState extends State {
 	

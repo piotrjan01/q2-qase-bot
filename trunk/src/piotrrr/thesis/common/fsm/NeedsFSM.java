@@ -1,5 +1,6 @@
-package piotrrr.thesis.bots.referencebot;
+package piotrrr.thesis.common.fsm;
 
+import piotrrr.thesis.bots.referencebot.*;
 import java.util.LinkedList;
 
 import piotrrr.thesis.bots.botbase.BotBase;
@@ -62,7 +63,7 @@ public class NeedsFSM {
 	 * along with a value indicating how much it desires them.
 	 * @return
 	 */
-	EntityTypeDoublePair [] getDesiredEntities() {
+	public EntityTypeDoublePair [] getDesiredEntities() {
 		state = state.getNextState();
 		return state.getDesiredEntities();
 	}
