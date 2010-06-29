@@ -10,7 +10,7 @@ import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.navigation.NavInstructions;
 
-public class RLBot extends MapBotBase {
+public class RlBot extends MapBotBase {
 	
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -22,7 +22,7 @@ public class RLBot extends MapBotBase {
 	 */
 	public StateReporter stateReporter;
 
-	public RLBot(String botName, String skinName) {
+	public RlBot(String botName, String skinName) {
 		super(botName, skinName);
 		
 		fsm = new NeedsFSM(this);
