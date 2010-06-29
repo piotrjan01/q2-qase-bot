@@ -8,9 +8,9 @@ import piotrrr.thesis.common.entities.EntityTypeDoublePair;
 /**
  * The Finite State Machine that is used to determine how much the bot 
  * wants each type of entity in its current state.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
-class NeedsFSM {
+public class NeedsFSM {
 	
 	//TODO: values to adjust:
 	/**
@@ -52,7 +52,7 @@ class NeedsFSM {
 	 * Basic constructor
 	 * @param bot the bot that uses FSM
 	 */
-	NeedsFSM(BotBase bot) {
+	public NeedsFSM(BotBase bot) {
 		this.bot = bot;
 		this.state = new HealingState(bot);
 	}
@@ -70,7 +70,7 @@ class NeedsFSM {
 	/**
 	 * @return the current state's name.
 	 */
-	String getCurrentStateName() {
+	public String getCurrentStateName() {
 		return state.getClass().toString();
 	}
 	

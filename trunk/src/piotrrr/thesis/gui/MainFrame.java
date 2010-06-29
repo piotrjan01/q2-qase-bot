@@ -938,13 +938,12 @@ public class MainFrame extends javax.swing.JFrame {
         killsPanel14.add(StatsChartsFactory.getKillsInTimeByBot(stats));
         killsPanel14.revalidate();
 
-        String [] prefixes = {"SmartBot", "ReferenceBot"};
         killsByTypejPanel14.removeAll();
-        killsByTypejPanel14.add(StatsChartsFactory.getKillsInTimeByBotType(stats, prefixes));
+        killsByTypejPanel14.add(StatsChartsFactory.getKillsInTimeByBotType(stats));
         killsByTypejPanel14.revalidate();
 
         deathsByTypejPanel14.removeAll();
-        deathsByTypejPanel14.add(StatsChartsFactory.getDeathsInTimeByBotType(stats, prefixes));
+        deathsByTypejPanel14.add(StatsChartsFactory.getDeathsInTimeByBotType(stats));
         deathsByTypejPanel14.revalidate();
 
         weaponsjPanel14.removeAll();
@@ -952,7 +951,7 @@ public class MainFrame extends javax.swing.JFrame {
         weaponsjPanel14.revalidate();
 
         killsePerDeathjPanel14.removeAll();
-        killsePerDeathjPanel14.add(StatsChartsFactory.getKillsPerEachDeathByBotType(stats, prefixes));
+        killsePerDeathjPanel14.add(StatsChartsFactory.getKillsPerEachDeathByBotType(stats));
         killsePerDeathjPanel14.revalidate();
 
         whoKillsWhomjPanel14.removeAll();
