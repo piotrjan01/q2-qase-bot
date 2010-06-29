@@ -11,14 +11,12 @@
 
 package piotrrr.thesis.gui;
 
-import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
-import org.jfree.chart.ChartPanel;
 import piotrrr.thesis.bots.BotsConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
@@ -26,7 +24,7 @@ import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
-import piotrrr.thesis.common.jobs.BasicMeasuresJob;
+import piotrrr.thesis.common.jobs.GlobalKillsStatsJob;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.stats.BotStatistic;
@@ -124,6 +122,7 @@ public class MainFrame extends javax.swing.JFrame {
         deathsByTypejPanel14 = new javax.swing.JPanel();
         weaponsjPanel14 = new javax.swing.JPanel();
         killsePerDeathjPanel14 = new javax.swing.JPanel();
+        whoKillsWhomjPanel14 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -727,6 +726,9 @@ public class MainFrame extends javax.swing.JFrame {
         killsePerDeathjPanel14.setLayout(new java.awt.GridLayout());
         jTabbedPane2.addTab("kills per death", killsePerDeathjPanel14);
 
+        whoKillsWhomjPanel14.setLayout(new java.awt.GridLayout());
+        jTabbedPane2.addTab("who kills whom", whoKillsWhomjPanel14);
+
         jButton1.setText("Save current statistics");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -799,9 +801,9 @@ public class MainFrame extends javax.swing.JFrame {
 		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);
 		stepJob = new DebugStepJob(bot, this);
 		bot.addBotJob(stepJob);
-		bot.addBotJob(new BasicMeasuresJob(bot));
+		bot.addBotJob(new GlobalKillsStatsJob(bot));
 		dbgBot = bot;
-                stats = dbgBot.stats;
+                stats = BotStatistic.createNewInstance();
     }//GEN-LAST:event_connectDebugedButtonActionPerformed
 
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
@@ -953,6 +955,10 @@ public class MainFrame extends javax.swing.JFrame {
         killsePerDeathjPanel14.add(StatsChartsFactory.getKillsPerEachDeathByBotType(stats, prefixes));
         killsePerDeathjPanel14.revalidate();
 
+        whoKillsWhomjPanel14.removeAll();
+        whoKillsWhomjPanel14.add(StatsChartsFactory.getWhoKillsWhomBarChart(stats));
+        whoKillsWhomjPanel14.revalidate();
+
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void nrOfSmartBotsTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nrOfSmartBotsTextField2ActionPerformed
@@ -963,6 +969,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         if (stats == null) return;
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        fc.setApproveButtonText("Save");
+        fc.setDialogTitle("Save current statistics");
         fc.showOpenDialog(this);
         System.out.println("Saving stats to file: "+fc.getSelectedFile());
         stats.saveToFile(fc.getSelectedFile().getPath());
@@ -971,6 +979,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        fc.setApproveButtonText("Open");
+        fc.setDialogTitle("Open statistics");
         fc.showOpenDialog(this);
         System.out.println("Reading stats from file: "+fc.getSelectedFile());
         stats = BotStatistic.readFromFile(fc.getSelectedFile().getPath());
@@ -1059,6 +1069,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton visibleEntsRadioButton2;
     private javax.swing.JRadioButton visibleWaypointsRadioButton2;
     private javax.swing.JPanel weaponsjPanel14;
+    private javax.swing.JPanel whoKillsWhomjPanel14;
     // End of variables declaration//GEN-END:variables
     
     private SmartBot dbgBot = null;

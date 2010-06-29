@@ -16,7 +16,7 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * The global navigation module of the MapBotBase.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  * @see MapBotBase
  */
 public class ReferenceBotGlobalNav implements GlobalNav {
@@ -77,7 +77,7 @@ public class ReferenceBotGlobalNav implements GlobalNav {
 			changePlan = true;
 		}
 		
-		if (talk != "" ) bot.dtalk.addToLog(talk);
+//		if (talk != "" ) bot.dtalk.addToLog(talk);
 		
 		/**
 		 * What do we do when we decide to change the plan?
@@ -114,7 +114,7 @@ public class ReferenceBotGlobalNav implements GlobalNav {
 			if (ranking.size() == 0 || bot.stuckDetector.isStuck) {
 				Entity wp = bot.kb.getRandomItem();
 				double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), wp.getObjectPosition());
-				bot.dtalk.addToLog("ranking size = 0, going for random item!");
+//				bot.dtalk.addToLog("ranking size = 0, going for random item!");
 				plan = new NavPlan(bot, wp, (int)(PLAN_TIME_PER_DIST*distance));
 //				plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
 				if (plan.path == null) return getSpontaneousAntiStuckPlan(bot);
@@ -122,11 +122,11 @@ public class ReferenceBotGlobalNav implements GlobalNav {
 			}
 		
 			double distance = getDistanceFollowingMap(bot, bot.getBotPosition(), ranking.last().ent.getObjectPosition());
-			int lower = (ranking.size() >= 2) ? (int)(ranking.lower(ranking.last()).dbl) : 0;
-			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+
-					" > "+lower+
-					" et: "+EntityType.getEntityType(ranking.last().ent)+
-					" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
+//			int lower = (ranking.size() >= 2) ? (int)(ranking.lower(ranking.last()).dbl) : 0;
+//			bot.dtalk.addToLog("got new plan: rank: "+((int)ranking.last().dbl)+
+//					" > "+lower+
+//					" et: "+EntityType.getEntityType(ranking.last().ent)+
+//					" dist: "+distance+" timeout: "+PLAN_TIME_PER_DIST*distance);
 			plan = new NavPlan(bot, ranking.last().ent, (int)(PLAN_TIME_PER_DIST*distance));
 //			plan.path = bot.kb.findShortestPath(bot.getBotPosition(), plan.dest.getObjectPosition());
 			ranking.pollLast();
@@ -167,8 +167,8 @@ public class ReferenceBotGlobalNav implements GlobalNav {
 		newPlan.path[0] = new Waypoint(chosen.getObjectPosition());
 		newPlan.isSpontaneos = true;
 		
-		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getObjectPosition());
-		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.toString()+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
+//		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), chosen.getObjectPosition());
+//		bot.dtalk.addToLog("got new spontaneous plan: et: "+chosen.toString()+" dist: "+distance+" timeout: "+distance*PLAN_TIME_PER_DIST);
 		
 		return newPlan;
 	}
@@ -187,8 +187,8 @@ public class ReferenceBotGlobalNav implements GlobalNav {
 		ret.path = new Waypoint[1];
 		ret.path[0] = new Waypoint(re.getObjectPosition());
 		ret.isSpontaneos = true;
-		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), re.getObjectPosition());
-		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: dist: "+distance+" timeout: "+timeout);
+//		double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), re.getObjectPosition());
+//		bot.dtalk.addToLog("got new anti-stuck spontaneous plan: dist: "+distance+" timeout: "+timeout);
 		return ret;
 	}
 	
