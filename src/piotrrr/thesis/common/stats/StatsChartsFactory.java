@@ -38,12 +38,12 @@ public class StatsChartsFactory {
         
     }
 
-    public static ChartPanel getKillsInTimeByBotType(BotStatistic stats, String [] namePrefixes) {
+    public static ChartPanel getKillsInTimeByBotType(BotStatistic stats) {
         XYSeriesCollection ds = new XYSeriesCollection();
 
         LinkedList<BotSeries> series = new LinkedList<BotSeries>();
 
-        for (String botName : namePrefixes) {
+        for (String botName : stats.getAllBotFamilies()) {
             series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
         }
 
@@ -73,12 +73,12 @@ public class StatsChartsFactory {
 
     }
 
-    public static ChartPanel getDeathsInTimeByBotType(BotStatistic stats, String [] namePrefixes) {
+    public static ChartPanel getDeathsInTimeByBotType(BotStatistic stats) {
         XYSeriesCollection ds = new XYSeriesCollection();
 
         LinkedList<BotSeries> series = new LinkedList<BotSeries>();
 
-        for (String botName : namePrefixes) {
+        for (String botName : stats.getAllBotFamilies()) {
             series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
         }
 
@@ -108,12 +108,12 @@ public class StatsChartsFactory {
 
     }
 
-     public static ChartPanel getKillsPerEachDeathByBotType(BotStatistic stats, String [] namePrefixes) {
+     public static ChartPanel getKillsPerEachDeathByBotType(BotStatistic stats) {
         XYSeriesCollection ds = new XYSeriesCollection();
 
         LinkedList<BotSeries> series = new LinkedList<BotSeries>();
 
-        for (String botName : namePrefixes) {
+        for (String botName : stats.getAllBotFamilies()) {
             series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
         }
 

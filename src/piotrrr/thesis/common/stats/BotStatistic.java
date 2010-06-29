@@ -80,6 +80,19 @@ public class BotStatistic implements Serializable {
         return ret;
     }
 
+    public TreeSet<String> getAllBotFamilies() {
+        TreeSet<String> ret = new TreeSet<String>();
+        for (Kill k : kills) {
+            if (k.killer.contains("-"))
+                ret.add(k.killer.substring(0, k.killer.indexOf("-")));
+            else ret.add(k.killer);
+            if (k.victim.contains("-"))
+                ret.add(k.victim.substring(0, k.victim.indexOf("-")));
+            else ret.add(k.victim);
+        }
+        return ret;
+    }
+
     public LinkedList<Kill> getAllKillsForGivenBot(String name) {
         LinkedList<Kill> ret = new LinkedList<BotStatistic.Kill>();
         for (Kill k : kills) {
