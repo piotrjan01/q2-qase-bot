@@ -24,9 +24,9 @@ public class BotStatistic implements Serializable {
         public String killer;
         public String victim;
         public String gunUsed;
-        public long time;
+        public int time;
 
-        public Kill(String killer, String victim, String gunUsed, long time) {
+        public Kill(String killer, String victim, String gunUsed, int time) {
             this.killer = killer;
             this.victim = victim;
             this.gunUsed = gunUsed;
@@ -37,14 +37,25 @@ public class BotStatistic implements Serializable {
     public static class Pickup implements Serializable {
         public String what;
         public Vector3f where;
-        public long time;
+        public int time;
 
-        public Pickup(String what, Vector3f where, long time) {
+        public Pickup(String what, Vector3f where, int time) {
             this.what = what;
             this.where = where;
             this.time = time;
         }
+    }
 
+    public static class Reward implements Serializable {
+        String botName;
+        double reward;
+        public int time;
+
+        public Reward(String botName, double reward, int time) {
+            this.botName = botName;
+            this.reward = reward;
+            this.time = time;
+        }
 
     }
 
@@ -52,26 +63,32 @@ public class BotStatistic implements Serializable {
 
     public LinkedList<Pickup> pickups = new LinkedList<BotStatistic.Pickup>();
 
+    public LinkedList<Reward> rewards = new LinkedList<BotStatistic.Reward>();
+
     public String statsInfo = "no-info";
 
     private static BotStatistic instance = null;
 
 
 
-    public static BotStatistic getInstance() {
+    synchronized public static BotStatistic getInstance() {
         return instance;
     }
 
-    public static BotStatistic createNewInstance() {
+    synchronized public static BotStatistic createNewInstance() {
         instance = new BotStatistic();
         return instance;
     }
 
-    public void addKill(long time, String killer, String victim, String gun) {
+    synchronized public void addKill(int time, String killer, String victim, String gun) {
         kills.add(new Kill(killer, victim, gun, time));
     }
 
-    public TreeSet<String> getAllBotsNames() {
+    synchronized public void addReward(String botName, double reward, int time) {
+        rewards.add(new Reward(botName, reward, time));
+    }
+
+    synchronized public TreeSet<String> getAllKillingBotNames() {
         TreeSet<String> ret = new TreeSet<String>();
         for (Kill k : kills) {
             ret.add(k.killer);
@@ -80,7 +97,14 @@ public class BotStatistic implements Serializable {
         return ret;
     }
 
-    public TreeSet<String> getAllBotFamilies() {
+     synchronized public TreeSet<String> getAllRewardedBotNames() {
+        TreeSet<String> ret = new TreeSet<String>();
+        for (Reward r : rewards)
+            ret.add(r.botName);
+        return ret;
+    }
+
+    synchronized public TreeSet<String> getAllBotFamilies() {
         TreeSet<String> ret = new TreeSet<String>();
         for (Kill k : kills) {
             if (k.killer.contains("-"))
@@ -93,7 +117,7 @@ public class BotStatistic implements Serializable {
         return ret;
     }
 
-    public LinkedList<Kill> getAllKillsForGivenBot(String name) {
+    synchronized public LinkedList<Kill> getAllKillsForGivenBot(String name) {
         LinkedList<Kill> ret = new LinkedList<BotStatistic.Kill>();
         for (Kill k : kills) {
             if (k.killer.equals(name)) ret.add(k);
@@ -102,7 +126,7 @@ public class BotStatistic implements Serializable {
     }
 
 
-    public void saveToFile(String filename) {
+    synchronized public void saveToFile(String filename) {
         try {
             FileOutputStream fos = new FileOutputStream(filename);
             ObjectOutputStream oos = new ObjectOutputStream(fos);

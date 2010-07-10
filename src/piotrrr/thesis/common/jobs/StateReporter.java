@@ -1,10 +1,13 @@
 package piotrrr.thesis.common.jobs;
 
+import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
+import piotrrr.thesis.common.fsm.StateBot;
+import soc.qase.bot.BasicBot;
 
 /**
  * This job reports bot's state changes.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class StateReporter extends Job {
 	
@@ -13,12 +16,12 @@ public class StateReporter extends Job {
 	 */
 	String lastStateName = "";
 	
-	ReferenceBot bot;
+	StateBot bot;
 	
 	public boolean stateHasChanged = false;
 	
-	public StateReporter(ReferenceBot bot) {
-		super(bot);
+	public StateReporter(BotBase bot1, StateBot bot) {
+		super(bot1);
 		this.bot = bot;
 		lastStateName = bot.getCurrentStateName();
 	}

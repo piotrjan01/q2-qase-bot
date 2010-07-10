@@ -25,9 +25,9 @@ public class BotBase extends NoClipBot implements GameObject {
 	private LinkedList<Job> botJobs = new LinkedList<Job>();
 	
 	/**
-	 * Remembers the number of the current frame. Used to measure time.
+	 * Remembers the number of the first frame from server. Used to measure time.
 	 */
-	private long frameNumber = 0;
+	private static int firstFrameNumber = -1;
 	
 	/**
 	 * Counts the deaths of the bot.
@@ -95,9 +95,15 @@ public class BotBase extends NoClipBot implements GameObject {
 		try {
                         if ( world.getFrame() != 1 + lastWorldFrame ) say("LOST FRAMES: "+(world.getFrame()-lastWorldFrame));
                         lastWorldFrame = world.getFrame();
+
+                        if (firstFrameNumber == -1) firstFrameNumber = world.getFrame();
+
 			this.world = world;
 			messages = world.getMessages();
-			updateFrameNumber();
+			
+//                        System.out.println(getBotName()+": frame: "+world.getFrame());
+//                        System.out.flush();
+                        
 			runBotJobs();
 			if ( ! botPaused) botLogic();
 			else setBotMovement(new Vector3f(), pausedLookDir, PlayerMove.WALK_STOPPED, PlayerMove.POSTURE_NORMAL);
@@ -136,14 +142,6 @@ public class BotBase extends NoClipBot implements GameObject {
 	}
 	
 	/**
-	 * Updates the number of the frame.
-	 */
-	private void updateFrameNumber() {
-		if (frameNumber < Long.MAX_VALUE) frameNumber++;
-		else frameNumber = 0;
-	}
-	
-	/**
 	 * Runs bot jobs stored in botJobs list.
 	 */
 	private void runBotJobs() {
@@ -153,8 +151,9 @@ public class BotBase extends NoClipBot implements GameObject {
 	/**
 	 * @return current frame number
 	 */
-	public long getFrameNumber() {
-		return frameNumber;
+	public int getFrameNumber() {
+            if (world == null) return -1;
+            return world.getFrame()-firstFrameNumber;
 	}
 	
 	/**

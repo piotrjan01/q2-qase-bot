@@ -74,6 +74,18 @@ public class GlobalKillsStatsJob extends Job {
                                     CommFun.getGunName(cmd)
                                 );
                         }
+                        else if (cmd.contains("rocket") && cmd.contains("dodged")) {
+                            String victim = cmd.substring(0, cmd.indexOf(" almost "));
+                            String killer = cmd.substring(cmd.indexOf(" dodged ")+8);
+			    if (killer.indexOf("'s") != -1)
+					killer = killer.substring(0, killer.indexOf("'s"));
+                            BotStatistic.getInstance().addKill(
+                                    bot.getFrameNumber(),
+                                    killer,
+                                    victim,
+                                    CommFun.getGunName(cmd)
+                                );
+                        }
 		}
 
 	}

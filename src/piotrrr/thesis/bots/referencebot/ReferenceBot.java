@@ -6,11 +6,12 @@ import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.combat.SimpleAimingModule;
 import piotrrr.thesis.common.combat.SimpleCombatModule;
+import piotrrr.thesis.common.fsm.StateBot;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.navigation.NavInstructions;
-import soc.qase.ai.waypoint.Waypoint;
 
-public class ReferenceBot extends MapBotBase {
+
+public class ReferenceBot extends MapBotBase implements StateBot {
 	
 	/**
 	 * Finite state machine - used to determine bot's needs.
@@ -27,7 +28,7 @@ public class ReferenceBot extends MapBotBase {
 		
 		fsm = new NeedsFSM(this);
 		
-		stateReporter = new StateReporter(this);
+		stateReporter = new StateReporter(this, this);
 		addBotJob(stateReporter);
 		
 		globalNav = new ReferenceBotGlobalNav();
