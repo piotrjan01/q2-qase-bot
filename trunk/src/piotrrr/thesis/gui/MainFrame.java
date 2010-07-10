@@ -13,20 +13,24 @@ package piotrrr.thesis.gui;
 
 import java.util.Vector;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
-import piotrrr.thesis.bots.BotsConfig;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import piotrrr.thesis.bots.AppConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
+import piotrrr.thesis.bots.rlbot.RlBot;
 import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.GlobalKillsStatsJob;
 import piotrrr.thesis.common.jobs.DebugStepJob;
-import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.stats.BotStatistic;
 import piotrrr.thesis.common.stats.StatsChartsFactory;
 import soc.qase.tools.vecmath.Vector3f;
@@ -79,6 +83,21 @@ public class MainFrame extends javax.swing.JFrame {
         nrOfSmartBotsTextField2 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         connectSmartBotsjButton1 = new javax.swing.JButton();
+        jPanel14 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        nrOfRLtBotsTextField3 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        connectRLBotsjButton2 = new javax.swing.JButton();
+        jPanel15 = new javax.swing.JPanel();
+        quakePathjTextField2 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        botMapsPathjTextField3 = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        serverIPjTextField4 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        applyConfigButton = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         messagesScrollPane1 = new javax.swing.JScrollPane();
@@ -123,6 +142,7 @@ public class MainFrame extends javax.swing.JFrame {
         weaponsjPanel14 = new javax.swing.JPanel();
         killsePerDeathjPanel14 = new javax.swing.JPanel();
         whoKillsWhomjPanel14 = new javax.swing.JPanel();
+        rewardPanel16 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -155,15 +175,14 @@ public class MainFrame extends javax.swing.JFrame {
         panelRunBotsLayout.setHorizontalGroup(
             panelRunBotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelRunBotsLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(nrBotsField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(connectOthersButton)
-                .addContainerGap(209, Short.MAX_VALUE))
+                .addComponent(connectOthersButton))
         );
         panelRunBotsLayout.setVerticalGroup(
             panelRunBotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -204,26 +223,28 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(disconnectSelectedButton1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
                     .addComponent(jLabel4)
-                    .addComponent(disconnectSelectedButton1))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(disconnectSelectedButton1))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(12, 12, 12)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(disconnectSelectedButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Connect debugged bot"));
@@ -242,7 +263,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(connectDebugedButton)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,7 +306,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jLabel8)
                 .addGap(18, 18, 18)
                 .addComponent(connectSmartBotsjButton1)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,6 +319,158 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder("Connect RLBots"));
+
+        jLabel9.setText("Connect");
+
+        nrOfRLtBotsTextField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        nrOfRLtBotsTextField3.setText("2");
+        nrOfRLtBotsTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nrOfRLtBotsTextField3ActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("RLBots");
+
+        connectRLBotsjButton2.setText("Connect them!");
+        connectRLBotsjButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectRLBotsjButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap(120, Short.MAX_VALUE)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nrOfRLtBotsTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel10)
+                .addGap(34, 34, 34)
+                .addComponent(connectRLBotsjButton2))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(nrOfRLtBotsTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(connectRLBotsjButton2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Config"));
+
+        quakePathjTextField2.setText("H:\\workspace\\inzynierka\\testing-env\\quake2-3_21\\quake2");
+        quakePathjTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quakePathjTextField2ActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Quake path:");
+
+        jLabel12.setText("Bot maps path:");
+
+        botMapsPathjTextField3.setText("H:\\workspace\\inzynierka\\SmartBot\\botmaps");
+        botMapsPathjTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botMapsPathjTextField3ActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Server IP");
+
+        serverIPjTextField4.setText("127.0.0.1");
+        serverIPjTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverIPjTextField4ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Browse");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Browse");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        applyConfigButton.setText("Apply config");
+        applyConfigButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyConfigButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel15Layout.createSequentialGroup()
+                            .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel15Layout.createSequentialGroup()
+                                    .addComponent(jLabel12)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(botMapsPathjTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
+                                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton3)
+                                    .addGroup(jPanel15Layout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(quakePathjTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGap(22, 22, 22))
+                        .addGroup(jPanel15Layout.createSequentialGroup()
+                            .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel15Layout.createSequentialGroup()
+                                    .addGap(77, 77, 77)
+                                    .addComponent(serverIPjTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel13))
+                            .addContainerGap(111, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                        .addComponent(applyConfigButton)
+                        .addContainerGap())))
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(quakePathjTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(botMapsPathjTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(serverIPjTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(applyConfigButton)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -305,30 +478,37 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addComponent(panelRunBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(290, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(panelRunBots, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(290, 290, 290))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(310, 310, 310))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelRunBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelRunBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Connect bots", jPanel7);
@@ -345,13 +525,13 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -448,7 +628,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(edgeFailuresRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(enemyInfoRadioButton1)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Full information on selected item"));
@@ -476,12 +656,12 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                    .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(distanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                         .addComponent(goToButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -493,7 +673,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(distanceLabel)
                     .addComponent(goToButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -519,7 +699,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                .addComponent(reqListScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -539,11 +719,11 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Bot control"));
@@ -664,7 +844,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -681,12 +861,12 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -714,20 +894,23 @@ public class MainFrame extends javax.swing.JFrame {
         killsPanel14.setLayout(new java.awt.GridLayout(1, 1, 5, 5));
         jTabbedPane2.addTab("kills by bot", killsPanel14);
 
-        killsByTypejPanel14.setLayout(new java.awt.GridLayout());
+        killsByTypejPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("kills by bot type", killsByTypejPanel14);
 
-        deathsByTypejPanel14.setLayout(new java.awt.GridLayout());
+        deathsByTypejPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("deaths by bot type", deathsByTypejPanel14);
 
-        weaponsjPanel14.setLayout(new java.awt.GridLayout());
+        weaponsjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("weapons by bot", weaponsjPanel14);
 
-        killsePerDeathjPanel14.setLayout(new java.awt.GridLayout());
+        killsePerDeathjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("kills per death", killsePerDeathjPanel14);
 
-        whoKillsWhomjPanel14.setLayout(new java.awt.GridLayout());
+        whoKillsWhomjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("who kills whom", whoKillsWhomjPanel14);
+
+        rewardPanel16.setLayout(new java.awt.GridLayout());
+        jTabbedPane2.addTab("reward", rewardPanel16);
 
         jButton1.setText("Save current statistics");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -750,7 +933,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 810, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(refreshButton)
                         .addGap(18, 18, 18)
@@ -768,7 +951,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -780,15 +963,15 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 702, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -796,9 +979,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void connectDebugedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectDebugedButtonActionPerformed
     	if (dbgBot != null) return;
-    	SmartBot bot = new SmartBot("SmartBot-dbg", BotsConfig.skinName);
-    	bot.addBotJob(new HitsReporter(bot));
-		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);
+    	SmartBot bot = new SmartBot("SmartBot-dbg", AppConfig.skinName);
+		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
 		stepJob = new DebugStepJob(bot, this);
 		bot.addBotJob(stepJob);
 		bot.addBotJob(new GlobalKillsStatsJob(bot));
@@ -809,10 +991,9 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
     	int num = Integer.parseInt(nrBotsField.getText());
     	for (int i=0; i<num; i++) {
-    		ReferenceBot bot = new ReferenceBot("ReferenceBot-"+i, BotsConfig.skinName);
+    		ReferenceBot bot = new ReferenceBot("ReferenceBot-"+i, AppConfig.skinName);
     		bot.dtalk.active = false;
-    		bot.addBotJob(new HitsReporter(bot));
-    		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);	
+    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
     		bots.add(bot);
     	}
     }//GEN-LAST:event_connectOthersButtonActionPerformed
@@ -909,10 +1090,9 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectSmartBotsjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectSmartBotsjButton1ActionPerformed
     	int num = Integer.parseInt(nrOfSmartBotsTextField2.getText());
     	for (int i=0; i<num; i++) {
-    		SmartBot bot = new SmartBot("SmartBot-"+i, BotsConfig.skinName);
+    		SmartBot bot = new SmartBot("SmartBot-"+i, AppConfig.skinName);
     		bot.dtalk.active = false;
-    		bot.addBotJob(new HitsReporter(bot));
-    		bot.connect(BotsConfig.serverIP, BotsConfig.serverPort);	
+    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
     		bots.add(bot);
     	}
     }//GEN-LAST:event_connectSmartBotsjButton1ActionPerformed
@@ -958,6 +1138,11 @@ public class MainFrame extends javax.swing.JFrame {
         whoKillsWhomjPanel14.add(StatsChartsFactory.getWhoKillsWhomBarChart(stats));
         whoKillsWhomjPanel14.revalidate();
 
+        rewardPanel16.removeAll();
+        rewardPanel16.add(StatsChartsFactory.getRewardsInTimeByEachBot(stats));
+        rewardPanel16.revalidate();
+
+
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void nrOfSmartBotsTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nrOfSmartBotsTextField2ActionPerformed
@@ -986,11 +1171,75 @@ public class MainFrame extends javax.swing.JFrame {
         refreshButtonActionPerformed(null);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void nrOfRLtBotsTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nrOfRLtBotsTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nrOfRLtBotsTextField3ActionPerformed
+
+    private void connectRLBotsjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectRLBotsjButton2ActionPerformed
+        int num = Integer.parseInt(nrOfRLtBotsTextField3.getText());
+    	for (int i=0; i<num; i++) {
+    		RlBot bot = new RlBot("RLBot-"+i, AppConfig.skinName);
+    		bot.dtalk.active = false;
+    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
+    		bots.add(bot);
+    	}
+    }//GEN-LAST:event_connectRLBotsjButton2ActionPerformed
+
+    private void quakePathjTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quakePathjTextField2ActionPerformed
+    
+    }//GEN-LAST:event_quakePathjTextField2ActionPerformed
+
+    private void botMapsPathjTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botMapsPathjTextField3ActionPerformed
+    
+    }//GEN-LAST:event_botMapsPathjTextField3ActionPerformed
+
+    private void serverIPjTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverIPjTextField4ActionPerformed
+    
+    }//GEN-LAST:event_serverIPjTextField4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setApproveButtonText("Open");
+        fc.setDialogTitle("Choose Quake2 root path");
+        fc.showOpenDialog(this);
+        System.out.println("Q2 Path: "+fc.getSelectedFile());
+        quakePathjTextField2.setText(fc.getSelectedFile().getPath());
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setApproveButtonText("Open");
+        fc.setDialogTitle("Choose bots maps directory path");
+        fc.showOpenDialog(this);
+        System.out.println("Maps Path: "+fc.getSelectedFile());
+        botMapsPathjTextField3.setText(fc.getSelectedFile().getPath());
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void applyConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyConfigButtonActionPerformed
+        AppConfig.quakePath = quakePathjTextField2.getText();
+        System.setProperty("QUAKE2", AppConfig.quakePath);
+        AppConfig.serverIP = serverIPjTextField4.getText();
+        MapBotBase.MAPS_DIR = botMapsPathjTextField3.getText()+"\\";
+    }//GEN-LAST:event_applyConfigButtonActionPerformed
+
     /**
     * @param args the command line arguments
     */
     public static void main(String args[]) {
-    	System.setProperty("QUAKE2", BotsConfig.quakePath);
+    	System.setProperty("QUAKE2", AppConfig.quakePath);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception ex1) {
+                System.err.println("No look and feel available :(");
+                ex1.printStackTrace();
+                return;
+            }
+        } 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainFrame mf = new MainFrame();
@@ -1002,9 +1251,12 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton allEntsRadioButton1;
+    private javax.swing.JButton applyConfigButton;
+    private javax.swing.JTextField botMapsPathjTextField3;
     private javax.swing.JTextArea botStateInfoTextArea1;
     private javax.swing.JButton connectDebugedButton;
     private javax.swing.JButton connectOthersButton;
+    private javax.swing.JButton connectRLBotsjButton2;
     private javax.swing.JButton connectSmartBotsjButton1;
     private javax.swing.JList connectedBotsList1;
     private javax.swing.JPanel deathsByTypejPanel14;
@@ -1018,7 +1270,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.ButtonGroup infoButtonGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1026,11 +1284,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1052,17 +1313,21 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane messagesScrollPane1;
     private javax.swing.JRadioButton navPlanRadioButton;
     private javax.swing.JTextField nrBotsField;
+    private javax.swing.JTextField nrOfRLtBotsTextField3;
     private javax.swing.JTextField nrOfSmartBotsTextField2;
     private javax.swing.JPanel panelRunBots;
     private javax.swing.JToggleButton pauseAnotherBotsToggle;
     private javax.swing.JToggleButton pauseToggleButton;
     private javax.swing.JRadioButton pickupFailuresRadioButton1;
+    private javax.swing.JTextField quakePathjTextField2;
     private javax.swing.JButton refreshButton;
     private javax.swing.JList reqList;
     private javax.swing.JScrollPane reqListScrollPane2;
+    private javax.swing.JPanel rewardPanel16;
     private javax.swing.JTextArea selectedBotInfoTextArea1;
     private javax.swing.JButton sendCommandToAnothersButton;
     private javax.swing.JButton sendCommandToDBGButton;
+    private javax.swing.JTextField serverIPjTextField4;
     private javax.swing.JButton stepButton1;
     private javax.swing.JTextField stepSizeTextField2;
     private javax.swing.JRadioButton visibleEntsRadioButton2;

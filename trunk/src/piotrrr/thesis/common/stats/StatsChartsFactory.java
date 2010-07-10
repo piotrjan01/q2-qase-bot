@@ -24,9 +24,10 @@ public class StatsChartsFactory {
 
     private static class BotSeries {
         XYSeries series;
-        int int1;
-        int int2;
-        String botName;
+        int int1 = 0;
+        int int2 = 0;
+        double d1 = 0;
+        String botName = "no name set";
 
         public BotSeries(XYSeries s, int i1, int i2, String botName) {
             this.series = s;
@@ -53,8 +54,10 @@ public class StatsChartsFactory {
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
-                if (k.killer.startsWith(s.botName)) s.int1++;
-                s.series.add(k.time/10, s.int1);
+                if (k.killer.startsWith(s.botName)) {
+                    s.int1++;
+                    s.series.add(k.time/10, s.int1);
+                }
             }
         }
 
@@ -88,8 +91,10 @@ public class StatsChartsFactory {
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
-                if (k.victim.startsWith(s.botName)) s.int1++;
-                s.series.add(k.time/10, s.int1);
+                if (k.victim.startsWith(s.botName)) {
+                    s.int1++;
+                    s.series.add(k.time/10, s.int1);
+                }   
             }
         }
 
@@ -123,11 +128,13 @@ public class StatsChartsFactory {
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
-                if (k.killer.startsWith(s.botName)) s.int1++;
-                if (k.victim.startsWith(s.botName)) s.int2++;
-                float val = 0;
-                if (s.int2 != 0) val = (float)s.int1 / (float)s.int2;
-                s.series.add(k.time/10, val);
+                if (k.killer.startsWith(s.botName) || k.victim.startsWith(s.botName)) {
+                    if (k.killer.startsWith(s.botName)) s.int1++;
+                    if (k.victim.startsWith(s.botName)) s.int2++;
+                    float val = 0;
+                    if (s.int2 != 0) val = (float)s.int1 / (float)s.int2;
+                    s.series.add(k.time/10, val);
+                }
             }
         }
 
@@ -152,7 +159,7 @@ public class StatsChartsFactory {
         
         LinkedList<BotSeries> series = new LinkedList<BotSeries>();
 
-        for (String botName : stats.getAllBotsNames()) {
+        for (String botName : stats.getAllKillingBotNames()) {
             series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
         }
 
@@ -162,8 +169,10 @@ public class StatsChartsFactory {
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
-                if (s.botName.equals(k.killer)) s.int1++;
-                s.series.add(k.time/10, s.int1);
+                if (s.botName.equals(k.killer)) {
+                    s.int1++;
+                    s.series.add(k.time/10, s.int1);
+                }
             }
         }
 
@@ -206,7 +215,7 @@ public class StatsChartsFactory {
 
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
 
-        for (String p : stat.getAllBotsNames()) map.put(p, new TreeMap<String, Integer>());
+        for (String p : stat.getAllKillingBotNames()) map.put(p, new TreeMap<String, Integer>());
 
         for (Kill k : stat.kills) {
             TreeMap<String, Integer> usage = map.get(k.killer);
@@ -245,9 +254,9 @@ public class StatsChartsFactory {
 
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
 
-        for (String p : stat.getAllBotsNames()) {
+        for (String p : stat.getAllKillingBotNames()) {
             TreeMap<String, Integer> tm = new TreeMap<String, Integer>();
-            for (String bn : stat.getAllBotsNames()) {
+            for (String bn : stat.getAllKillingBotNames()) {
                 tm.put(bn, 0);
             }
             map.put(p, tm);
@@ -279,6 +288,52 @@ public class StatsChartsFactory {
 
         ChartPanel cp = new ChartPanel(c);
         return cp;
+    }
+
+
+    public static ChartPanel getRewardsInTimeByEachBot(BotStatistic stats) {
+
+        XYSeriesCollection ds = new XYSeriesCollection();
+
+        LinkedList<BotSeries> series = new LinkedList<BotSeries>();
+
+        synchronized(stats) {
+
+            for (String botName : stats.getAllRewardedBotNames()) {
+                series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
+            }
+
+            for (BotSeries s : series) {
+                s.series.add(0, 0);
+            }
+
+            for (BotStatistic.Reward k : stats.rewards) {
+                for (BotSeries s : series) {
+                    if (k.reward != 0 && s.botName.equals(k.botName)) {
+                        s.d1+=k.reward;
+                        s.series.add(k.time/10, s.d1);
+                    }
+                }
+            }
+        }
+
+        for (BotSeries s : series) ds.addSeries(s.series);
+
+         JFreeChart c = ChartFactory.createXYLineChart(
+                 "Rewards by each bot in time",
+                 "time [s]",
+                 "rewards",
+                 ds,
+                 PlotOrientation.VERTICAL,
+                 true, true, true);
+
+//        XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) ((XYPlot)c.getPlot()).getRenderer();
+//        r.setDrawOutlines(true);
+//        r.setShapesVisible(true);
+
+        ChartPanel cp = new ChartPanel(c);
+        return cp;
+
     }
 
 

@@ -1,17 +1,35 @@
 package piotrrr.thesis.bots.rlbot;
 
+import java.util.LinkedList;
 import piotrrr.thesis.common.fsm.NeedsFSM;
-import piotrrr.thesis.bots.referencebot.*;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
-import piotrrr.thesis.common.combat.SimpleAimingModule;
 import piotrrr.thesis.common.combat.SimpleCombatModule;
+import piotrrr.thesis.common.fsm.StateBot;
+import piotrrr.thesis.common.jobs.CountMyScoreJob;
+import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.jobs.StateReporter;
 import piotrrr.thesis.common.navigation.NavInstructions;
+import piotrrr.thesis.common.stats.BotStatistic;
+import piotrrr.thesis.common.stats.StatsTools;
 
-public class RlBot extends MapBotBase {
-	
+public class RlBot extends MapBotBase implements StateBot {
+
+    class Shooting {
+        long shotTime;
+        long hitTime;
+        String enemyName;
+
+        public Shooting(long shotTime, long hitTime, String enemyName) {
+            this.shotTime = shotTime;
+            this.hitTime = hitTime;
+            this.enemyName = enemyName;
+        }
+        
+    }
+
+
 	/**
 	 * Finite state machine - used to determine bot's needs.
 	 */
@@ -22,13 +40,32 @@ public class RlBot extends MapBotBase {
 	 */
 	public StateReporter stateReporter;
 
+        public CountMyScoreJob scoreCounter;
+
+        public RLAimingModule aimingModule = new RLAimingModule(this);
+
+        public int lastBotScore = 0;
+
+        public static final int lastShootingMaxSize = 30;
+
+        public double totalReward = 0;
+
+        public double rewardsCount = 0;
+
+        LinkedList<Shooting> lastShootings = new LinkedList<Shooting>();
+
 	public RlBot(String botName, String skinName) {
 		super(botName, skinName);
 		
 		fsm = new NeedsFSM(this);
 		
-		globalNav = new ReferenceBotGlobalNav();
-		localNav = new ReferenceBotLocalNav();
+                stateReporter = new StateReporter(this, this);
+                scoreCounter = new CountMyScoreJob(this);
+		addBotJob(stateReporter);
+                addBotJob(scoreCounter);
+
+		globalNav = new RLBotGlobalNav();
+		localNav = new RLBotLocalNav();
 	}
 	
 	
@@ -58,7 +95,16 @@ public class RlBot extends MapBotBase {
 			}
 		}
 		
-		FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
+		FiringInstructions fi = aimingModule.getFiringInstructions(fd);
+                if (fi != null && fi.doFire) {
+                    lastShootings.add(new Shooting(
+                                            getFrameNumber(),
+                                            getFrameNumber()+(long)fi.timeToHit,
+                                            fd.enemyInfo.ent.getName())
+                                        );
+                    if (lastShootings.size() > lastShootingMaxSize)
+                        lastShootings.pollFirst();
+                }
 		
 		executeInstructions(ni,	fi);
 	}
@@ -81,9 +127,38 @@ public class RlBot extends MapBotBase {
 				"state name: "+getCurrentStateName()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
 				"position: "+getBotPosition()+"\n"+
+                                "rewards count: "+rewardsCount+"\n"+
+                                "reward total: "+totalReward+"\n"+
+                                "reward avg: "+totalReward/rewardsCount+"\n"+
 				kb.toString();
 	}
-	
+
+
+
+        public double getReward() {
+            rewardsCount++;
+            double r = 0;
+            if (scoreCounter.getBotScore() > lastBotScore) {
+                lastBotScore = scoreCounter.getBotScore();
+                r+=1;
+            }
+            LinkedList<Shooting> toDelete = new LinkedList<Shooting>();
+//            Dbg.prn("");
+            for (Shooting s : lastShootings) {
+//                Dbg.prn("shooting: "+s.enemyName+"@"+s.shotTime+"-"+s.hitTime+" ");
+                int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime+1, s.hitTime+2, s.enemyName);
+                if (damage > 0) {
+                    toDelete.add(s);
+                    r+=0.5*damage/100d;
+                }
+                else if (s.hitTime+10 < getFrameNumber()) toDelete.add(s);
+            }
+            
+            lastShootings.removeAll(toDelete);
+            totalReward+=r;
+            if (r>0) System.out.println("--------> Reward = "+r);
+            return r;
+        }
 	
 
 }

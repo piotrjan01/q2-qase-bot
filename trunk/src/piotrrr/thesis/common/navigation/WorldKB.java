@@ -242,14 +242,11 @@ public class WorldKB {
 			}
 			else enemyInformation.put(e.getNumber(), new EnemyInfo(e, bot.getFrameNumber()));
 		}
-		int otd = 0;
-		int ina = 0;
+		
 		for (EnemyInfo ei : enemyInformation.values()) {
 			if ( /*! ei.ent.getActive() ||*/ ei.isOutdated(bot.getFrameNumber())) 
 				toDelete.add(ei.ent.getNumber());
                         if (! bot.friendlyFire && isFriend(ei)) toDelete.add(ei.ent.getNumber());
-			if (ei.isOutdated(bot.getFrameNumber())) otd++;
-			if (!ei.ent.getActive()) ina++;
 		}
 //		Dbg.prn("enemies size: "+enemyInformation.size()+" to delete: "+toDelete.size()+" ina="+ina+" outd="+otd);
 		for (Integer i : toDelete)

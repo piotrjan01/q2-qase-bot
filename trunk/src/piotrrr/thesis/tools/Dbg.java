@@ -4,7 +4,7 @@ import javax.swing.JTextArea;
 
 /**
  * Some static debug methods
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class Dbg {
 	
@@ -26,6 +26,7 @@ public class Dbg {
 	public static void prn(Object o) {
 		System.out.println(o.toString());
 		if (toAppend != null) toAppend.setText(toAppend.getText()+o.toString()+"\n");
+                System.out.flush();
 	}
 	
 	/**
@@ -35,6 +36,7 @@ public class Dbg {
 	public static void err(Object o) {
 		System.err.println(o.toString());
 		if (toAppend != null) toAppend.setText(toAppend.getText()+"System.err:\t"+o.toString()+"\n");
+                System.err.flush();
 	}
 	
 }

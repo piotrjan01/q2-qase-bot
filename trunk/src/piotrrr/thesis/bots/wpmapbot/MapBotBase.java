@@ -7,6 +7,7 @@ import piotrrr.thesis.bots.tuning.WeaponConfig;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.BasicCommands;
 import piotrrr.thesis.common.jobs.GeneralDebugTalk;
+import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.jobs.StuckDetector;
 import piotrrr.thesis.common.navigation.GlobalNav;
 import piotrrr.thesis.common.navigation.LocalNav;
@@ -22,14 +23,14 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * This is a basic bot that uses WaypointMap and WorldKB to store knowledge.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class MapBotBase extends BotBase {
 	
 	/**
 	 * The directory where bot's maps are stored. Relative to main directory.
 	 */
-	protected static final String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\";
+	public static String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\";
 	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
@@ -45,6 +46,11 @@ public class MapBotBase extends BotBase {
 	 * The job that detects when the bot is stuck.
 	 */
 	public StuckDetector stuckDetector;
+
+        /**
+         * Gathers information when the bot was hit
+         */
+        public HitsReporter hitsReporter;
 	
 	/**
 	 * The job that handles basic commands.
@@ -94,9 +100,11 @@ public class MapBotBase extends BotBase {
 		
 		stuckDetector = new StuckDetector(this, 5);
 		basicCommands = new BasicCommands(this, "Player");
+                hitsReporter = new HitsReporter(this);
 		addBotJob(dtalk);
 		addBotJob(basicCommands);
 		addBotJob(stuckDetector);
+                addBotJob(hitsReporter);
 		
 	}
 
