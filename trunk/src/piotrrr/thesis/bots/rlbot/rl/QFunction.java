@@ -6,6 +6,7 @@
 package piotrrr.thesis.bots.rlbot.rl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -18,11 +19,11 @@ public class QFunction {
 
     RLAction defaultAction;
 
-    private double gamma = 0.5;
+    private double gamma = 0.95;
 
-    private double beta = 0.2;
+    private double beta = 0.5;
 
-    private double exploration = 0.05;
+    private double exploration = 0.2;
 
     private Random r = new Random();
 
@@ -31,6 +32,10 @@ public class QFunction {
     }
 
     public RLAction chooseAction(RLState state) {
+        return chooseAction(state, new HashSet<RLAction>());
+    }
+
+    public RLAction chooseAction(RLState state, HashSet<RLAction> forbiddenActions) {
         if (r.nextDouble() < exploration)
             return defaultAction.getRandomRLAction();
         if (qf.containsKey(state)) {
@@ -39,7 +44,7 @@ public class QFunction {
             double max = Double.MIN_VALUE;
             HashMap<RLAction, Double> actions = qf.get(state);
             for (RLAction a : actions.keySet()) {
-                if (actions.get(a) > max) {
+                if (actions.get(a) > max && ! forbiddenActions.contains(a)) {
                     act = a;
                     max = actions.get(a);
                 }
