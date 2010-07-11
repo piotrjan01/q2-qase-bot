@@ -42,7 +42,7 @@ public class RlBot extends MapBotBase implements StateBot {
 
         public CountMyScoreJob scoreCounter;
 
-        public RLAimingModule aimingModule = new RLAimingModule(this);
+        public RLCombatModule combatModule = new RLCombatModule(this);
 
         public int lastBotScore = 0;
 
@@ -86,16 +86,16 @@ public class RlBot extends MapBotBase implements StateBot {
 		
 		FiringDecision fd =  null;
 		if ( ! noFire ) {
-			fd = SimpleCombatModule.getFiringDecision(this);
-			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
-			else {
-				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.maxShortDistance4WpChoice+0.1f);
-				if (getWeaponIndex() != justInCaseWeaponIndex)
-					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
-			}
+			fd = combatModule.getFiringDecision();
+//			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
+//			else {
+//				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.maxShortDistance4WpChoice+0.1f);
+//				if (getWeaponIndex() != justInCaseWeaponIndex)
+//					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
+//			}
 		}
 		
-		FiringInstructions fi = aimingModule.getFiringInstructions(fd);
+		FiringInstructions fi = combatModule.getFiringInstructions(fd);
                 if (fi != null && fi.doFire) {
                     lastShootings.add(new Shooting(
                                             getFrameNumber(),
@@ -149,14 +149,14 @@ public class RlBot extends MapBotBase implements StateBot {
                 int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime+1, s.hitTime+2, s.enemyName);
                 if (damage > 0) {
                     toDelete.add(s);
-                    r+=0.5*damage/100d;
+                    r+=damage/1000d;
                 }
                 else if (s.hitTime+10 < getFrameNumber()) toDelete.add(s);
             }
             
             lastShootings.removeAll(toDelete);
             totalReward+=r;
-            if (r>0) System.out.println("--------> Reward = "+r);
+            if (r!=0) System.out.println("--------> Reward = "+r);
             return r;
         }
 	
