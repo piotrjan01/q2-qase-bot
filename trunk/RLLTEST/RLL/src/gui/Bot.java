@@ -17,6 +17,4 @@ public interface Bot {
 
     TestAction getAction(WorldState state);
 
-    Gun changeWeapon(WorldState state);
-
 }

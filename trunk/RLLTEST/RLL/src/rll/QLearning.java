@@ -6,9 +6,9 @@
 package rll;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
-import testenv.Actions;
 
 /**
  *
@@ -32,17 +32,20 @@ public class QLearning {
         this.defaultAction = defaultAction;
     }
 
-
     public RLAction chooseAction(RLState state) {
+        return chooseAction(state, state.getForbiddenActions());
+    }
+
+    public RLAction chooseAction(RLState state, HashSet<RLAction> forbidden) {
         if (r.nextDouble() < exploration)
             return defaultAction.getRandomRLAction();
         if (qf.containsKey(state)) {
 //            Greedy action choosing
-            RLAction act = defaultAction;
+            RLAction act = defaultAction.getRandomRLAction();
             double max = Double.NEGATIVE_INFINITY;
             HashMap<RLAction, Double> actions = qf.get(state);
             for (RLAction a : actions.keySet()) {
-                if (actions.get(a) > max) {
+                if (actions.get(a) > max && ! forbidden.contains(a)) {
                     act = a;
                     max = actions.get(a);
                 }
@@ -50,13 +53,13 @@ public class QLearning {
             return act;
         }
 //        default action
-        return defaultAction;
+        return defaultAction.getRandomRLAction();
     }
 
     public void update(RLState state, RLAction action, double reward, RLState nextState) {
         double qsa = getQ(state, action);
         double maxq = getMaxQ(nextState);
-        double error = reward + gamma*maxq - qsa;
+        double error = reward + gamma*maxq - qsa;        
 
 //        System.out.println("\nqsa="+qsa);
 //        System.out.println("r="+reward);
@@ -78,12 +81,6 @@ public class QLearning {
 
         HashMap<RLAction, Double> map = qf.get(state);
 
-        if ( ! map.containsKey(action)) {
-            map.put(action, val);
-            return;
-        }
-
-        map.remove(action);
         map.put(action, val);
         
     }
@@ -128,27 +125,19 @@ public class QLearning {
 
     @Override
     public String toString() {
-        String ret = "QFunction states: "+qf.keySet().size()+"\n";
+
+        double nstates = qf.keySet().size();
+        double avgActions = 0;
         for (RLState s : qf.keySet()) {
-            ret+="\nstate: "+s+" actions: "+qf.get(s).keySet().size()+"\n";
-            RLAction besta = null;
-            double maxq = Double.NEGATIVE_INFINITY;
-            for (RLAction a : qf.get(s).keySet()) {
-                if (qf.get(s).get(a).isNaN() || qf.get(s).get(a).isInfinite())
-                    ret+="\n NaN or Inf !!\n";
-                if (qf.get(s).get(a) > maxq) {
-                    maxq = qf.get(s).get(a);
-                    besta = a;
-                }
-            }
-            if (besta != null)
-                ret+=besta.toString()+" -> "+qf.get(s).get(besta)+"\n";
-            else ret+= "NOACTIONS";
+            avgActions+= qf.get(s).keySet().size();
         }
+        avgActions /= nstates;
+        String ret = "QFunction states: "+nstates+" avg actions:"+avgActions+"\n";
+        ret+="gamma="+gamma+" beta="+beta+" explor="+exploration;
         return ret;
     }
 
-    String toDetailedString() {
+    public String toDetailedString() {
         String ret = "QFunction states: "+qf.keySet().size()+"\n";
         for (RLState s : qf.keySet()) {
             ret+="\nstate: "+s+" actions: "+qf.get(s).keySet().size()+"\n";         

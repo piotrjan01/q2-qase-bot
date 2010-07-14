@@ -18,31 +18,20 @@ import testenv.WorldState;
 public class ReferenceBot implements Bot {
 
     public TestAction getAction(WorldState state) {
-        if (Environment.isReloading()) return new TestAction(Actions.nofire, this);
+        if (Environment.isReloading()) return new TestAction(Actions.nofire);
         switch (state.getDistance()) {
             case Close:
             case Medium:
                 if (state.getCurrentGun().equals(Gun.WPN_CHAINGUN))
-                    return new TestAction(Actions.fire, this);
-                else return new TestAction(Actions.changeWpn, this);
+                    return new TestAction(Actions.fire);
+                else return new TestAction(Actions.WPN_CHAINGUN);
             case Far:
                 if (state.getCurrentGun().equals(Gun.WPN_RAILGUN))
-                    return new TestAction(Actions.fire, this);
-                else return new TestAction(Actions.changeWpn, this);
+                    return new TestAction(Actions.fire);
+                else return new TestAction(Actions.WPN_RAILGUN);
         }
-        return new TestAction(Actions.nofire, this);
+        return new TestAction(Actions.nofire);
     }
 
-    
-    public Gun changeWeapon(WorldState state) {
-        switch (state.getDistance()) {
-            case Close:
-            case Medium:
-            default:
-                return Gun.WPN_CHAINGUN;
-            case Far:
-                return Gun.WPN_RAILGUN;
-        }
-    }
 
 }

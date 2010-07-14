@@ -60,7 +60,7 @@ public class RLLGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        stepsTextField.setText("10000");
+        stepsTextField.setText("5000");
         stepsTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stepsTextFieldActionPerformed(evt);
@@ -103,7 +103,7 @@ public class RLLGui extends javax.swing.JFrame {
             }
         });
 
-        experimentsTextField1.setText("50");
+        experimentsTextField1.setText("5");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -194,15 +194,11 @@ public class RLLGui extends javax.swing.JFrame {
     }//GEN-LAST:event_stepsTextFieldActionPerformed
 
     private void resetNRunjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetNRunjButton2ActionPerformed
-        rlbot = new QLearningBot();
         applyButtonActionPerformed(evt);
         runjButton1ActionPerformed(evt);
     }//GEN-LAST:event_resetNRunjButton2ActionPerformed
 
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-        if (rlbot == null) {
-            rlbot = new QLearningBot();
-        }
         QLearning.setParameters(Double.parseDouble(gammajTextField2.getText()),
                 Double.parseDouble(betaTextField1.getText()),
                 Double.parseDouble(explorationTextField3.getText()));
@@ -239,9 +235,8 @@ public class RLLGui extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     XYSeries rcRand;
     XYSeries rcRef;
-    XYSeries rcRL;
-    QLearningBot rlbot = new QLearningBot();
-    int segments = 20;
+    XYSeries rcRL; 
+    int parts = 500;
 
     private void doTheExperiment(XYSeries series, Bot bot, int expCount, int steps) {
 
@@ -269,34 +264,34 @@ public class RLLGui extends javax.swing.JFrame {
                 }
             }
 
+            applyButtonActionPerformed(null);
+
             Environment.resetWorld();
             double reward = 0;
-            WorldState state = Environment.getNextState(new TestAction(Actions.nofire, bot));
+            WorldState state = Environment.getNextState(new TestAction(Actions.nofire));
             for (int step = 0; step < steps; step++) {
                 state = Environment.getNextState(bot.getAction(state));
                 if (state.getLastReward() != 0) {
                     reward += state.getLastReward();
-                    rewards[step][expNum] = reward;
                 }
+                rewards[step][expNum] = reward;
             }
         }
 
-        int segmentSize = steps / segments;
+        int partsize = steps/parts;
+        if (partsize <= 0) partsize = 1;
 
-        double mean = 0;
+        double sum = 0;
         for (int step = 0; step < steps; step++) {
-//            sd += StatMethods.sdFast(results[step]);
-            mean += StatMethods.getMean(rewards[step]);
-            if (step % segmentSize == 0) {
-                mean /= (double) segmentSize;
-                series.add(step, mean);
-                mean = 0;
+            sum += StatMethods.getMean(rewards[step]);
+            if (step % partsize == 0) {
+                series.add(step, sum/partsize);
+                sum = 0;
             }
-
         }
 
         if (bot.getClass().equals(QLearningBot.class)) {
-            dbg(((QLearningBot) bot).learner.toString());
+            dbg(((QLearningBot) bot).learner.toDetailedString());
         }
     }
 

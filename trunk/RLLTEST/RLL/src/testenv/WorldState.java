@@ -4,7 +4,8 @@
  */
 package testenv;
 
-import java.util.Random;
+import java.util.HashSet;
+import rll.RLAction;
 import rll.RLState;
 
 /**
@@ -15,6 +16,7 @@ public class WorldState extends RLState {
 
     Distance distance;
     Gun currentGun;
+    OwnedGuns ownedGuns = new OwnedGuns();
     double lastReward = 0;
     int enemyHealth = 100;
 
@@ -26,7 +28,7 @@ public class WorldState extends RLState {
     @Override
     public String toString() {
 //        return "dist: "+distance+" gun: "+currentGun+" reloading: "+reloading+" reward: "+lastReward+" eh: "+enemyHealth;
-        return "" + distance + " " + currentGun;
+        return " d=" + distance + " g=" + currentGun+" ownd="+ownedGuns;
     }
 
     public double getLastReward() {
@@ -49,7 +51,8 @@ public class WorldState extends RLState {
     public boolean equals(Object obj) {
         WorldState o = (WorldState) obj;
         if (currentGun.equals(o.currentGun)) {
-            if (o.distance.equals(distance)) {    
+            if (o.distance.equals(distance)) {
+//                if (ownedGuns.getSimilarity(o.ownedGuns) >= 0.5)
                     return true;
             }
         }
@@ -59,6 +62,18 @@ public class WorldState extends RLState {
     @Override
     public int hashCode() {
         return currentGun.hashCode() + distance.hashCode();
+    }
+
+    @Override
+    public HashSet<RLAction> getForbiddenActions() {
+        HashSet<RLAction> ret = new HashSet<RLAction>();
+        for (Gun g : Gun.values()) {
+            if ( ! ownedGuns.ownsGun(g)) {
+                TestAction act = new TestAction(Actions.valueOf(g.name()));
+                ret.add(act);
+            }
+        }
+        return ret;
     }
 
 }

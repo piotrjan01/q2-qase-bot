@@ -16,16 +16,15 @@ public class TestAction extends RLAction {
 
     Actions act;
 
-    Bot actioner;
+   
 
-    public TestAction(Actions act, Bot actioner) {
+    public TestAction(Actions act) {
         this.act = act;
-        this.actioner = actioner;
     }
 
     @Override
     public RLAction getRandomRLAction() {
-         return new TestAction(Actions.getRandomAction(), actioner);
+         return new TestAction(Actions.getRandomAction());
     }
 
     public Actions getAct() {

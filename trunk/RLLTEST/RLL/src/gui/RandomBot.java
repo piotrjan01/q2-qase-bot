@@ -18,8 +18,8 @@ import testenv.WorldState;
 public class RandomBot implements Bot {
 
     public TestAction getAction(WorldState state) {
-        if (Environment.isReloading()) return new TestAction(Actions.nofire, this);
-        return new TestAction(Actions.getRandomAction(), this);
+        if (Environment.isReloading()) return new TestAction(Actions.nofire);
+        return new TestAction(Actions.getRandomAction());
     }
 
     public Gun changeWeapon(WorldState state) {

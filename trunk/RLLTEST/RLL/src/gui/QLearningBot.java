@@ -5,13 +5,10 @@
 
 package gui;
 
-import java.util.HashMap;
 import rll.QLearning;
-import rll.Sarsa;
 import rll.RLState;
 import testenv.Actions;
 import testenv.Environment;
-import testenv.Gun;
 import testenv.TestAction;
 import testenv.WorldState;
 
@@ -23,9 +20,9 @@ public class QLearningBot implements Bot {
 
 
 
-    TestAction lastAction = new TestAction(Actions.fire, this);
+    TestAction lastAction = new TestAction(Actions.nofire);
 
-    public QLearning learner = new QLearning(new TestAction(lastAction.getAct(), this));
+    public QLearning learner = new QLearning(new TestAction(lastAction.getAct()));
     
     RLState lastState = Environment.getNextState(lastAction);
 
@@ -49,7 +46,7 @@ public class QLearningBot implements Bot {
 
          //wybierz akcje
         TestAction todo;
-        if (Environment.isReloading()) todo = new TestAction(Actions.nofire, this);
+        if (Environment.isReloading()) todo = new TestAction(Actions.nofire);
         else todo = (TestAction)learner.chooseAction(state);
 
         learner.update(lastState, lastAction, rew, state);
@@ -59,23 +56,8 @@ public class QLearningBot implements Bot {
         //wykonaj akcje
         lastAction = todo;
         lastState = state;
-        return new TestAction(todo.getAct(), this);
+        return new TestAction(todo.getAct());
     }
 
-    public Gun changeWeapon(WorldState state) {
-        HashMap<RLState, Double> states = learner.getStatesWithValues();
-        WorldState best = null;
-        double max = Double.NEGATIVE_INFINITY;
-        for (RLState s : states.keySet()) {
-            if (((WorldState)s).getDistance().equals(((WorldState)state).getDistance())) {
-                if (states.get(s) > max) {
-                    max = states.get(s);
-                    best = (WorldState) s;
-                }
-            }
-        }
-        if (best == null) return Gun.getRandomGun();
-        return best.getCurrentGun();
-    }
 
 }
