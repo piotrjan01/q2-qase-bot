@@ -7,10 +7,7 @@ package piotrrr.thesis.bots.rlbot.rl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,13 +15,10 @@ import java.util.logging.Logger;
  */
 public class Action extends RLAction {
 
-    
-
     public static final int NO_FIRE = 0;
     public static final int FIRE_CURRENT = 1;
     public static final int FIRE_PREDICTED = 2;
     public static final int FIRE_HITPOINT = 3;
-
     public static final int WPN_BLASTER = 4;
     public static final int WPN_SHOTGUN = 5;
     public static final int WPN_SUPER_SHOTGUN = 6;
@@ -37,33 +31,35 @@ public class Action extends RLAction {
     public static final int WPN_RAILGUN = 13;
     public static final int WPN_BFG10K = 14;
 
-    public static final int minAct = 0;
 
-    public static final int maxAct = 14;
+    public static final int firstAction = 0;
+    public static final int actionsCount = 15;
+    
 
     int action = 0;
 
     public Action(int action) {
-        if (action < minAct || action > maxAct) action = minAct;
+        if (action < firstAction || action >= actionsCount) action = firstAction;
         this.action = action;
-    }
-
-    public boolean isWeaponChange() {
-        return (action >= 4 && action <= 14);
-    }
-
-    public int getWeaponChangeIndex() {
-        return action+3;
-    }
-
-    public static Action getWeaponChangeAction(int inventoryIndex) {
-        return new Action(inventoryIndex-3);
     }
 
     @Override
     public RLAction getRandomRLAction() {
         Random r = new Random();
-        return new Action(r.nextInt(maxAct+1));
+        return new Action(r.nextInt(actionsCount));
+    }
+
+    public static boolean isChangeWeaponAction(int action) {
+        return (action >= WPN_BLASTER && action <= WPN_BFG10K);
+    }
+
+    public int actionToInventoryIndex() {
+        return actionToInventoryIndex(this.action);
+    }
+
+    public static int actionToInventoryIndex(int action) {
+        if ( ! isChangeWeaponAction(action)) action = WPN_BLASTER;
+        return action+3;
     }
 
     @Override
@@ -85,7 +81,6 @@ public class Action extends RLAction {
     @Override
     public String toString() {
         for (Field f : this.getClass().getFields()) {
-            
             if (Modifier.isStatic(f.getModifiers())) {
                 try {
                     if ((Integer) f.get(this) == this.action) {
@@ -95,18 +90,7 @@ public class Action extends RLAction {
 
                 }
             }
-
         }
         return "unknown action";
     }
-
-
-
-    
-
-
-
-
-
-
 }

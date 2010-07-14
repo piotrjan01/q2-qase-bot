@@ -1,12 +1,12 @@
 package piotrrr.thesis.bots.rlbot;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 import piotrrr.thesis.bots.rlbot.rl.Action;
-import piotrrr.thesis.bots.rlbot.rl.QFunction;
-import piotrrr.thesis.bots.rlbot.rl.RLAction;
+import piotrrr.thesis.bots.rlbot.rl.QLearning;
 import piotrrr.thesis.bots.rlbot.rl.State;
 import piotrrr.thesis.common.combat.*;
 import piotrrr.thesis.common.CommFun;
+import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.stats.BotStatistic;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -16,10 +16,25 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class RLCombatModule {
 
+    class Shooting {
+
+        long shotTime;
+        long hitTime;
+        String enemyName;
+
+        public Shooting(long shotTime, long hitTime, String enemyName) {
+            this.shotTime = shotTime;
+            this.hitTime = hitTime;
+            this.enemyName = enemyName;
+        }
+    }
+
     RlBot bot;
-    QFunction qf = new QFunction(new Action(Action.NO_FIRE));
+    QLearning qf = new QLearning(new Action(Action.NO_FIRE));
     State lastState = null;
     Action lastAction = null;
+    LinkedList<Shooting> lastShootings = new LinkedList<Shooting>();
+     public static final int lastShootingMaxSize = 100;
 
     public RLCombatModule(RlBot bot) {
         this.bot = bot;
@@ -46,40 +61,6 @@ public class RLCombatModule {
         }
         return new FiringDecision(chosen, 7);
     }
-
-//    public int chooseWeapon(float distance) {
-//        /**
-//        int BLASTER = 7, SHOTGUN = 8,
-//        SUPER_SHOTGUN = 9, MACHINEGUN = 10, CHAINGUN = 11, GRENADES = 12,
-//        GRENADE_LAUNCHER = 13, ROCKET_LAUNCHER = 14, HYPERBLASTER = 15,
-//        RAILGUN = 16, BFG10K = 17, SHELLS = 18, BULLETS = 19, CELLS = 20,
-//        ROCKETS = 21, SLUGS = 22;
-//         **/
-//        if (bot.forcedweapon != 0) {
-//            return bot.forcedweapon;
-//        }
-//
-//        int maxWeight = -1;
-//        int gunInd = 7;
-//        for (int i = 7; i < 18; i++) {
-//            if (!bot.botHasItem(i) || !bot.botHasItem(WeaponConfig.ammoTable[i])) {
-//                continue;
-//            }
-//            if (distance < bot.cConfig.maxShortDistance4WpChoice && CombatConfig.isBannedForShortDistance(i)) {
-//                continue;
-//            }
-//            if (distance > bot.cConfig.minLongDistance && CombatConfig.isBannedForLongDistance(i)) {
-//                continue;
-//            }
-//            int weight = bot.wConfig.getWeaponWeightByInvIndex(i);
-//            if (weight > maxWeight) {
-//                maxWeight = weight;
-//                gunInd = i;
-//            }
-//        }
-//
-//        return gunInd;
-//    }
 
     static int continuousDistToDiscrete(double dist) {
         if (dist < 400) {
@@ -112,24 +93,30 @@ public class RLCombatModule {
         if (lastState != null && lastAction != null) {
             double reward = bot.getReward();
             qf.update(lastState, lastAction, reward, state);
-            if (reward != 0) System.out.println(""+lastState+" -> "+lastAction);
+            if (reward > 0.5) {
+                System.out.println("" + lastState + " -> " + lastAction);
+                System.out.println("--------> Reward = " + reward);
+            }
             if (BotStatistic.getInstance() != null) {
                 BotStatistic.getInstance().addReward(bot.getBotName(), reward, bot.getFrameNumber());
             }
         }
-        Action action = (Action) qf.chooseAction(state, getForbiddenActions());
+        Action action = (Action) qf.chooseAction(state);
 
         lastState = state;
         lastAction = action;
-        return getFIForAction(fd, action);
-    }
+        FiringInstructions fi = getFIForAction(fd, action);
 
-    HashSet<RLAction> getForbiddenActions() {
-        HashSet<RLAction> ret = new HashSet<RLAction>();
-        for (int i=7; i<18; i++) {
-            if ( ! bot.botHasItem(i) ) ret.add(Action.getWeaponChangeAction(i));
+        if (fi.doFire) {
+          lastShootings.add(new Shooting(
+                    bot.getFrameNumber(),
+                    bot.getFrameNumber() + (long) fi.timeToHit,
+                    fd.enemyInfo.ent.getName()));
+            if (lastShootings.size() > lastShootingMaxSize) {
+                lastShootings.pollFirst();
+            }
         }
-        return ret;
+        return fi;
     }
 
     FiringInstructions getNoFiringInstructions(Vector3f enemyPos) {
@@ -140,7 +127,7 @@ public class RLCombatModule {
 
     State getCurrentState(FiringDecision fd) {
         double dist = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), fd.enemyInfo.getObjectPosition());
-        State ret = new State(State.getWpnFromInventoryIndex(bot.getCurrentWeaponIndex()), continuousDistToDiscrete(dist));
+        State ret = new State(State.getWpnFromInventoryIndex(bot.getCurrentWeaponIndex()), continuousDistToDiscrete(dist), bot);
         return ret;
     }
 
@@ -156,12 +143,11 @@ public class RLCombatModule {
                         getTimeToHit(bot.getBotPosition(), fd.enemyInfo.getObjectPosition(), fd));
             case Action.FIRE_HITPOINT:
                 return getFiringInstructionsAtHitpoint(fd, 1);
-            case Action.NO_FIRE:
             default:
-                if (action.isWeaponChange()) {
-                    int wpnind = action.getWeaponChangeIndex();
-                    bot.changeWeaponToIndex(wpnind);
-                }
+                int wpind = action.actionToInventoryIndex();
+                if (bot.getCurrentWeaponIndex() != wpind)
+                    bot.changeWeaponToIndex(wpind);
+            case Action.NO_FIRE:
                 return getNoFiringInstructions(fd.enemyInfo.getObjectPosition());
         }
     }
@@ -195,81 +181,55 @@ public class RLCombatModule {
         //		bot.dtalk.addToLog("Prediction shooting: @"+fd.enemyInfo.ent.getName()+" gun: "+CommFun.getGunName(fd.gunIndex)+"\n pred mov: "+movement+" timeToHit: "+timeToHit+" dist: "+distance+" bspeed: "+bulletSpeed);
         return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint), timeToHit);
     }
-    /**************
-
-
-    int [] getCurrentState(FiringDecision fd) {
-    int state_dist = STATE_DIST_MEDIUM;
-    int state_gun = fd.gunIndex-7;
-    double distance = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), fd.enemyInfo.getObjectPosition());
-    if (distance < 200) state_dist = STATE_DIST_SMALL;
-    else if (distance > 500) state_dist = STATE_DIST_LARGE;
-    return new int [] {state_dist, state_gun};
-    }
-
-
-    FiringInstructions getFIForAction(FiringDecision fd, int action) {
-    switch (action) {
-    case RLCombatModule.ACTION_0:
-    return getNoFiringInstructions(fd.enemyInfo.getObjectPosition());
-    case RLCombatModule.ACTION_CURRENT:
-
-    case RLCombatModule.ACTION_PREDICTED:
-    return new FiringInstructions(
-    CommFun.getNormalizedDirectionVector(bot.getBotPosition(), fd.enemyInfo.predictedPos),
-    getTimeToHit(bot.getBotPosition(), fd.enemyInfo.predictedPos, fd)
-    );
-    case RLCombatModule.ACTION_HITPOINT1:
-    case RLCombatModule.ACTION_HITPOINT09:
-    case RLCombatModule.ACTION_HITPOINT08:
-    case RLCombatModule.ACTION_HITPOINT07:
-    case RLCombatModule.ACTION_HITPOINT06:
-    case RLCombatModule.ACTION_HITPOINT05:
-    case RLCombatModule.ACTION_HITPOINT04:
-    case RLCombatModule.ACTION_HITPOINT03:
-    case RLCombatModule.ACTION_HITPOINT02:
-    case RLCombatModule.ACTION_HITPOINT01:
-
-    default:
-    return null;
-    }
-    }
-
-    
-
-
-
-
-    public int[] getDimension() {
-    return new int [] {3, 11, 13};
-    }
-
-    public int[] getNextState(int action) {
-    throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     public double getReward() {
-    throw new UnsupportedOperationException("Not supported yet.");
+        bot.rewardsCount++;
+        double r = 0;
+        if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
+            bot.lastBotScore = bot.scoreCounter.getBotScore();
+            r += 1;
+        }
+        LinkedList<Shooting> toDelete = new LinkedList<Shooting>();
+//            Dbg.prn("");
+        for (Shooting s : lastShootings) {
+//                Dbg.prn("shooting: "+s.enemyName+"@"+s.shotTime+"-"+s.hitTime+" ");
+            int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime + 1, s.hitTime + 2, s.enemyName);
+            if (damage > 0) {
+                toDelete.add(s);
+                r += damage / 100d;
+            } else if (s.hitTime + 4 < bot.getFrameNumber()) {
+                toDelete.add(s);
+                r -= 0.005;
+            }
+        }
+
+        lastShootings.removeAll(toDelete);
+        bot.totalReward += r;
+//        if (r != 0) {
+//            System.out.println("--------> Reward = " + r);
+//        }
+        return r;
     }
 
-    public boolean validAction(int action) {
-    return true;
-    }
-
-    public boolean endState() {
-    throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int[] resetState() {
-    throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getInitValues() {
-    return ACTION_0;
-    }
-
-
-
-
-     *******/
+//    private int getWeaponChangeIndex() {
+//       HashMap<RLState,Double> states = qf.getStatesWithValues();
+//       HashMap<RLState,Double> okStates = new HashMap<RLState, Double>();
+//       for (RLState s : states.keySet()) {
+//           State st = (State)s;
+//           if (st.getDist() == lastState.getDist())
+//               if (bot.botHasItem(st.getWpnAsInventoryIndex()))
+//                   okStates.put(st, states.get(st));
+//       }
+//       int bestGun = 7; //BLASTER
+//       double max = Double.NEGATIVE_INFINITY;
+//       for (RLState s : okStates.keySet()) {
+//           State st = (State)s;
+//           if (okStates.get(s) > max) {
+//               max = okStates.get(s);
+//               bestGun = st.getWpnAsInventoryIndex();
+//           }
+//       }
+//       return bestGun;
+//    }
+  
 }

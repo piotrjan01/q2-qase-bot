@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package piotrrr.thesis.bots.rlbot.rl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import piotrrr.thesis.bots.rlbot.RlBot;
 
 /**
  *
@@ -25,43 +26,48 @@ public class State extends RLState {
     public static final int WPN_HYPERBLASTER = 8;
     public static final int WPN_RAILGUN = 9;
     public static final int WPN_BFG10K = 10;
-
     public static final int DIST_CLOSE = 11;
     public static final int DIST_MEDIUM = 12;
     public static final int DIST_FAR = 13;
-
     private int wpn;
-
     private int dist;
+    private RlBot bot;
 
-    public State(int wpn, int dist) {
+
+    public State(int wpn, int dist, RlBot bot) {
         this.wpn = wpn;
         this.dist = dist;
+        this.bot = bot;
     }
 
     public static int getWpnFromInventoryIndex(int index) {
         return index - 7;
     }
 
-      @Override
+    public int getWpnAsInventoryIndex() {
+        return wpn + 7;
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        State a = (State)obj;
-        if (a.wpn == wpn)
-            if (a.dist == dist)
+        State a = (State) obj;
+        if (a.wpn == wpn) {
+            if (a.dist == dist) {
                 return true;
+            }
+        }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return (wpn+dist) % 256;
+        return (wpn + dist) % 256;
     }
 
-
-      @Override
+    @Override
     public String toString() {
-          String swpn = "unknown-weapon";
-          String sdist = "unknown-distance";
+        String swpn = "unknown-weapon";
+        String sdist = "unknown-distance";
         for (Field f : this.getClass().getFields()) {
 
             if (Modifier.isStatic(f.getModifiers())) {
@@ -73,15 +79,32 @@ public class State extends RLState {
                         sdist = f.getName();
                     }
                 } catch (Exception ex) {
-
                 }
             }
 
         }
-        return swpn+":"+sdist;
+        return swpn + ":" + sdist;
     }
 
+    public int getDist() {
+        return dist;
+    }
 
+    public int getWpn() {
+        return wpn;
+    }
+
+    @Override
+    public HashSet<RLAction> getForbiddenActions() {
+        HashSet<RLAction> ret = new HashSet<RLAction>();
+        for (int a=Action.firstAction; a<Action.actionsCount; a++) {
+            if (Action.isChangeWeaponAction(a))
+                if ( ! bot.botHasItem(Action.actionToInventoryIndex(a))
+                    || bot.getCurrentWeaponIndex()==Action.actionToInventoryIndex(a))
+                    ret.add(new Action(a));
+        }
+        return ret;
+    }
 
 
 }
