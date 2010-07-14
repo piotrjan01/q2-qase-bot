@@ -33,13 +33,11 @@ public class Environment {
         prn("got action "+act.act);
         frameNumber++;
         newState.lastReward = 0;
+        newState.ownedGuns = lastState.ownedGuns;
 
         Actions a = act.act;
 
         switch (a) {
-            case changeWpn:
-                newState.currentGun = act.actioner.changeWeapon(newState);
-                break;
             case fire:
                 if ( ! isReloading() ) {
                     prn("Firing!");
@@ -49,8 +47,12 @@ public class Environment {
                 break;
             case nofire:
                 break;
+            default:
+                Gun g = Gun.valueOf(a.name());
+                if (newState.ownedGuns.ownsGun(g))
+                    newState.currentGun = g;
         }
-        if (getRandBool(0.1)) {
+        if (getRandBool(0.3)) {
             prn("Env changes");
             randomizeState(newState);
         }
@@ -75,18 +77,19 @@ public class Environment {
     }
 
     static void randomizeState(WorldState state) {
-        state.enemyHealth = 100;
+        state.enemyHealth = r.nextInt(60);
         double v = r.nextDouble();
-        if (v < 0.3) {
+        if (v < 0.2) {
             state.distance = Distance.Close;
         }
-        else if (v < 0.6) {
+        else if (v < 0.8) {
             state.distance = Distance.Medium;
         }
         else {
             state.distance = Distance.Far;
         }
-        state.currentGun = Gun.getRandomGun();
+        state.ownedGuns = state.ownedGuns.getRandomizedGuns();
+
     }
 
     private static void doFiringRoutine(WorldState state) {
@@ -106,10 +109,11 @@ public class Environment {
         }
         if (getRandBool(acc * distFactor)) {
             state.enemyHealth -= state.currentGun.getDamage();
-            state.lastReward += state.currentGun.getDamage()/100d;
+//            state.lastReward += 0.5*state.currentGun.getDamage()/100d;
         }
         if (state.enemyHealth < 0) {
-            state.lastReward += 10;
+            state.enemyHealth = 100;
+            state.lastReward += 1;
         }
     }
 

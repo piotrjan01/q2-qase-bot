@@ -82,6 +82,16 @@ public class StatMethods {
         return sum / (double)d.length;
     }
 
+    public static double getMeanSkippingZeroes(double [] d) {
+        int len = d.length;
+        double sum = 0;
+        for (int i=0; i<d.length;i++) {
+            if (d[i] == 0) len--;
+            sum += d[i];
+        }
+        return sum / len;
+    }
+
     /**
      * Test driver
      *
