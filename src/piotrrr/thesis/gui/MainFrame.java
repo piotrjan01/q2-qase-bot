@@ -8,23 +8,23 @@
  *
  * Created on 2010-04-25, 19:40:25
  */
-
 package piotrrr.thesis.gui;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import piotrrr.thesis.bots.AppConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
 import piotrrr.thesis.bots.rlbot.RlBot;
+import piotrrr.thesis.bots.rlbot.rl.QLearning;
 import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
@@ -42,11 +42,11 @@ import soc.qase.tools.vecmath.Vector3f;
 public class MainFrame extends javax.swing.JFrame {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** Creates new form MainFrame */
+    /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
         setUpdater();
@@ -62,6 +62,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         infoButtonGroup = new javax.swing.ButtonGroup();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         panelRunBots = new javax.swing.JPanel();
@@ -143,8 +144,12 @@ public class MainFrame extends javax.swing.JFrame {
         killsePerDeathjPanel14 = new javax.swing.JPanel();
         whoKillsWhomjPanel14 = new javax.swing.JPanel();
         rewardPanel16 = new javax.swing.JPanel();
+        avgRewardjPanel16 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        statsInfo = new javax.swing.JTextArea();
+        jLabel14 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bot Debugging");
@@ -525,7 +530,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -656,12 +661,12 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .addComponent(fullInfoScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(distanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                         .addComponent(goToButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -844,7 +849,7 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -909,8 +914,11 @@ public class MainFrame extends javax.swing.JFrame {
         whoKillsWhomjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("who kills whom", whoKillsWhomjPanel14);
 
-        rewardPanel16.setLayout(new java.awt.GridLayout());
+        rewardPanel16.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("reward", rewardPanel16);
+
+        avgRewardjPanel16.setLayout(new java.awt.GridLayout());
+        jTabbedPane2.addTab("avg reward", avgRewardjPanel16);
 
         jButton1.setText("Save current statistics");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -926,6 +934,12 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        statsInfo.setColumns(20);
+        statsInfo.setRows(4);
+        jScrollPane4.setViewportView(statsInfo);
+
+        jLabel14.setText("Stats info");
+
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
@@ -933,25 +947,36 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(refreshButton)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(refreshButton)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(refreshButton)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2))
+                        .addGap(37, 37, 37))
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -963,65 +988,74 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 786, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 621, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectDebugedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectDebugedButtonActionPerformed
-    	if (dbgBot != null) return;
-    	SmartBot bot = new SmartBot("SmartBot-dbg", AppConfig.skinName);
-		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
-		stepJob = new DebugStepJob(bot, this);
-		bot.addBotJob(stepJob);
-		bot.addBotJob(new GlobalKillsStatsJob(bot));
-		dbgBot = bot;
-                stats = BotStatistic.createNewInstance();
+        if (dbgBot != null) {
+            return;
+        }
+        SmartBot bot = new SmartBot("SmartBot-dbg", AppConfig.skinName);
+        bot.connect(AppConfig.serverIP, AppConfig.serverPort);
+        stepJob = new DebugStepJob(bot, this);
+        bot.addBotJob(stepJob);
+        bot.addBotJob(new GlobalKillsStatsJob(bot));
+        dbgBot = bot;
+        stats = BotStatistic.createNewInstance();
+        stats.statsInfo = getStatsDescription();
     }//GEN-LAST:event_connectDebugedButtonActionPerformed
 
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
-    	int num = Integer.parseInt(nrBotsField.getText());
-    	for (int i=0; i<num; i++) {
-    		ReferenceBot bot = new ReferenceBot("ReferenceBot-"+i, AppConfig.skinName);
-    		bot.dtalk.active = false;
-    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
-    		bots.add(bot);
-    	}
+        int num = Integer.parseInt(nrBotsField.getText());
+        for (int i = 0; i < num; i++) {
+            ReferenceBot bot = new ReferenceBot("ReferenceBot-" + i, AppConfig.skinName);
+            bot.dtalk.active = false;
+            bot.connect(AppConfig.serverIP, AppConfig.serverPort);
+            bots.add(bot);
+        }
     }//GEN-LAST:event_connectOthersButtonActionPerformed
 
     private void pauseToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseToggleButtonActionPerformed
-       dbgBot.botPaused = pauseToggleButton.isSelected();
+        dbgBot.botPaused = pauseToggleButton.isSelected();
     }//GEN-LAST:event_pauseToggleButtonActionPerformed
 
     private void reqListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_reqListValueChanged
         int ind = reqList.getSelectedIndex();
-        if (ind < 0 || ind > requiredList.size()) return;
+        if (ind < 0 || ind > requiredList.size()) {
+            return;
+        }
         fullInfo.setText(requiredList.get(ind).toDetailedString());
         Vector3f lookAt = new Vector3f(requiredList.get(ind).getObjectPosition());
         dbgBot.setPauseLookAtPosition(lookAt);
-        distanceLabel.setText(""+CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getObjectPosition()));
+        distanceLabel.setText("" + CommFun.getDistanceBetweenPositions(dbgBot.getBotPosition(), requiredList.get(ind).getObjectPosition()));
     }//GEN-LAST:event_reqListValueChanged
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-    	updater.stop = true;
-        if (dbgBot != null) dbgBot.disconnect();
-        for (MapBotBase b : bots) b.disconnect();
+        updater.stop = true;
+        if (dbgBot != null) {
+            dbgBot.disconnect();
+        }
+        for (MapBotBase b : bots) {
+            b.disconnect();
+        }
         bots.clear();
     }//GEN-LAST:event_formWindowClosing
 
     private void pauseAnotherBotsToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseAnotherBotsToggleActionPerformed
-       for (MapBotBase b : bots) {
-           b.botPaused = pauseAnotherBotsToggle.isSelected();
-       }
+        for (MapBotBase b : bots) {
+            b.botPaused = pauseAnotherBotsToggle.isSelected();
+        }
     }//GEN-LAST:event_pauseAnotherBotsToggleActionPerformed
 
     private void sendCommandToDBGButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendCommandToDBGButtonActionPerformed
@@ -1030,27 +1064,29 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_sendCommandToDBGButtonActionPerformed
 
     private void sendCommandToAnothersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendCommandToAnothersButtonActionPerformed
-    	String cmd = jTextField1.getText();
-    	for (MapBotBase b : bots) b.handleCommand(cmd);
+        String cmd = jTextField1.getText();
+        for (MapBotBase b : bots) {
+            b.handleCommand(cmd);
+        }
     }//GEN-LAST:event_sendCommandToAnothersButtonActionPerformed
 
     private void allEntsRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allEntsRadioButton1ActionPerformed
-      Vector<GameObject> v = new Vector<GameObject>();
-      //FIXMe:
-      v.addAll(dbgBot.kb.getAllItems());
+        Vector<GameObject> v = new Vector<GameObject>();
+        //FIXMe:
+        v.addAll(dbgBot.kb.getAllItems());
 //      v.addAll(dbgBot.kb.getAllPickableEntities());
-      setReqList(v);
+        setReqList(v);
     }//GEN-LAST:event_allEntsRadioButton1ActionPerformed
 
     private void visibleWaypointsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleWaypointsRadioButton2ActionPerformed
-    	 Vector<GameObject> v = new Vector<GameObject>();
-         v.addAll(dbgBot.kb.getAllVisibleWaypoints());
-         setReqList(v);
+        Vector<GameObject> v = new Vector<GameObject>();
+        v.addAll(dbgBot.kb.getAllVisibleWaypoints());
+        setReqList(v);
     }//GEN-LAST:event_visibleWaypointsRadioButton2ActionPerformed
 
     private void stepButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButton1ActionPerformed
-       int steps = Integer.parseInt(stepSizeTextField2.getText());
-       stepJob.pauseIn(steps);
+        int steps = Integer.parseInt(stepSizeTextField2.getText());
+        stepJob.pauseIn(steps);
     }//GEN-LAST:event_stepButton1ActionPerformed
 
     private void navPlanRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navPlanRadioButtonActionPerformed
@@ -1058,13 +1094,13 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_navPlanRadioButtonActionPerformed
 
     private void visibleEntsRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleEntsRadioButton2ActionPerformed
-    	 Vector<GameObject> v = new Vector<GameObject>();
-         v.addAll(dbgBot.kb.getAllVisibleEntities());
-         setReqList(v);
+        Vector<GameObject> v = new Vector<GameObject>();
+        v.addAll(dbgBot.kb.getAllVisibleEntities());
+        setReqList(v);
     }//GEN-LAST:event_visibleEntsRadioButton2ActionPerformed
 
     private void pickupFailuresRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pickupFailuresRadioButton1ActionPerformed
-    	Vector<GameObject> v = new Vector<GameObject>();
+        Vector<GameObject> v = new Vector<GameObject>();
         v.addAll(dbgBot.kb.getAllEntsWithPickupFailure());
         setReqList(v);
     }//GEN-LAST:event_pickupFailuresRadioButton1ActionPerformed
@@ -1076,44 +1112,57 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_edgeFailuresRadioButtonActionPerformed
 
     private void goToButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToButtonActionPerformed
-    	if (reqList.getSelectedIndex() == -1) return;
-    	Vector3f dst = requiredList.elementAt(reqList.getSelectedIndex()).getObjectPosition();
-       dbgBot.goToPositionWithNoClipCheating(dst);
+        if (reqList.getSelectedIndex() == -1) {
+            return;
+        }
+        Vector3f dst = requiredList.elementAt(reqList.getSelectedIndex()).getObjectPosition();
+        dbgBot.goToPositionWithNoClipCheating(dst);
     }//GEN-LAST:event_goToButtonActionPerformed
 
     private void enemyInfoRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enemyInfoRadioButton1ActionPerformed
-    	Vector<GameObject> v = new Vector<GameObject>();
+        Vector<GameObject> v = new Vector<GameObject>();
         v.addAll(dbgBot.kb.getAllEnemyInformation());
         setReqList(v);
     }//GEN-LAST:event_enemyInfoRadioButton1ActionPerformed
 
     private void connectSmartBotsjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectSmartBotsjButton1ActionPerformed
-    	int num = Integer.parseInt(nrOfSmartBotsTextField2.getText());
-    	for (int i=0; i<num; i++) {
-    		SmartBot bot = new SmartBot("SmartBot-"+i, AppConfig.skinName);
-    		bot.dtalk.active = false;
-    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
-    		bots.add(bot);
-    	}
+        int num = Integer.parseInt(nrOfSmartBotsTextField2.getText());
+        for (int i = 0; i < num; i++) {
+            SmartBot bot = new SmartBot("SmartBot-" + i, AppConfig.skinName);
+            bot.dtalk.active = false;
+            bot.connect(AppConfig.serverIP, AppConfig.serverPort);
+            bots.add(bot);
+        }
     }//GEN-LAST:event_connectSmartBotsjButton1ActionPerformed
 
     private void connectedBotsList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_connectedBotsList1ValueChanged
-    	int ind = connectedBotsList1.getSelectedIndex();
-    	BotBase bot = getBotFromList(ind);
-    	if (bot == null) return;
-    	if (bot.getFrameNumber() < 2) return;
+        int ind = connectedBotsList1.getSelectedIndex();
+        BotBase bot = getBotFromList(ind);
+        if (bot == null) {
+            return;
+        }
+        if (bot.getFrameNumber() < 2) {
+            return;
+        }
         selectedBotInfoTextArea1.setText(bot.toDetailedString());
     }//GEN-LAST:event_connectedBotsList1ValueChanged
 
     private void disconnectSelectedButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectSelectedButton1ActionPerformed
-    	int ind = connectedBotsList1.getSelectedIndex();
-    	BotBase bot = getBotFromList(ind);
-    	if (bot == null) return;
-    	bot.disconnect();
+        int ind = connectedBotsList1.getSelectedIndex();
+        BotBase bot = getBotFromList(ind);
+        if (bot == null) {
+            return;
+        }
+        bot.disconnect();
     }//GEN-LAST:event_disconnectSelectedButton1ActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        if (stats == null) return;
+        if (stats == null) {
+            return;
+        }
+
+        statsInfo.setText(stats.statsInfo);
+
         killsPanel14.removeAll();
         killsPanel14.add(StatsChartsFactory.getKillsInTimeByBot(stats));
         killsPanel14.revalidate();
@@ -1142,6 +1191,10 @@ public class MainFrame extends javax.swing.JFrame {
         rewardPanel16.add(StatsChartsFactory.getRewardsInTimeByEachBot(stats));
         rewardPanel16.revalidate();
 
+        avgRewardjPanel16.removeAll();
+        avgRewardjPanel16.add(StatsChartsFactory.getAvgRewardsChart(stats));
+        avgRewardjPanel16.revalidate();
+
 
     }//GEN-LAST:event_refreshButtonActionPerformed
 
@@ -1151,14 +1204,16 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (stats == null) return;
+        if (stats == null) {
+            return;
+        }
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
         fc.setApproveButtonText("Save");
         fc.setDialogTitle("Save current statistics");
         fc.showOpenDialog(this);
-        System.out.println("Saving stats to file: "+fc.getSelectedFile());
+        System.out.println("Saving stats to file: " + fc.getSelectedFile());
         stats.saveToFile(fc.getSelectedFile().getPath());
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1166,7 +1221,7 @@ public class MainFrame extends javax.swing.JFrame {
         fc.setApproveButtonText("Open");
         fc.setDialogTitle("Open statistics");
         fc.showOpenDialog(this);
-        System.out.println("Reading stats from file: "+fc.getSelectedFile());
+        System.out.println("Reading stats from file: " + fc.getSelectedFile());
         stats = BotStatistic.readFromFile(fc.getSelectedFile().getPath());
         refreshButtonActionPerformed(null);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -1177,24 +1232,21 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void connectRLBotsjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectRLBotsjButton2ActionPerformed
         int num = Integer.parseInt(nrOfRLtBotsTextField3.getText());
-    	for (int i=0; i<num; i++) {
-    		RlBot bot = new RlBot("RLBot-"+i, AppConfig.skinName);
-    		bot.dtalk.active = false;
-    		bot.connect(AppConfig.serverIP, AppConfig.serverPort);
-    		bots.add(bot);
-    	}
+        for (int i = 0; i < num; i++) {
+            RlBot bot = new RlBot("RLBot-" + i, AppConfig.skinName);
+            bot.dtalk.active = false;
+            bot.connect(AppConfig.serverIP, AppConfig.serverPort);
+            bots.add(bot);
+        }
     }//GEN-LAST:event_connectRLBotsjButton2ActionPerformed
 
     private void quakePathjTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quakePathjTextField2ActionPerformed
-    
     }//GEN-LAST:event_quakePathjTextField2ActionPerformed
 
     private void botMapsPathjTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botMapsPathjTextField3ActionPerformed
-    
     }//GEN-LAST:event_botMapsPathjTextField3ActionPerformed
 
     private void serverIPjTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverIPjTextField4ActionPerformed
-    
     }//GEN-LAST:event_serverIPjTextField4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -1203,17 +1255,17 @@ public class MainFrame extends javax.swing.JFrame {
         fc.setApproveButtonText("Open");
         fc.setDialogTitle("Choose Quake2 root path");
         fc.showOpenDialog(this);
-        System.out.println("Q2 Path: "+fc.getSelectedFile());
+        System.out.println("Q2 Path: " + fc.getSelectedFile());
         quakePathjTextField2.setText(fc.getSelectedFile().getPath());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setApproveButtonText("Open");
         fc.setDialogTitle("Choose bots maps directory path");
         fc.showOpenDialog(this);
-        System.out.println("Maps Path: "+fc.getSelectedFile());
+        System.out.println("Maps Path: " + fc.getSelectedFile());
         botMapsPathjTextField3.setText(fc.getSelectedFile().getPath());
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -1221,14 +1273,14 @@ public class MainFrame extends javax.swing.JFrame {
         AppConfig.quakePath = quakePathjTextField2.getText();
         System.setProperty("QUAKE2", AppConfig.quakePath);
         AppConfig.serverIP = serverIPjTextField4.getText();
-        MapBotBase.MAPS_DIR = botMapsPathjTextField3.getText()+"\\";
+        MapBotBase.MAPS_DIR = botMapsPathjTextField3.getText() + "\\";
     }//GEN-LAST:event_applyConfigButtonActionPerformed
 
     /**
-    * @param args the command line arguments
-    */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
-    	System.setProperty("QUAKE2", AppConfig.quakePath);
+        System.setProperty("QUAKE2", AppConfig.quakePath);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -1239,8 +1291,9 @@ public class MainFrame extends javax.swing.JFrame {
                 ex1.printStackTrace();
                 return;
             }
-        } 
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 MainFrame mf = new MainFrame();
                 mf.setVisible(true);
@@ -1248,10 +1301,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton allEntsRadioButton1;
     private javax.swing.JButton applyConfigButton;
+    private javax.swing.JPanel avgRewardjPanel16;
     private javax.swing.JTextField botMapsPathjTextField3;
     private javax.swing.JTextArea botStateInfoTextArea1;
     private javax.swing.JButton connectDebugedButton;
@@ -1277,6 +1330,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1285,6 +1339,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1303,6 +1358,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
@@ -1328,6 +1384,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton sendCommandToAnothersButton;
     private javax.swing.JButton sendCommandToDBGButton;
     private javax.swing.JTextField serverIPjTextField4;
+    private javax.swing.JTextArea statsInfo;
     private javax.swing.JButton stepButton1;
     private javax.swing.JTextField stepSizeTextField2;
     private javax.swing.JRadioButton visibleEntsRadioButton2;
@@ -1335,89 +1392,112 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel weaponsjPanel14;
     private javax.swing.JPanel whoKillsWhomjPanel14;
     // End of variables declaration//GEN-END:variables
-    
     private SmartBot dbgBot = null;
-
     private BotStatistic stats = null;
-    
     private Vector<MapBotBase> bots = new Vector<MapBotBase>();
-    
     private Vector<GameObject> requiredList = new Vector<GameObject>();
-    
     private DebugStepJob stepJob = null;
-    
     private MainFrameUpdater updater = null;
-    
+
     public JTextArea getMessagesTextArea() {
-    	return messages;
-    }
-    
-    private void updateBotsList() {
-    	int lastSelection = connectedBotsList1.getSelectedIndex();
-  
-    	Vector<MapBotBase> smToDelete = new Vector<MapBotBase>();
-    	for (MapBotBase b :  bots) {
-    		if ( ! b.isConnected()) smToDelete.add(b);
-    	}
-    	bots.removeAll(smToDelete);
-    	
-    	if ( dbgBot != null && ! dbgBot.isConnected()) dbgBot = null;
-    	
-    	DefaultListModel m = new DefaultListModel();
-    	for (MapBotBase b :  bots) {
-    		m.addElement(b);
-    	}
-    	if (dbgBot != null) m.addElement(dbgBot);
-    	
-    	connectedBotsList1.setModel(m);
-    	connectedBotsList1.setSelectedIndex(lastSelection);
-    	connectedBotsList1ValueChanged(null);
-    }
-    
-    BotBase getBotFromList(int ind) {
-    	if (ind < 0 || ind > bots.size() + 1) return null;
-    	if (ind < bots.size()) {
-    		return bots.elementAt(ind);
-    	}
-    	else if (ind == bots.size()) return dbgBot;
-    	return null;
-    }
-    
-    public void updateDisplayedInfo() {
-    	if (dbgBot != null && dbgBot.getFrameNumber() > 1) {
-    		if (visibleWaypointsRadioButton2.isSelected()) visibleWaypointsRadioButton2ActionPerformed(null);
-        	else if (allEntsRadioButton1.isSelected()) allEntsRadioButton1ActionPerformed(null);
-        	else if (visibleEntsRadioButton2.isSelected()) visibleEntsRadioButton2ActionPerformed(null);
-        	else if (navPlanRadioButton.isSelected()) navPlanRadioButtonActionPerformed(null);
-        	else if (pickupFailuresRadioButton1.isSelected()) pickupFailuresRadioButton1ActionPerformed(null);
-        	else if (edgeFailuresRadioButton.isSelected()) edgeFailuresRadioButtonActionPerformed(null);
-        	else if (enemyInfoRadioButton1.isSelected()) enemyInfoRadioButton1ActionPerformed(null);
-    		reqListValueChanged(null);
-    		botStateInfoTextArea1.setText(dbgBot.toDetailedString());
-    	}
-    	
-    	updateBotsList();
-    }
-    
-    private void setReqList(Vector<GameObject> vect) {
-    	int lastSelection = reqList.getSelectedIndex();
-    	 requiredList.clear();
-         requiredList.addAll(vect);
-         DefaultListModel m = new DefaultListModel();
-         for (Object o : requiredList) {
-      	   m.addElement(o);
-         }
-         reqList.setModel(m);
-         reqList.setSelectedIndex(lastSelection);
-         fullInfo.setText("");
-         reqListValueChanged(null);
-    }
-    
-    private void setUpdater() {
-    	if (updater != null) return;
-    	updater = new MainFrameUpdater(this);
-    	Thread t = new Thread(updater);
-    	t.start();
+        return messages;
     }
 
+    private void updateBotsList() {
+        int lastSelection = connectedBotsList1.getSelectedIndex();
+
+        Vector<MapBotBase> smToDelete = new Vector<MapBotBase>();
+        for (MapBotBase b : bots) {
+            if (!b.isConnected()) {
+                smToDelete.add(b);
+            }
+        }
+        bots.removeAll(smToDelete);
+
+        if (dbgBot != null && !dbgBot.isConnected()) {
+            dbgBot = null;
+        }
+
+        DefaultListModel m = new DefaultListModel();
+        for (MapBotBase b : bots) {
+            m.addElement(b);
+        }
+        if (dbgBot != null) {
+            m.addElement(dbgBot);
+        }
+
+        connectedBotsList1.setModel(m);
+        connectedBotsList1.setSelectedIndex(lastSelection);
+        connectedBotsList1ValueChanged(null);
+    }
+
+    BotBase getBotFromList(int ind) {
+        if (ind < 0 || ind > bots.size() + 1) {
+            return null;
+        }
+        if (ind < bots.size()) {
+            return bots.elementAt(ind);
+        } else if (ind == bots.size()) {
+            return dbgBot;
+        }
+        return null;
+    }
+
+    public void updateDisplayedInfo() {
+        if (dbgBot != null && dbgBot.getFrameNumber() > 1) {
+            if (visibleWaypointsRadioButton2.isSelected()) {
+                visibleWaypointsRadioButton2ActionPerformed(null);
+            } else if (allEntsRadioButton1.isSelected()) {
+                allEntsRadioButton1ActionPerformed(null);
+            } else if (visibleEntsRadioButton2.isSelected()) {
+                visibleEntsRadioButton2ActionPerformed(null);
+            } else if (navPlanRadioButton.isSelected()) {
+                navPlanRadioButtonActionPerformed(null);
+            } else if (pickupFailuresRadioButton1.isSelected()) {
+                pickupFailuresRadioButton1ActionPerformed(null);
+            } else if (edgeFailuresRadioButton.isSelected()) {
+                edgeFailuresRadioButtonActionPerformed(null);
+            } else if (enemyInfoRadioButton1.isSelected()) {
+                enemyInfoRadioButton1ActionPerformed(null);
+            }
+            reqListValueChanged(null);
+            botStateInfoTextArea1.setText(dbgBot.toDetailedString());
+            if (stats != null)
+                statsInfo.setText(stats.statsInfo);
+        }
+
+        updateBotsList();
+    }
+
+    private void setReqList(Vector<GameObject> vect) {
+        int lastSelection = reqList.getSelectedIndex();
+        requiredList.clear();
+        requiredList.addAll(vect);
+        DefaultListModel m = new DefaultListModel();
+        for (Object o : requiredList) {
+            m.addElement(o);
+        }
+        reqList.setModel(m);
+        reqList.setSelectedIndex(lastSelection);
+        fullInfo.setText("");
+        reqListValueChanged(null);
+    }
+
+    private void setUpdater() {
+        if (updater != null) {
+            return;
+        }
+        updater = new MainFrameUpdater(this);
+        Thread t = new Thread(updater);
+        t.start();
+    }
+
+    private String getStatsDescription() {
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date d = new java.util.Date();
+        return "date: " + dateFormat.format(d) + "\n" +
+                "map: " + dbgBot.getMapName() + "\n"+
+                "QLearning params: " + QLearning.getParametersString();
+
+    }
 }

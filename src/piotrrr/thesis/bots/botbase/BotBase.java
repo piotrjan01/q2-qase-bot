@@ -240,7 +240,7 @@ public class BotBase extends NoClipBot implements GameObject {
 	 * Gets the name of the current server map.
 	 * @return
 	 */
-	protected String getMapName() {
+	public String getMapName() {
 		if (getBsp() == null) {
 			say("BSPParser is not availible!");
 			return null;

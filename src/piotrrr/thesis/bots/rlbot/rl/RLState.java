@@ -5,10 +5,14 @@
 
 package piotrrr.thesis.bots.rlbot.rl;
 
+import java.util.HashSet;
+
 /**
  *
  * @author piotrrr
  */
 public abstract class RLState {
-
+    public HashSet<RLAction> getForbiddenActions() {
+        return new HashSet<RLAction>();
+    }
 }

@@ -15,6 +15,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import piotrrr.thesis.common.stats.BotStatistic.Kill;
+import piotrrr.thesis.common.stats.BotStatistic.Reward;
 
 /**
  *
@@ -330,6 +331,41 @@ public class StatsChartsFactory {
 //        XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) ((XYPlot)c.getPlot()).getRenderer();
 //        r.setDrawOutlines(true);
 //        r.setShapesVisible(true);
+
+        ChartPanel cp = new ChartPanel(c);
+        return cp;
+
+    }
+
+
+     public static ChartPanel getAvgRewardsChart(BotStatistic stats) {
+        XYSeriesCollection ds = new XYSeriesCollection();
+
+        LinkedList<BotSeries> series = new LinkedList<BotSeries>();
+
+        for (String botName : stats.getAllRewardedBotNames()) {
+            series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
+        }
+
+        for (Reward k : stats.rewards) {
+            for (BotSeries s : series) {
+                if (k.botName.equals(s.botName)) {
+                    s.d1 += k.reward;
+                    s.int1++;
+                    s.series.add(k.time, s.d1/s.int1);
+                }
+            }
+        }
+
+        for (BotSeries s : series) ds.addSeries(s.series);
+
+         JFreeChart c = ChartFactory.createXYLineChart(
+                 "Avg rewards in time",
+                 "time [s]",
+                 "Avg reward",
+                 ds,
+                 PlotOrientation.VERTICAL,
+                 true, true, true);
 
         ChartPanel cp = new ChartPanel(c);
         return cp;
