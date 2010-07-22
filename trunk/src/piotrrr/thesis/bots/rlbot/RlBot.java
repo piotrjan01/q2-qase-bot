@@ -62,12 +62,6 @@ public class RlBot extends MapBotBase implements StateBot {
         FiringDecision fd = null;
         if (!noFire) {
             fd = combatModule.getFiringDecision();
-//			if (fd != null && getWeaponIndex() != fd.gunIndex) changeWeaponByInventoryIndex(fd.gunIndex);
-//			else {
-//				int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.maxShortDistance4WpChoice+0.1f);
-//				if (getWeaponIndex() != justInCaseWeaponIndex)
-//					changeWeaponByInventoryIndex(justInCaseWeaponIndex);
-//			}
         }
 
         FiringInstructions fi = combatModule.getFiringInstructions(fd);

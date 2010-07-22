@@ -22,11 +22,11 @@ public class QLearning {
 
     RLAction defaultAction;
 
-    private static double gamma = 0.95;
+    private static double gamma = 0.5;
 
-    private static double beta = 0.5;
+    private static double beta = 0.7;
 
-    private static double exploration = 0.2;
+    private static double exploration = 0.3;
 
     private Random r = new Random();
 
@@ -38,12 +38,21 @@ public class QLearning {
         return chooseAction(state, state.getForbiddenActions());
     }
 
+    RLAction getRandomPossibleAction(HashSet<RLAction> forbidden) {
+        RLAction a = defaultAction.getRandomRLAction();
+        for (int i=0; i<20; i++) {
+            if ( ! forbidden.contains(a)) return a;
+            a = defaultAction.getRandomRLAction();
+        }
+        return a;
+    }
+
     public synchronized RLAction chooseAction(RLState state, HashSet<RLAction> forbidden) {
         if (r.nextDouble() < exploration)
-            return defaultAction.getRandomRLAction();
+            return getRandomPossibleAction(forbidden);
         if (qf.containsKey(state)) {
 //            Greedy action choosing
-            RLAction act = defaultAction.getRandomRLAction();
+            RLAction act = getRandomPossibleAction(forbidden);
             double max = Double.NEGATIVE_INFINITY;
             HashMap<RLAction, Double> actions = qf.get(state);
             for (RLAction a : actions.keySet()) {
@@ -55,7 +64,7 @@ public class QLearning {
             return act;
         }
 //        default action
-        return defaultAction.getRandomRLAction();
+        return getRandomPossibleAction(forbidden);
     }
 
     public void update(RLState state, RLAction action, double reward, RLState nextState) {
