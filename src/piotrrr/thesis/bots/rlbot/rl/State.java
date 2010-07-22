@@ -31,6 +31,7 @@ public class State extends RLState {
     public static final int DIST_FAR = 13;
     private int wpn;
     private int dist;
+    private boolean reloading = false;
     private RlBot bot;
 
 
@@ -52,9 +53,10 @@ public class State extends RLState {
     public boolean equals(Object obj) {
         State a = (State) obj;
         if (a.wpn == wpn) {
-            if (a.dist == dist) {
-                return true;
-            }
+            if (a.reloading == reloading)
+                if (a.dist == dist) {
+                    return true;
+                }
         }
         return false;
     }
@@ -83,7 +85,8 @@ public class State extends RLState {
             }
 
         }
-        return swpn + ":" + sdist;
+        String srld = reloading ? "RELOADIN" : "READY";
+        return swpn + ":" + sdist + ":"+srld;
     }
 
     public int getDist() {
@@ -94,6 +97,18 @@ public class State extends RLState {
         return wpn;
     }
 
+    public boolean isReloading() {
+        return reloading;
+    }
+
+    public void setReloading(boolean reloading) {
+        this.reloading = reloading;
+    }
+
+    
+
+    
+
     @Override
     public HashSet<RLAction> getForbiddenActions() {
         HashSet<RLAction> ret = new HashSet<RLAction>();
@@ -102,6 +117,11 @@ public class State extends RLState {
                 if ( ! bot.botHasItem(Action.actionToInventoryIndex(a))
                     || bot.getCurrentWeaponIndex()==Action.actionToInventoryIndex(a))
                     ret.add(new Action(a));
+        }
+        if (reloading) {
+            ret.add(new Action(Action.FIRE_CURRENT));
+            ret.add(new Action(Action.FIRE_HITPOINT));
+            ret.add(new Action(Action.FIRE_PREDICTED));
         }
         return ret;
     }

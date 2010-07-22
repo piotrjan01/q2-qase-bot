@@ -11,30 +11,49 @@ import piotrrr.thesis.common.stats.BotStatistic;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
+ * TODO:
+ * - tylko jeden sposób strzelania? - przewidywanie z tw. sinusów.
+ */
+/**
  * The aiming module
  * @author Piotr Gwizda�a
  */
 public class RLCombatModule {
 
-    class Shooting {
+    class StateTransfer {
 
-        long shotTime;
-        long hitTime;
-        String enemyName;
+        long shotTime = 0;
+        long hitTime = 0;
+        String enemyName = null;
+        State state;
+        State nextState = null;
+        Action action;
+        double reward = 0;
+        boolean done = false;
+        boolean shooting;
 
-        public Shooting(long shotTime, long hitTime, String enemyName) {
+        public StateTransfer(long shotTime, long hitTime, String enemyName, State state, Action action) {
             this.shotTime = shotTime;
             this.hitTime = hitTime;
             this.enemyName = enemyName;
+            this.state = state;
+            this.action = action;
+            shooting = true;
         }
-    }
 
+        public StateTransfer(State state, Action action) {
+            this.state = state;
+            this.action = action;
+            shooting = false;
+        }
+
+    }
     RlBot bot;
     QLearning qf = new QLearning(new Action(Action.NO_FIRE));
-    State lastState = null;
-    Action lastAction = null;
-    LinkedList<Shooting> lastShootings = new LinkedList<Shooting>();
-     public static final int lastShootingMaxSize = 100;
+//    State lastState = null;
+//    Action lastAction = null;
+    LinkedList<StateTransfer> stateTransfers = new LinkedList<StateTransfer>();
+    public static final int lastShootingMaxSize = 100;
 
     public RLCombatModule(RlBot bot) {
         this.bot = bot;
@@ -79,42 +98,43 @@ public class RLCombatModule {
      * @return
      */
     public FiringInstructions getFiringInstructions(FiringDecision fd) {
+
+        State state = getCurrentState(fd);
+        StateTransfer lastTransf = stateTransfers.isEmpty() ? null : stateTransfers.getLast();
+        if (lastTransf != null && lastTransf.nextState == null) {
+            lastTransf.nextState = state;
+//            System.out.println("" + lastTransf.state + " + " + lastTransf.action + " -> " + lastTransf.nextState + ", r=" + lastTransf.reward);
+        }
+
+        updateRewards();
+        updateQLearning();
+
+
         if (fd == null) {
             return null;
         }
 
         boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
         if (reloading) {
-            return getNoFiringInstructions(fd.enemyInfo.getObjectPosition());
+            state.setReloading(true);
+//            return getNoFiringInstructions(fd.enemyInfo.getObjectPosition());
         }
 
-        State state = getCurrentState(fd);
-
-        if (lastState != null && lastAction != null) {
-            double reward = bot.getReward();
-            qf.update(lastState, lastAction, reward, state);
-            if (reward > 0.5) {
-                System.out.println("" + lastState + " -> " + lastAction);
-                System.out.println("--------> Reward = " + reward);
-            }
-            if (BotStatistic.getInstance() != null) {
-                BotStatistic.getInstance().addReward(bot.getBotName(), reward, bot.getFrameNumber());
-            }
-        }
         Action action = (Action) qf.chooseAction(state);
 
-        lastState = state;
-        lastAction = action;
         FiringInstructions fi = getFIForAction(fd, action);
 
         if (fi.doFire) {
-          lastShootings.add(new Shooting(
+            stateTransfers.add(new StateTransfer(
                     bot.getFrameNumber(),
                     bot.getFrameNumber() + (long) fi.timeToHit,
-                    fd.enemyInfo.ent.getName()));
-            if (lastShootings.size() > lastShootingMaxSize) {
-                lastShootings.pollFirst();
+                    fd.enemyInfo.ent.getName(), state, action));
+            if (stateTransfers.size() > lastShootingMaxSize) {
+                stateTransfers.pollFirst();
             }
+        }
+        else {
+            stateTransfers.add(new StateTransfer(state, action));
         }
         return fi;
     }
@@ -126,9 +146,16 @@ public class RLCombatModule {
     }
 
     State getCurrentState(FiringDecision fd) {
-        double dist = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), fd.enemyInfo.getObjectPosition());
-        State ret = new State(State.getWpnFromInventoryIndex(bot.getCurrentWeaponIndex()), continuousDistToDiscrete(dist), bot);
-        return ret;
+        if (fd == null) {
+            int dist;
+            if ( ! stateTransfers.isEmpty())
+                dist = stateTransfers.getLast().state.getDist();
+            else dist = State.DIST_MEDIUM;
+            return new State(State.getWpnFromInventoryIndex(bot.getCurrentWeaponIndex()), dist, bot);
+        }
+        double distDbl = CommFun.getDistanceBetweenPositions(bot.getBotPosition(), fd.enemyInfo.getObjectPosition());
+        int dist = continuousDistToDiscrete(distDbl);
+        return new State(State.getWpnFromInventoryIndex(bot.getCurrentWeaponIndex()), dist, bot);
     }
 
     private FiringInstructions getFIForAction(FiringDecision fd, Action action) {
@@ -145,8 +172,10 @@ public class RLCombatModule {
                 return getFiringInstructionsAtHitpoint(fd, 1);
             default:
                 int wpind = action.actionToInventoryIndex();
-                if (bot.getCurrentWeaponIndex() != wpind)
+                if (bot.getCurrentWeaponIndex() != wpind) {
                     bot.changeWeaponToIndex(wpind);
+                    System.out.println("chng wpn to: "+CommFun.getGunName(wpind));
+                }
             case Action.NO_FIRE:
                 return getNoFiringInstructions(fd.enemyInfo.getObjectPosition());
         }
@@ -182,54 +211,60 @@ public class RLCombatModule {
         return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint), timeToHit);
     }
 
-    public double getReward() {
-        bot.rewardsCount++;
-        double r = 0;
-        if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
-            bot.lastBotScore = bot.scoreCounter.getBotScore();
-            r += 1;
-        }
-        LinkedList<Shooting> toDelete = new LinkedList<Shooting>();
-//            Dbg.prn("");
-        for (Shooting s : lastShootings) {
-//                Dbg.prn("shooting: "+s.enemyName+"@"+s.shotTime+"-"+s.hitTime+" ");
-            int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime + 1, s.hitTime + 2, s.enemyName);
-            if (damage > 0) {
+    public void updateQLearning() {
+        LinkedList<StateTransfer> toDelete = new LinkedList<StateTransfer>();
+
+        for (StateTransfer s : stateTransfers) {
+            if ( ! s.done) continue;
+                bot.rewardsCount++;
+                bot.totalReward+=s.reward;
+            if (s.shooting) {
+                qf.update(s.state, s.action, s.reward, s.nextState);
                 toDelete.add(s);
-                r += damage / 100d;
-            } else if (s.hitTime + 4 < bot.getFrameNumber()) {
+                if (BotStatistic.getInstance() != null) {
+//                    System.out.println(" adding to stats: "+s.reward);
+                    BotStatistic.getInstance().addReward(bot.getBotName(),
+                            s.reward, bot.getFrameNumber());
+                }
+                if (s.reward > 0.2) {
+//                    System.out.println("" + s.state + " + " + s.action + " -> " + s.nextState + ", r=" + s.reward);
+                }
+            }
+            else {
+                qf.update(s.state, s.action, s.reward, s.nextState);
+//                System.out.println("" + s.state + " + " + s.action + " -> " + s.nextState + ", r=" + s.reward);
                 toDelete.add(s);
-                r -= 0.005;
             }
         }
-
-        lastShootings.removeAll(toDelete);
-        bot.totalReward += r;
-//        if (r != 0) {
-//            System.out.println("--------> Reward = " + r);
-//        }
-        return r;
+        stateTransfers.removeAll(toDelete);
     }
 
-//    private int getWeaponChangeIndex() {
-//       HashMap<RLState,Double> states = qf.getStatesWithValues();
-//       HashMap<RLState,Double> okStates = new HashMap<RLState, Double>();
-//       for (RLState s : states.keySet()) {
-//           State st = (State)s;
-//           if (st.getDist() == lastState.getDist())
-//               if (bot.botHasItem(st.getWpnAsInventoryIndex()))
-//                   okStates.put(st, states.get(st));
-//       }
-//       int bestGun = 7; //BLASTER
-//       double max = Double.NEGATIVE_INFINITY;
-//       for (RLState s : okStates.keySet()) {
-//           State st = (State)s;
-//           if (okStates.get(s) > max) {
-//               max = okStates.get(s);
-//               bestGun = st.getWpnAsInventoryIndex();
-//           }
-//       }
-//       return bestGun;
-//    }
-  
+    public void updateRewards() {
+//        if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
+//            bot.lastBotScore = bot.scoreCounter.getBotScore();
+//            //TODO: moze dac to do innego shootingu? Np. tego ktory ma hitpoint na teraz
+//            if ( ! stateTransfers.isEmpty()) {
+//                stateTransfers.getLast().reward += 1;
+//                stateTransfers.getLast().done = true;
+//            }
+//            else System.out.println("Bot killed, but nowhere to add the reward!!!");
+//        }
+//            Dbg.prn("");
+        for (StateTransfer s : stateTransfers) {
+            if ( ! s.shooting) {
+                s.reward += -0.0001;
+                s.done = true;
+                continue;
+            }
+            int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime + 1, s.hitTime + 2, s.enemyName);
+            if (damage > 0) {
+                s.reward += damage / 100d;
+                s.done = true;
+            } else if (s.hitTime + 4 < bot.getFrameNumber()) {
+                s.reward += -0.001;
+                s.done = true;
+            }
+        }
+        return;
+    }
 }
