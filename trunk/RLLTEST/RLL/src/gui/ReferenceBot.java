@@ -5,7 +5,7 @@
 
 package gui;
 
-import testenv.Actions;
+import testenv.Action;
 import testenv.Environment;
 import testenv.Gun;
 import testenv.TestAction;
@@ -18,19 +18,19 @@ import testenv.WorldState;
 public class ReferenceBot implements Bot {
 
     public TestAction getAction(WorldState state) {
-        if (Environment.isReloading()) return new TestAction(Actions.nofire);
+        if (Environment.isReloading()) return new TestAction(Action.NO_ACTION);
         switch (state.getDistance()) {
             case Close:
             case Medium:
                 if (state.getCurrentGun().equals(Gun.WPN_CHAINGUN))
-                    return new TestAction(Actions.fire);
-                else return new TestAction(Actions.WPN_CHAINGUN);
+                    return new TestAction(Action.NO_ACTION);
+                else return new TestAction(Action.WPN_CHAINGUN);
             case Far:
                 if (state.getCurrentGun().equals(Gun.WPN_RAILGUN))
-                    return new TestAction(Actions.fire);
-                else return new TestAction(Actions.WPN_RAILGUN);
+                    return new TestAction(Action.NO_ACTION);
+                else return new TestAction(Action.WPN_RAILGUN);
         }
-        return new TestAction(Actions.nofire);
+        return new TestAction(Action.NO_ACTION);
     }
 
 

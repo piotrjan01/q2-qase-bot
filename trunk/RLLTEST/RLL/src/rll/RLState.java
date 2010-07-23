@@ -13,8 +13,5 @@ import java.util.HashSet;
  */
 public abstract class RLState implements Cloneable {
 
-    public HashSet<RLAction> getForbiddenActions() {
-        return new HashSet<RLAction>();
-    }
 
 }
