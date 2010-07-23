@@ -7,7 +7,7 @@ package gui;
 
 import rll.QLearning;
 import rll.RLState;
-import testenv.Actions;
+import testenv.Action;
 import testenv.Environment;
 import testenv.TestAction;
 import testenv.WorldState;
@@ -20,7 +20,7 @@ public class QLearningBot implements Bot {
 
 
 
-    TestAction lastAction = new TestAction(Actions.nofire);
+    TestAction lastAction = new TestAction(Action.NO_ACTION);
 
     public QLearning learner = new QLearning(new TestAction(lastAction.getAct()));
     
@@ -46,7 +46,7 @@ public class QLearningBot implements Bot {
 
          //wybierz akcje
         TestAction todo;
-        if (Environment.isReloading()) todo = new TestAction(Actions.nofire);
+        if (Environment.isReloading()) todo = new TestAction(Action.NO_ACTION);
         else todo = (TestAction)learner.chooseAction(state);
 
         learner.update(lastState, lastAction, rew, state);

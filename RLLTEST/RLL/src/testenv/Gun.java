@@ -12,6 +12,14 @@ public enum Gun {
         return Gun.values()[r.nextInt(s)];
     }
 
+    public int getGunId() {
+        for (int i=0; i<Gun.values().length; i++) {
+            if (Gun.values()[i] == this)
+                return i;
+        }
+        return -1;
+    }
+
     public double getReloadingTime() {
         switch (this) {
             case WPN_BFG10K:

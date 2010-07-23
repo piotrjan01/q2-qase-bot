@@ -4,8 +4,6 @@
  */
 package testenv;
 
-import java.util.HashSet;
-import rll.RLAction;
 import rll.RLState;
 
 /**
@@ -52,7 +50,7 @@ public class WorldState extends RLState {
         WorldState o = (WorldState) obj;
         if (currentGun.equals(o.currentGun)) {
             if (o.distance.equals(distance)) {
-//                if (ownedGuns.getSimilarity(o.ownedGuns) >= 0.5)
+                if (ownedGuns.equals(o.ownedGuns))
                     return true;
             }
         }
@@ -64,16 +62,11 @@ public class WorldState extends RLState {
         return currentGun.hashCode() + distance.hashCode();
     }
 
-    @Override
-    public HashSet<RLAction> getForbiddenActions() {
-        HashSet<RLAction> ret = new HashSet<RLAction>();
-        for (Gun g : Gun.values()) {
-            if ( ! ownedGuns.ownsGun(g)) {
-                TestAction act = new TestAction(Actions.valueOf(g.name()));
-                ret.add(act);
-            }
-        }
-        return ret;
+    public OwnedGuns getOwnedGuns() {
+        return ownedGuns;
     }
+
+    
+
 
 }

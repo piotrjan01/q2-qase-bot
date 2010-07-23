@@ -33,8 +33,10 @@ public class OwnedGuns {
             ng.ownedGuns.put(e.getKey(), e.getValue()==true);
         }
         Random r = new Random();
-        Gun g = Gun.getRandomGun();
-        ng.ownedGuns.put(g, r.nextBoolean());
+        if (r.nextDouble() < 0.1) {
+            Gun g = Gun.getRandomGun();
+            ng.ownedGuns.put(g, r.nextBoolean());
+        }
         return ng;
     }
 

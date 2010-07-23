@@ -19,7 +19,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import rll.QLearning;
 import rll.Sarsa;
-import testenv.Actions;
+import testenv.Action;
 import testenv.Environment;
 import testenv.TestAction;
 import testenv.WorldState;
@@ -185,6 +185,8 @@ public class RLLGui extends javax.swing.JFrame {
 
         doTheExperiment(rcRL, new QLearningBot(), experiments, steps);
 
+        doTheExperiment(rcCRL, new ConnQLBot(), experiments, steps);
+
 //        System.out.println(rlbot.qf.toString());
 
     }//GEN-LAST:event_runjButton1ActionPerformed
@@ -235,7 +237,8 @@ public class RLLGui extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     XYSeries rcRand;
     XYSeries rcRef;
-    XYSeries rcRL; 
+    XYSeries rcRL;
+    XYSeries rcCRL;
     int parts = 500;
 
     private void doTheExperiment(XYSeries series, Bot bot, int expCount, int steps) {
@@ -268,7 +271,7 @@ public class RLLGui extends javax.swing.JFrame {
 
             Environment.resetWorld();
             double reward = 0;
-            WorldState state = Environment.getNextState(new TestAction(Actions.nofire));
+            WorldState state = Environment.getNextState(new TestAction(Action.NO_ACTION));
             for (int step = 0; step < steps; step++) {
                 state = Environment.getNextState(bot.getAction(state));
                 if (state.getLastReward() != 0) {
@@ -291,7 +294,7 @@ public class RLLGui extends javax.swing.JFrame {
         }
 
         if (bot.getClass().equals(QLearningBot.class)) {
-            dbg(((QLearningBot) bot).learner.toDetailedString());
+            dbg(((QLearningBot) bot).learner.toString());
         }
     }
 
@@ -307,6 +310,9 @@ public class RLLGui extends javax.swing.JFrame {
 
         rcRL = new XYSeries("QLearning");
         ds.addSeries(rcRL);
+
+        rcCRL = new XYSeries("ConnectionistQL");
+        ds.addSeries(rcCRL);
 
         JFreeChart c = ChartFactory.createXYLineChart(
                 "Total reward in time",

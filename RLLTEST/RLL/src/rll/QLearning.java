@@ -6,7 +6,6 @@
 package rll;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
@@ -33,10 +32,6 @@ public class QLearning {
     }
 
     public RLAction chooseAction(RLState state) {
-        return chooseAction(state, state.getForbiddenActions());
-    }
-
-    public RLAction chooseAction(RLState state, HashSet<RLAction> forbidden) {
         if (r.nextDouble() < exploration)
             return defaultAction.getRandomRLAction();
         if (qf.containsKey(state)) {
@@ -45,7 +40,7 @@ public class QLearning {
             double max = Double.NEGATIVE_INFINITY;
             HashMap<RLAction, Double> actions = qf.get(state);
             for (RLAction a : actions.keySet()) {
-                if (actions.get(a) > max && ! forbidden.contains(a)) {
+                if (actions.get(a) > max) {
                     act = a;
                     max = actions.get(a);
                 }

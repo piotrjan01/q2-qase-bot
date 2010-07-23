@@ -14,20 +14,20 @@ import rll.RLAction;
  */
 public class TestAction extends RLAction {
 
-    Actions act;
+    Action act;
 
    
 
-    public TestAction(Actions act) {
+    public TestAction(Action act) {
         this.act = act;
     }
 
     @Override
     public RLAction getRandomRLAction() {
-         return new TestAction(Actions.getRandomAction());
+         return new TestAction(Action.getRandomAction());
     }
 
-    public Actions getAct() {
+    public Action getAct() {
         return act;
     }
 

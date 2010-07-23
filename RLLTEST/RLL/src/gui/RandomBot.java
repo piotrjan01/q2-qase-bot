@@ -5,7 +5,7 @@
 
 package gui;
 
-import testenv.Actions;
+import testenv.Action;
 import testenv.Environment;
 import testenv.Gun;
 import testenv.TestAction;
@@ -18,8 +18,8 @@ import testenv.WorldState;
 public class RandomBot implements Bot {
 
     public TestAction getAction(WorldState state) {
-        if (Environment.isReloading()) return new TestAction(Actions.nofire);
-        return new TestAction(Actions.getRandomAction());
+        if (Environment.isReloading()) return new TestAction(Action.NO_ACTION);
+        return new TestAction(Action.getRandomAction());
     }
 
     public Gun changeWeapon(WorldState state) {

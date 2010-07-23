@@ -5,7 +5,7 @@
 
 package rll;
 
-import testenv.Actions;
+import testenv.Action;
 import testenv.Environment;
 
 /**

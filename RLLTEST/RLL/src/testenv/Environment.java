@@ -35,23 +35,21 @@ public class Environment {
         newState.lastReward = 0;
         newState.ownedGuns = lastState.ownedGuns;
 
-        Actions a = act.act;
+        Action a = act.act;
 
-        switch (a) {
-            case fire:
-                if ( ! isReloading() ) {
-                    prn("Firing!");
-                    doFiringRoutine(newState);
-                }
-                else prn("Gun is reloading!");
-                break;
-            case nofire:
-                break;
-            default:
-                Gun g = Gun.valueOf(a.name());
+        Gun g = newState.currentGun;
+        if (a != Action.NO_ACTION) {
+                g = Gun.valueOf(a.name());
                 if (newState.ownedGuns.ownsGun(g))
                     newState.currentGun = g;
         }
+
+        double reward = g.getAccuracy()*g.getDamage()/g.getReloadingTime();
+        reward *= getRandValFromRange(0, 0.13);
+        newState.lastReward = reward;
+
+                
+
         if (getRandBool(0.3)) {
             prn("Env changes");
             randomizeState(newState);
