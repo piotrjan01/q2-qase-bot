@@ -18,7 +18,7 @@ import soc.qase.tools.vecmath.Vector3f;
  * The aiming module
  * @author Piotr Gwizda�a
  */
-public class RLCombatModule {
+public class SecondRLCombatModule {
 
     class StateTransfer {
 
@@ -55,7 +55,7 @@ public class RLCombatModule {
     LinkedList<StateTransfer> stateTransfers = new LinkedList<StateTransfer>();
     public static final int lastShootingMaxSize = 100;
 
-    public RLCombatModule(RlBot bot) {
+    public SecondRLCombatModule(RlBot bot) {
         this.bot = bot;
     }
 
@@ -240,19 +240,19 @@ public class RLCombatModule {
     }
 
     public void updateRewards() {
-//        if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
-//            bot.lastBotScore = bot.scoreCounter.getBotScore();
-//            //TODO: moze dac to do innego shootingu? Np. tego ktory ma hitpoint na teraz
-//            if ( ! stateTransfers.isEmpty()) {
-//                stateTransfers.getLast().reward += 1;
-//                stateTransfers.getLast().done = true;
-//            }
-//            else System.out.println("Bot killed, but nowhere to add the reward!!!");
-//        }
+        if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
+            bot.lastBotScore = bot.scoreCounter.getBotScore();
+            //TODO: moze dac to do innego shootingu? Np. tego ktory ma hitpoint na teraz
+            if ( ! stateTransfers.isEmpty()) {
+                stateTransfers.getLast().reward += 1;
+                stateTransfers.getLast().done = true;
+            }
+            else System.out.println("Bot killed, but nowhere to add the reward!!!");
+        }
 //            Dbg.prn("");
         for (StateTransfer s : stateTransfers) {
             if ( ! s.shooting) {
-                s.reward += -0.0001;
+//                s.reward += -0.0001;
                 s.done = true;
                 continue;
             }
@@ -261,7 +261,7 @@ public class RLCombatModule {
                 s.reward += damage / 100d;
                 s.done = true;
             } else if (s.hitTime + 4 < bot.getFrameNumber()) {
-                s.reward += -0.001;
+                s.reward += -0.02;
                 s.done = true;
             }
         }

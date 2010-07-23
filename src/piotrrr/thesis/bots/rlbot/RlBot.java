@@ -23,7 +23,7 @@ public class RlBot extends MapBotBase implements StateBot {
      */
     public StateReporter stateReporter;
     public CountMyScoreJob scoreCounter;
-    public RLCombatModule combatModule = new RLCombatModule(this);
+    public SecondRLCombatModule combatModule = new SecondRLCombatModule(this);
     public int lastBotScore = 0;
    
     public double totalReward = 0;
