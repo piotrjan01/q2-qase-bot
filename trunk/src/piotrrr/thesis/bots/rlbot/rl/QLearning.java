@@ -22,11 +22,11 @@ public class QLearning {
 
     RLAction defaultAction;
 
-    private static double gamma = 0.5;
+    private static double gamma = 0.1;
 
-    private static double beta = 0.7;
+    private static double beta = 0.2;
 
-    private static double exploration = 0.3;
+    private static double exploration = 0.25;
 
     private Random r = new Random();
 
@@ -158,6 +158,12 @@ public class QLearning {
 
     synchronized public String toDetailedString() {
         String ret = "QFunction states: "+qf.keySet().size()+"\n";
+
+        for (Map.Entry<RLState, Double> e : getStatesWithValues().entrySet()) {
+            ret += "\n"+e.getKey().toString()+" = "+e.getValue().toString();
+        }
+        ret+="\n";
+
         for (RLState s : qf.keySet()) {
             ret+="\nstate: "+s+" actions: "+qf.get(s).keySet().size()+"\n";
             for (RLAction a : qf.get(s).keySet()) {
