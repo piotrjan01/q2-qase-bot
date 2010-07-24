@@ -6,7 +6,7 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * The aiming module
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class SimpleAimingModule {
 	
@@ -23,14 +23,14 @@ public class SimpleAimingModule {
 		Vector3f noFiringLook = fd.enemyInfo.predictedPos == null ? fd.enemyInfo.getObjectPosition() : fd.enemyInfo.predictedPos;
 		if (reloading) return getNoFiringInstructions(bot, noFiringLook);
 		
-		if (fd.enemyInfo.lastUpdateFrame + bot.cConfig.maxEnemyInfoAge4Firing < bot.getFrameNumber()) 
-			return getNoFiringInstructions(bot, noFiringLook);
-		
-		
-		if (fd.enemyInfo.lastPredictionError > bot.cConfig.maxPredictionError) {
-//			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
-			return getFastFiringInstructions(fd, bot);
-		}
+//		if (fd.enemyInfo.lastUpdateFrame + bot.cConfig.maxEnemyInfoAge4Firing < bot.getFrameNumber())
+//			return getNoFiringInstructions(bot, noFiringLook);
+//
+//
+//		if (fd.enemyInfo.lastPredictionError > bot.cConfig.maxPredictionError) {
+////			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
+//			return getFastFiringInstructions(fd, bot);
+//		}
 		//we may be predicting well
 		return getPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(fd.gunIndex), 
 				bot.cConfig.isDangerousToShootWith(fd.gunIndex)); 
@@ -44,27 +44,27 @@ public class SimpleAimingModule {
 	 * @param careful whether or not has to be careful while firing with current weapon.
 	 * @return
 	 */
-	static FiringInstructions getPredictingFiringInstructions(MapBotBase bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
+	public static FiringInstructions getPredictingFiringInstructions(MapBotBase bot, FiringDecision fd, float bulletSpeed,	boolean careful) {
 		Vector3f playerPos = bot.getBotPosition();
 		Vector3f enemyPos = fd.enemyInfo.getBestVisibleEnemyPart(bot);
 		
 		float distance = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
 		
-		if (distance < bot.cConfig.maxShortDistance4Firing) {
-//			bot.dtalk.addToLog("Target is very close. Fast firing.");
-			return getFastFiringInstructions(fd, bot);
-		}
+//		if (distance < bot.cConfig.maxShortDistance4Firing) {
+////			bot.dtalk.addToLog("Target is very close. Fast firing.");
+//			return getFastFiringInstructions(fd, bot);
+//		}
 		
 		//Calculate the time to hit
 		float timeToHit = distance / bulletSpeed;
 		if (timeToHit < 1) timeToHit = 1f;
 		
 		//If it is too big - quit
-		if (timeToHit > bot.cConfig.maxTimeToHit) {
-//			bot.dtalk.addToLog("Target too far. No shooting.");
-			return getNoFiringInstructions(bot, enemyPos);
-		}
-		
+//		if (timeToHit > bot.cConfig.maxTimeToHit) {
+////			bot.dtalk.addToLog("Target too far. No shooting.");
+//			return getNoFiringInstructions(bot, enemyPos);
+//		}
+//		
 		//We add to enemy position the movement that the enemy is predicted to do in timeToHit.
 		Vector3f hitPoint = CommFun.cloneVector(enemyPos);
 		//movement is between bot position, not the visible part of the bot

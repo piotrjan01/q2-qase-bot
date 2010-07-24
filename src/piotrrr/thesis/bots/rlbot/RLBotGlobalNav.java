@@ -29,10 +29,10 @@ public class RLBotGlobalNav implements GlobalNav {
 	@Override
 	public NavPlan establishNewPlan(MapBotBase referenceBot, NavPlan oldPlan) {
 		
-		RlBot bot;
+		RlBotRB bot;
 		
 		try {
-			bot = (RlBot)referenceBot;
+			bot = (RlBotRB)referenceBot;
 		}
 		catch (Exception e) {
 			e.printStackTrace();

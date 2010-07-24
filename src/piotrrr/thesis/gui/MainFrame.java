@@ -23,8 +23,8 @@ import javax.swing.UIManager;
 import piotrrr.thesis.bots.AppConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
-import piotrrr.thesis.bots.rlbot.RlBot;
-import piotrrr.thesis.bots.rlbot.rl.QLearning;
+import piotrrr.thesis.bots.rlbot.RlBotRB;
+
 import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
@@ -1233,7 +1233,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectRLBotsjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectRLBotsjButton2ActionPerformed
         int num = Integer.parseInt(nrOfRLtBotsTextField3.getText());
         for (int i = 0; i < num; i++) {
-            RlBot bot = new RlBot("RLBot-" + i, AppConfig.skinName);
+            RlBotRB bot = new RlBotRB("RLBot-" + i, AppConfig.skinName);
             bot.dtalk.active = false;
             bot.connect(AppConfig.serverIP, AppConfig.serverPort);
             bots.add(bot);
@@ -1497,7 +1497,7 @@ public class MainFrame extends javax.swing.JFrame {
         Date d = new java.util.Date();
         return "date: " + dateFormat.format(d) + "\n" +
                 "map: " + dbgBot.getMapName() + "\n"+
-                "QLearning params: " + QLearning.getParametersString();
+                "QLearning params: " + " experimental ";
 
     }
 }

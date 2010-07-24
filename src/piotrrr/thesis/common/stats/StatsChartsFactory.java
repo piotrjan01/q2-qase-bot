@@ -51,13 +51,14 @@ public class StatsChartsFactory {
 
         for (BotSeries s : series) {
             s.series.add(0, 0);
+            s.int2 = StatsTools.countBotsOfGivenFamilly(s.botName, stats);
         }
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
                 if (k.killer.startsWith(s.botName)) {
                     s.int1++;
-                    s.series.add(k.time/10, s.int1);
+                    s.series.add(k.time/10, (double)s.int1/s.int2);
                 }
             }
         }
@@ -88,13 +89,14 @@ public class StatsChartsFactory {
 
         for (BotSeries s : series) {
             s.series.add(0, 0);
+            s.int2 = StatsTools.countBotsOfGivenFamilly(s.botName, stats);
         }
 
         for (Kill k : stats.kills) {
             for (BotSeries s : series) {
                 if (k.victim.startsWith(s.botName)) {
                     s.int1++;
-                    s.series.add(k.time/10, s.int1);
+                    s.series.add(k.time/10, (double)s.int1/s.int2);
                 }   
             }
         }
@@ -125,6 +127,7 @@ public class StatsChartsFactory {
 
         for (BotSeries s : series) {
             s.series.add(0, 0);
+            s.d1 = StatsTools.countBotsOfGivenFamilly(s.botName, stats);
         }
 
         for (Kill k : stats.kills) {
@@ -134,7 +137,7 @@ public class StatsChartsFactory {
                     if (k.victim.startsWith(s.botName)) s.int2++;
                     float val = 0;
                     if (s.int2 != 0) val = (float)s.int1 / (float)s.int2;
-                    s.series.add(k.time/10, val);
+                    s.series.add(k.time/10, val/s.d1);
                 }
             }
         }
@@ -307,6 +310,10 @@ public class StatsChartsFactory {
             for (BotSeries s : series) {
                 s.series.add(0, 0);
             }
+            
+            String allName = "all avg";
+            int botsNum = stats.getAllRewardedBotNames().size();
+            series.add(new BotSeries(new XYSeries(allName), 0, 0, allName));
 
             for (BotStatistic.Reward k : stats.rewards) {
                 for (BotSeries s : series) {
@@ -315,6 +322,9 @@ public class StatsChartsFactory {
                         s.series.add(k.time/10, s.d1);
                     }
                 }
+                BotSeries as = series.getLast();
+                as.d1 += k.reward;
+                as.series.add(k.time/10, as.d1/botsNum);
             }
         }
 
@@ -347,20 +357,28 @@ public class StatsChartsFactory {
             series.add(new BotSeries(new XYSeries(botName), 0, 0, botName));
         }
 
+        String allName = "all RL";
+        int botsNum = stats.getAllRewardedBotNames().size();
+        series.add(new BotSeries(new XYSeries(allName), 0, 0, allName));
+
         for (Reward k : stats.rewards) {
             for (BotSeries s : series) {
                 if (k.botName.equals(s.botName)) {
                     s.d1 += k.reward;
                     s.int1++;
-                    s.series.add(k.time, s.d1/s.int1);
+                    s.series.add(k.time/10, s.d1/k.time);
                 }
             }
+            BotSeries as = series.getLast();
+            as.d1 += k.reward;
+            as.int1++;
+            as.series.add(k.time/10, as.d1/(k.time*botsNum));
         }
 
         for (BotSeries s : series) ds.addSeries(s.series);
 
          JFreeChart c = ChartFactory.createXYLineChart(
-                 "Avg rewards in time",
+                 "rewards speed in time",
                  "time [s]",
                  "Avg reward",
                  ds,

@@ -48,21 +48,21 @@ public class WeaponConfig extends Config {
 	/**
 	 * Weapon preference weight
 	 */	
-	public int wpWSuperShotgun = 50;
+	public int wpWSuperShotgun = 40;
 	public int wpWSuperShotgun_MIN = 0;
 	public int wpWSuperShotgun_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public int wpWMachinegun = 60;
+	public int wpWMachinegun = 40;
 	public int wpWMachinegun_MIN = 0;
 	public int wpWMachinegun_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public int wpWChaingun = 80;
+	public int wpWChaingun = 60;
 	public int wpWChaingun_MIN = 0;
 	public int wpWChaingun_MAX = 100;
 
@@ -83,14 +83,14 @@ public class WeaponConfig extends Config {
 	/**
 	 * Weapon preference weight
 	 */	
-	public int wpWRocketLauncher = 40;
+	public int wpWRocketLauncher = 50;
 	public int wpWRocketLauncher_MIN = 0;
 	public int wpWRocketLauncher_MAX = 100;
 
 	/**
 	 * Weapon preference weight
 	 */	
-	public int wpWHyperblaster = 50;
+	public int wpWHyperblaster = 60;
 	public int wpWHyperblaster_MIN = 0;
 	public int wpWHyperblaster_MAX = 100;
 	
