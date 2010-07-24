@@ -7,13 +7,13 @@ package piotrrr.thesis.bots.rlbot.rl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
-import piotrrr.thesis.bots.rlbot.RlBot;
+import piotrrr.thesis.bots.rlbot.RlBotRB;
 
 /**
  *
  * @author piotrrr
  */
-public class State extends RLState {
+public class State {
 
     public static final int WPN_BLASTER = 0;
     public static final int WPN_SHOTGUN = 1;
@@ -29,34 +29,50 @@ public class State extends RLState {
     public static final int DIST_CLOSE = 11;
     public static final int DIST_MEDIUM = 12;
     public static final int DIST_FAR = 13;
+
+    public static final int wpnMin = WPN_BLASTER;
+    public static final int wpnMax = WPN_BFG10K;
+
+    public static final int invIndexingShift = 7;
+
+    
     private int wpn;
     private int dist;
-    private boolean reloading = false;
-    private RlBot bot;
+    private boolean [] ownedGuns = new boolean[wpnMax-wpnMin+1];
+
+    private RlBotRB bot;
 
 
-    public State(int wpn, int dist, RlBot bot) {
+    public State(int wpn, int dist, RlBotRB bot) {
         this.wpn = wpn;
         this.dist = dist;
         this.bot = bot;
+        int j=0;
+        for (int i=wpnMin; i<=wpnMax; i++) {
+            if (bot.botHasItem(i-invIndexingShift)) ownedGuns[j]=true;
+            else ownedGuns[j] = false;
+            j++;
+        }
     }
 
     public static int getWpnFromInventoryIndex(int index) {
-        return index - 7;
+        return index - invIndexingShift;
     }
 
     public int getWpnAsInventoryIndex() {
-        return wpn + 7;
+        return wpn + invIndexingShift;
     }
 
     @Override
     public boolean equals(Object obj) {
         State a = (State) obj;
         if (a.wpn == wpn) {
-            if (a.reloading == reloading)
-                if (a.dist == dist) {
-                    return true;
+            if (a.dist == dist) {
+                for (int i=0; i<ownedGuns.length; i++) {
+                    if (ownedGuns[i] != a.ownedGuns[i]) return false;
                 }
+                return true;
+            }
         }
         return false;
     }
@@ -85,8 +101,7 @@ public class State extends RLState {
             }
 
         }
-        String srld = reloading ? "RELOADIN" : "READY";
-        return swpn + ":" + sdist + ":"+srld;
+        return swpn + ":" + sdist;
     }
 
     public int getDist() {
@@ -97,34 +112,6 @@ public class State extends RLState {
         return wpn;
     }
 
-    public boolean isReloading() {
-        return reloading;
-    }
-
-    public void setReloading(boolean reloading) {
-        this.reloading = reloading;
-    }
-
-    
-
-    
-
-    @Override
-    public HashSet<RLAction> getForbiddenActions() {
-        HashSet<RLAction> ret = new HashSet<RLAction>();
-        for (int a=Action.firstAction; a<Action.actionsCount; a++) {
-            if (Action.isChangeWeaponAction(a))
-                if ( ! bot.botHasItem(Action.actionToInventoryIndex(a))
-                    || bot.getCurrentWeaponIndex()==Action.actionToInventoryIndex(a))
-                    ret.add(new Action(a));
-        }
-        if (reloading) {
-            ret.add(new Action(Action.FIRE_CURRENT));
-            ret.add(new Action(Action.FIRE_HITPOINT));
-            ret.add(new Action(Action.FIRE_PREDICTED));
-        }
-        return ret;
-    }
 
 
 }

@@ -17,4 +17,15 @@ public class StatsTools {
             if (k.killer.equals(botName)) ret++;
         return ret;
     }
+
+    public static int countBotsOfGivenFamilly(String family, BotStatistic stats) {
+        int cnt = 0;
+        for (String n : stats.getAllKillingBotNames()) {
+            if (n.startsWith(family)) {
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+
 }

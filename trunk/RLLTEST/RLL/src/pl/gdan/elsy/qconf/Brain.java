@@ -8,10 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import piotrrr.thesis.bots.rlbot.rl.Action;
 import pl.gdan.elsy.tool.Mat;
 import pl.gdan.elsy.tool.RR;
 import pl.gdan.elsy.tool.Rand;
-import rll.RLAction;
+
 
 /**
  * Main class of the framework, contains the whole Connectionist Q-learning algorithm.
@@ -31,7 +32,7 @@ public class Brain implements Serializable{
 	/**
 	 * Array of actions that can be taken
 	 */
-	private RLAction[] actionsArray;
+	private Action[] actionsArray;
 	private double[] input;
 	private double[] Q;
 	private double layerInput[][];
@@ -117,7 +118,7 @@ public class Brain implements Serializable{
 	 * @param gamma Q-learning Discount factor
 	 * @param maxWeight maximum initial weight of neuron connection
 	 */
-	public Brain(Perception perception, RLAction[] actionsArray, int[] hiddenNeuronsNo, double alpha, double lambda, double gamma, boolean useBoltzmann, double temperature, double randActions, double maxWeight) {
+	public Brain(Perception perception, Action[] actionsArray, int[] hiddenNeuronsNo, double alpha, double lambda, double gamma, boolean useBoltzmann, double temperature, double randActions, double maxWeight) {
 		this.unipolar = perception.isUnipolar();
 		perception.start();
 		this.perception = perception;
@@ -151,7 +152,7 @@ public class Brain implements Serializable{
 	 * @param actionsArray - array of actions that can be taken
 	 * @param hiddenNeuronsNo - numbers of neurons in hidden layers
 	 */
-	public Brain(Perception perception, RLAction[] actionsArray, int[] hiddenNeuronsNo) {
+	public Brain(Perception perception, Action[] actionsArray, int[] hiddenNeuronsNo) {
 		this(
 			perception,
 			actionsArray,
@@ -171,7 +172,7 @@ public class Brain implements Serializable{
 	 * @param perception - an instance of class implementing Perception
 	 * @param actionsArray - array of actions that can be taken
 	 */
-	public Brain(Perception perception, RLAction[] actionsArray) {
+	public Brain(Perception perception, Action[] actionsArray) {
 		this(
 				perception,
 				actionsArray,
