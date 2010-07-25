@@ -1,29 +1,28 @@
 package piotrrr.thesis.bots.rlbot;
 
-import piotrrr.thesis.bots.smartbot.*;
 import piotrrr.thesis.bots.tuning.NavConfig;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
-import piotrrr.thesis.common.combat.SimpleAimingModule;
-import piotrrr.thesis.common.combat.SimpleCombatModule;
 import piotrrr.thesis.common.jobs.CountMyScoreJob;
 import piotrrr.thesis.common.navigation.NavInstructions;
-import piotrrr.thesis.tools.Dbg;
 
 public class RLBot extends MapBotBase {
 
     public NavConfig nConfig = new NavConfig();
     public CountMyScoreJob scoreCounter;
-    public SecondRLCombatModule combatModule = new SecondRLCombatModule(this);
+    public RLCombatModule combatModule = new RLCombatModule(this);
     public int lastBotScore = 0;
     public double totalReward = 0;
     public double rewardsCount = 0;
 
     public RLBot(String botName, String skinName) {
         super(botName, skinName);
-        globalNav = new SmartBotGlobalNav();
-        localNav = new SmartBotLocalNav();
+        scoreCounter = new CountMyScoreJob(this);
+        addBotJob(scoreCounter);
+
+        globalNav = new RLBotGlobalNav();
+        localNav = new RLBotLocalNav();
     }
 
     @Override
@@ -34,28 +33,31 @@ public class RLBot extends MapBotBase {
         if (!noMove) {
             plan = globalNav.establishNewPlan(this, plan);
             if (plan == null) {
-                Dbg.prn("plan is null....");
+//                Dbg.prn("plan is null....");
                 return;
             }
             assert plan != null;
             ni = localNav.getNavigationInstructions(this);
         }
-
         FiringDecision fd = null;
         if (!noFire) {
-            fd = SimpleCombatModule.getFiringDecision(this);
-            if (fd != null && getWeaponIndex() != fd.gunIndex) {
-                changeWeaponByInventoryIndex(fd.gunIndex);
-            } else {
-                int justInCaseWeaponIndex = SimpleCombatModule.chooseWeapon(this, cConfig.maxShortDistance4WpChoice + 0.1f);
-                if (getWeaponIndex() != justInCaseWeaponIndex) {
-                    changeWeaponByInventoryIndex(justInCaseWeaponIndex);
-                }
-            }
+            fd = combatModule.getFiringDecision();
         }
 
-        FiringInstructions fi = SimpleAimingModule.getFiringInstructions(fd, this);
+        FiringInstructions fi = combatModule.getFiringInstructions(fd);
+        if (fi != null && fi.doFire) {
+        }
 
         executeInstructions(ni, fi);
     }
+
+    @Override
+    public String toDetailedString() {
+        String s = super.toDetailedString();
+        s+=combatModule.toString();
+        return s;
+    }
+
+
+
 }
