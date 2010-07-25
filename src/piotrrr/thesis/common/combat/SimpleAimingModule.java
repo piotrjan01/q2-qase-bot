@@ -114,14 +114,6 @@ public class SimpleAimingModule {
 
     }
 
-    /**
-     * Tries to shoot using the prediction
-     * @param bot the bot that shoots
-     * @param fd firing decision
-     * @param bulletSpeed the speed of the bullets with which the shooting will be performed
-     * @param careful whether or not has to be careful while firing with current weapon.
-     * @return
-     */
     public static FiringInstructions getNewPredictingFiringInstructions(MapBotBase bot,
             FiringDecision fd, float bulletSpeed) {
         Vector3f playerPos = bot.getBotPosition();

@@ -22,7 +22,9 @@ import piotrrr.thesis.common.stats.BotStatistic.Reward;
  */
 public class StatsChartsFactory {
 
-    public static int rewardsChartsSegments = 500;
+    public static int rewardsChartSegments = 500;
+
+    public static int avgRewardsChartSegments = 20;
 
     private static class BotSeries {
 
@@ -332,7 +334,7 @@ public class StatsChartsFactory {
             int botsNum = stats.getAllRewardedBotNames().size();
             series.add(new BotSeries(new XYSeries(allName), 0, 0, allName));
 
-            int segmentSize = stats.rewards.size() / rewardsChartsSegments;
+            int segmentSize = stats.rewards.size() / rewardsChartSegments;
             if (segmentSize < 1) {
                 segmentSize = 1;
             }
@@ -394,7 +396,7 @@ public class StatsChartsFactory {
         int botsNum = stats.getAllRewardedBotNames().size();
         series.add(new BotSeries(new XYSeries(allName), 0, 0, allName));
 
-        int segmentSize = stats.rewards.size() / rewardsChartsSegments;
+        int segmentSize = stats.rewards.size() / avgRewardsChartSegments;
         if (segmentSize < 1) {
             segmentSize = 1;
         }
@@ -412,13 +414,14 @@ public class StatsChartsFactory {
 
             if (i % segmentSize == 0) {
                 BotSeries as = series.getLast();
-                as.d1 = 0;
                 for (BotSeries s : series) {
                     if (s.botName.equals(as.botName)) continue;
-                    s.series.add(k.time / 10, s.d1 / k.time);
-                    as.d1 += s.d1 / k.time;
+                    s.series.add(k.time / 10, s.d1 / segmentSize);
+                    as.d1 += s.d1;
+                    s.d1 = 0;
                 }
-                as.series.add(k.time / 10, as.d1 / botsNum);
+                as.series.add(k.time / 10, as.d1 / (botsNum * segmentSize));
+                as.d1 = 0;
             }
 
 

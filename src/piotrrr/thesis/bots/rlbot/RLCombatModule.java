@@ -54,9 +54,6 @@ public class RLCombatModule extends Perception {
             if (t<a) return 1;
             return 0;
         }
-
-
-      
     }
 
     class Shooting {
@@ -99,7 +96,7 @@ public class RLCombatModule extends Perception {
 //        unipolar = Rand.b();
 
         for (int i=7; i<=18; i++) {
-            weaponRanking.put(i, new WeaponScore(0, 1));
+            weaponRanking.put(i, new WeaponScore(0.5, 1));
         }
 
     }
@@ -115,6 +112,12 @@ public class RLCombatModule extends Perception {
         String s = "alpha=" + brain.getAlpha() + " gamma=" + brain.getGamma() + 
                 "\nlambda=" + brain.getLambda() + " rand=" + brain.getRandActions() +
                 "\nunip=" + isUnipolar()+"\n" ;
+
+        TreeMap<Integer, WeaponScore> newRanking = new TreeMap<Integer, WeaponScore>();
+        for (Map.Entry<Integer, WeaponScore> e : weaponRanking.entrySet())
+            newRanking.put(e.getKey(), e.getValue());
+        weaponRanking = newRanking;
+        
         for (Map.Entry<Integer, WeaponScore> e : weaponRanking.entrySet()) {
             s += "\n"+CommFun.getGunName(e.getKey())+" : "+e.getValue().getScore();
         }
@@ -126,6 +129,9 @@ public class RLCombatModule extends Perception {
         Vector3f playerPos = bot.getBotPosition();
         EnemyInfo chosen = null;
         float chosenRisk = Float.MAX_VALUE;
+        float maxDist = -1;
+        float maxError = 0;
+        LinkedList<EnemyInfo> eligible = new LinkedList<EnemyInfo>();
         for (EnemyInfo ei : bot.kb.enemyInformation.values()) {
 
             if (ei.getBestVisibleEnemyPart(bot) == null) {
@@ -136,13 +142,26 @@ public class RLCombatModule extends Perception {
                 continue;
 
             float dist = CommFun.getDistanceBetweenPositions(playerPos, ei.getObjectPosition());
-            float error = ei.lastPredictionError / bot.cConfig.maxPredictionError;
-            float risk = dist * error;
-            if (risk < chosenRisk) {
-                chosen = ei;
+            float error = ei.lastPredictionError;
+
+            if (dist > maxDist)
+                maxDist = dist;
+            if (error > maxError)
+                maxError = error;
+
+            eligible.add(ei);
+        }
+
+        for (EnemyInfo ei : eligible) {
+            float dist = CommFun.getDistanceBetweenPositions(playerPos, ei.getObjectPosition());
+            float error = ei.lastPredictionError;
+            float risk = dist / maxDist + error / maxError;
+            if (chosenRisk > risk) {
                 chosenRisk = risk;
+                chosen = ei;
             }
         }
+
         if (chosen == null) {
             return null;
         }
@@ -233,7 +252,7 @@ public class RLCombatModule extends Perception {
         int wpind = action.actionToInventoryIndex();
         if (bot.getCurrentWeaponIndex() != wpind) {
             bot.changeWeaponToIndex(wpind);
-//                    System.out.println("chng wpn to: "+CommFun.getGunName(wpind));
+            if (bot.botHasItem(wpind)) System.out.println("chng wpn to: "+CommFun.getGunName(wpind));
         }
     }
 
@@ -249,7 +268,7 @@ public class RLCombatModule extends Perception {
 
             int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime + 1, s.hitTime + 2, s.enemyName);
             if (damage > 0) {
-                actionReward += (damage * damage / 100d) * 0.2;
+                actionReward += (damage / 100d) * 0.2;
             } else if (s.hitTime + 4 < bot.getFrameNumber()) {
                 toDelete.add(s);
 //                actionReward -= 0.001;

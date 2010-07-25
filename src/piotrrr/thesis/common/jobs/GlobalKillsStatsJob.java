@@ -61,6 +61,8 @@ public class GlobalKillsStatsJob extends Job {
                                     victim,
                                     CommFun.getGunName(cmd)
                                 );
+                            if (CommFun.getGunName(cmd).equals(CommFun.getGunName("xxx")))
+                                System.out.println("Unrecognized kill log: "+cmd);
 			}
                         else if (cmd.contains("rocket") && cmd.contains("ate")) {
                             String victim = cmd.substring(0, cmd.indexOf(" ate "));
@@ -73,6 +75,8 @@ public class GlobalKillsStatsJob extends Job {
                                     victim,
                                     CommFun.getGunName(cmd)
                                 );
+                            if (CommFun.getGunName(cmd).equals(CommFun.getGunName("xxx")))
+                                System.out.println("Unrecognized kill log: "+cmd);
                         }
                         else if (cmd.contains("rocket") && cmd.contains("dodged")) {
                             String victim = cmd.substring(0, cmd.indexOf(" almost "));
@@ -85,6 +89,8 @@ public class GlobalKillsStatsJob extends Job {
                                     victim,
                                     CommFun.getGunName(cmd)
                                 );
+                            if (CommFun.getGunName(cmd).equals(CommFun.getGunName("xxx")))
+                                System.out.println("Unrecognized kill log: "+cmd);
                         }
 		}
 
