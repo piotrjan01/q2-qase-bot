@@ -23,7 +23,7 @@ import javax.swing.UIManager;
 import piotrrr.thesis.bots.AppConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.referencebot.ReferenceBot;
-import piotrrr.thesis.bots.rlbot.RlBotRB;
+import piotrrr.thesis.bots.rlbot.RLBot;
 
 import piotrrr.thesis.bots.smartbot.SmartBot;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
@@ -282,7 +282,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel5.setText("Connect");
 
         nrOfSmartBotsTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        nrOfSmartBotsTextField2.setText("1");
+        nrOfSmartBotsTextField2.setText("3");
         nrOfSmartBotsTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nrOfSmartBotsTextField2ActionPerformed(evt);
@@ -917,7 +917,7 @@ public class MainFrame extends javax.swing.JFrame {
         rewardPanel16.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("reward", rewardPanel16);
 
-        avgRewardjPanel16.setLayout(new java.awt.GridLayout());
+        avgRewardjPanel16.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("avg reward", avgRewardjPanel16);
 
         jButton1.setText("Save current statistics");
@@ -1006,7 +1006,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (dbgBot != null) {
             return;
         }
-        SmartBot bot = new SmartBot("SmartBot-dbg", AppConfig.skinName);
+        RLBot bot = new RLBot("RLBot-dbg", AppConfig.skinName);
         bot.connect(AppConfig.serverIP, AppConfig.serverPort);
         stepJob = new DebugStepJob(bot, this);
         bot.addBotJob(stepJob);
@@ -1233,7 +1233,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectRLBotsjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectRLBotsjButton2ActionPerformed
         int num = Integer.parseInt(nrOfRLtBotsTextField3.getText());
         for (int i = 0; i < num; i++) {
-            RlBotRB bot = new RlBotRB("RLBot-" + i, AppConfig.skinName);
+            RLBot bot = new RLBot("RLBot-" + i, AppConfig.skinName);
             bot.dtalk.active = false;
             bot.connect(AppConfig.serverIP, AppConfig.serverPort);
             bots.add(bot);
@@ -1392,7 +1392,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel weaponsjPanel14;
     private javax.swing.JPanel whoKillsWhomjPanel14;
     // End of variables declaration//GEN-END:variables
-    private SmartBot dbgBot = null;
+    private RLBot dbgBot = null;
     private BotStatistic stats = null;
     private Vector<MapBotBase> bots = new Vector<MapBotBase>();
     private Vector<GameObject> requiredList = new Vector<GameObject>();

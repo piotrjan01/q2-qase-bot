@@ -1,6 +1,5 @@
 package piotrrr.thesis.bots.rlbot;
 
-import piotrrr.thesis.bots.referencebot.*;
 import piotrrr.thesis.bots.wpmapbot.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.navigation.LocalNav;
@@ -15,7 +14,9 @@ public class RLBotLocalNav implements LocalNav {
 	public static final int acceptableDistance = 40;
 
 	@Override
-	public NavInstructions getNavigationInstructions(MapBotBase bot) {
+	public NavInstructions getNavigationInstructions(MapBotBase smartBot) {
+		
+		RLBot bot = (RLBot)smartBot;
 		
 		NavPlan plan = bot.plan;
 		

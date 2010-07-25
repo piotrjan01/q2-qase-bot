@@ -134,8 +134,8 @@ public class CombatConfig extends Config {
 		case 11:
 			break;
 		default: 
-			System.err.println("Warning: Wrong inventory gun index passed to " +
-					"BasicFiringModule. Gave: "+gunIndex);
+//			System.err.println("Warning: Wrong inventory gun index passed to " +
+//					"BasicFiringModule. Gave: "+gunIndex);
 			
 		}
 		return bspeed;

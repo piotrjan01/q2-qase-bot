@@ -28,6 +28,7 @@ public class Action {
     public static final int WPN_RAILGUN = 10;
     public static final int WPN_BFG10K = 11;
 
+    public static final int [] prohibitedActions = {WPN_GRENADES};
 
     public static final int minAct = 0;
     public static final int maxAct = 11;
@@ -93,4 +94,12 @@ public class Action {
         }
         return ret;
     }
+
+    public static boolean isProhibited(int action) {
+        for (int a : prohibitedActions) {
+            if (a == action) return true;
+        }
+        return false;
+    }
+
 }

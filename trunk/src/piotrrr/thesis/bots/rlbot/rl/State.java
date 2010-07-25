@@ -7,7 +7,7 @@ package piotrrr.thesis.bots.rlbot.rl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
-import piotrrr.thesis.bots.rlbot.RlBotRB;
+import piotrrr.thesis.bots.rlbot.RLBot;
 
 /**
  *
@@ -40,10 +40,10 @@ public class State {
     private int dist;
     private boolean [] ownedGuns = new boolean[wpnMax-wpnMin+1];
 
-    private RlBotRB bot;
+    private RLBot bot;
 
 
-    public State(int wpn, int dist, RlBotRB bot) {
+    public State(int wpn, int dist, RLBot bot) {
         this.wpn = wpn;
         this.dist = dist;
         this.bot = bot;

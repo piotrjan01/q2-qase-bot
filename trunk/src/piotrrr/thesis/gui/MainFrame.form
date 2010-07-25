@@ -366,7 +366,7 @@
                 <Component class="javax.swing.JTextField" name="nrOfSmartBotsTextField2">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="1"/>
+                    <Property name="text" type="java.lang.String" value="3"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nrOfSmartBotsTextField2ActionPerformed"/>
