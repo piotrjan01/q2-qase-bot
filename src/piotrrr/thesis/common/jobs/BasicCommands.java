@@ -3,7 +3,7 @@ package piotrrr.thesis.common.jobs;
 import java.util.Vector;
 
 import piotrrr.thesis.bots.botbase.BotBase;
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.combat.EnemyInfo;
 
 /**
@@ -16,7 +16,7 @@ import piotrrr.thesis.common.combat.EnemyInfo;
  * 
  * TODO: list the commands in the comment!
  * 
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class BasicCommands extends Job {
 	

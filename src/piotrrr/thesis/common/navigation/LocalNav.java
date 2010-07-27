@@ -1,10 +1,10 @@
 package piotrrr.thesis.common.navigation;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 
 /**
  * The local navigation module of the MapBotBase
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public interface LocalNav {
 

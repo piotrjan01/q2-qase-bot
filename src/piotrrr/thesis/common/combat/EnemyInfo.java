@@ -1,6 +1,6 @@
 package piotrrr.thesis.common.combat;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import soc.qase.state.Entity;
@@ -8,7 +8,7 @@ import soc.qase.tools.vecmath.Vector3f;
 
 /**
  * This class stores the information about the enemies in the game.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class EnemyInfo implements GameObject {
 	

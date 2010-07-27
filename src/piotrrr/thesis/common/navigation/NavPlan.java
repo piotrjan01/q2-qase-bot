@@ -1,12 +1,12 @@
 package piotrrr.thesis.common.navigation;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import soc.qase.ai.waypoint.Waypoint;
 import soc.qase.state.Entity;
 
 /**
  * This class encapsulates the path that the bot has planned to move along.
- * @author Piotr Gwizda³a
+ * @author Piotr Gwizdaï¿½a
  */
 public class NavPlan {
 

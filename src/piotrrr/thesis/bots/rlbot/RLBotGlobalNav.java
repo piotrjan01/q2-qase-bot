@@ -4,7 +4,7 @@ package piotrrr.thesis.bots.rlbot;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.entities.EntityDoublePair;
 import piotrrr.thesis.common.navigation.GlobalNav;

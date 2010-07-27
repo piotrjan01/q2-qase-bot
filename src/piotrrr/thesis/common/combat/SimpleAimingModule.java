@@ -1,6 +1,6 @@
 package piotrrr.thesis.common.combat;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import soc.qase.tools.vecmath.Vector3f;
 
@@ -31,6 +31,8 @@ public class SimpleAimingModule {
             return getNoFiringInstructions(bot, noFiringLook);
         }
 
+
+//        return getFastFiringInstructions(fd, bot);
 
         if (fd.enemyInfo.lastPredictionError > bot.cConfig.maxPredictionError) {
 //			bot.dtalk.addToLog("Too big prediction error. Fast firing.");
@@ -87,64 +89,16 @@ public class SimpleAimingModule {
         return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint));
     }
 
-    public static double getTimeToHit(double bulletSpeed, Vector3f playerPos, Vector3f enemyPos, Vector3f enemyPredictedPos) {
-        
-         double d = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
-        double v = bulletSpeed;
-        double u = CommFun.getDistanceBetweenPositions(enemyPos, enemyPredictedPos);
+    
 
-        Vector3f vec1 = CommFun.getNormalizedDirectionVector(playerPos, enemyPos);
-        Vector3f vec2 = CommFun.getNormalizedDirectionVector(enemyPos, enemyPredictedPos);
-
-        double alpha = Math.toRadians(vec1.angle(vec2));
-
-        double delta = 4 * d * d * u * u * Math.cos(alpha) * Math.cos(alpha) + 4 * (v * v - u * u) * d * d;
-
-        double t = (2 * d * u * Math.cos(alpha) + Math.sqrt(delta)) / (2 * (v * v - u * u));
-
-        double t2 = (2 * d * u * Math.cos(alpha) - Math.sqrt(delta)) / (2 * (v * v - u * u));
-
-        //                System.out.println("t="+t+" v="+v+" d="+d+" u="+u+" t2="+t2);
-
-        if (Double.isNaN(t)) {
-            t = 1;
-        }
-        
-        return t;
-
-    }
-
-    public static FiringInstructions getNewPredictingFiringInstructions(MapBotBase bot,
-            FiringDecision fd, float bulletSpeed) {
-        Vector3f playerPos = bot.getBotPosition();
-        Vector3f enemyPos = fd.enemyInfo.getBestVisibleEnemyPart(bot);
-
-        //Calculate the time to hit
-        double timeToHit = getTimeToHit(bulletSpeed, playerPos, enemyPos, fd.enemyInfo.predictedPos);
-	if (timeToHit <= 1.5) timeToHit = 1f;
-
-        //We add to enemy position the movement that the enemy is predicted to do in timeToHit.
-        Vector3f hitPoint = CommFun.cloneVector(enemyPos);
-        //movement is between bot position, not the visible part of the bot
-        Vector3f movement = CommFun.getMovementBetweenVectors(fd.enemyInfo.getObjectPosition(), fd.enemyInfo.predictedPos);
-        movement = CommFun.multiplyVectorByScalar(movement, (float) timeToHit);
-        hitPoint.add(movement);
-
-        return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint));
-    }
-
-    /**
-     * * Point the enemy and shoot.
-     * @param fd
-     * @param playerPos
-     * @return
-     */
     static public FiringInstructions getFastFiringInstructions(FiringDecision fd, MapBotBase bot) {
         Vector3f to = new Vector3f(fd.enemyInfo.getBestVisibleEnemyPart(bot));
         Vector3f fireDir = CommFun.getNormalizedDirectionVector(bot.getBotPosition(), to);
 //		bot.dtalk.addToLog("Fast firing.");
         return new FiringInstructions(fireDir);
     }
+
+   
 
     /**
      * Don't fire, just look at the enemy.

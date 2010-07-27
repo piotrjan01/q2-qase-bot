@@ -78,7 +78,7 @@ public class BotBase extends NoClipBot implements GameObject {
 
         private int lastWorldFrame = 0;
 
-        public boolean friendlyFire = false;
+        public boolean friendlyFire = true;
 	
 	/**
 	 * Basic constructor

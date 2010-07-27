@@ -1,4 +1,4 @@
-package piotrrr.thesis.bots.wpmapbot;
+package piotrrr.thesis.bots.mapbotbase;
 
 
 import piotrrr.thesis.bots.botbase.BotBase;
@@ -175,13 +175,17 @@ public class MapBotBase extends BotBase {
 	
 	@Override
 	public String toDetailedString() {
-		
+	
+            synchronized (this) {
+                if (kb == null) return "";
+
 		return "Bot name: "+getBotName()+"\n"+
 				"health: "+getBotHealth()+"\n"+
 				"armor: "+getBotArmor()+"\n"+
 				"frame nr: "+getFrameNumber()+"\n"+
 				"position: "+getBotPosition()+"\n"+
 				kb.toString();
+            }
 	}
 	
 	/**

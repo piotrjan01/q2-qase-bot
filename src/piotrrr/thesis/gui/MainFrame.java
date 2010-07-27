@@ -26,7 +26,7 @@ import piotrrr.thesis.bots.referencebot.ReferenceBot;
 import piotrrr.thesis.bots.rlbot.RLBot;
 
 import piotrrr.thesis.bots.smartbot.SmartBot;
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.jobs.GlobalKillsStatsJob;
@@ -162,7 +162,7 @@ public class MainFrame extends javax.swing.JFrame {
         panelRunBots.setBorder(javax.swing.BorderFactory.createTitledBorder("Connect Reference bots"));
 
         nrBotsField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        nrBotsField.setText("2");
+        nrBotsField.setText("3");
 
         jLabel1.setText("Connect");
 
@@ -1161,6 +1161,7 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
 
+        stats.statsInfo = getStatsDescription();
         statsInfo.setText(stats.statsInfo);
 
         killsPanel14.removeAll();
@@ -1495,9 +1496,13 @@ public class MainFrame extends javax.swing.JFrame {
     private String getStatsDescription() {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date d = new java.util.Date();
-        return "date: " + dateFormat.format(d) + "\n" +
-                "map: " + dbgBot.getMapName() + "\n"+
-                "QLearning params: " + " experimental ";
+        String ret = "date: " + dateFormat.format(d) + "\n" +
+                "map: " + dbgBot.getMapName() + "\n";
+
+        if (dbgBot != null) ret += "\n"+dbgBot.toDetailedString();
+        for (MapBotBase b : bots) ret += "\n"+b.toDetailedString();
+
+        return ret;
 
     }
 }
