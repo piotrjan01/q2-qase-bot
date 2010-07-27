@@ -3,7 +3,7 @@ package piotrrr.thesis.common.combat;
 
 import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.bots.tuning.WeaponConfig;
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import soc.qase.tools.vecmath.Vector3f;
 

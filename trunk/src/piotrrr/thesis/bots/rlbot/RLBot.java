@@ -1,7 +1,7 @@
 package piotrrr.thesis.bots.rlbot;
 
 import piotrrr.thesis.bots.tuning.NavConfig;
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.combat.FiringDecision;
 import piotrrr.thesis.common.combat.FiringInstructions;
 import piotrrr.thesis.common.jobs.CountMyScoreJob;

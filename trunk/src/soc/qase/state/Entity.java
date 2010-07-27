@@ -8,7 +8,7 @@ package soc.qase.state;
 
 import java.util.*;
 
-import piotrrr.thesis.bots.wpmapbot.MapBotBase;
+import piotrrr.thesis.bots.mapbotbase.MapBotBase;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.GameObject;
 import piotrrr.thesis.common.combat.EnemyInfo;
@@ -322,7 +322,7 @@ public class Entity implements GameObject
 /*-------------------------------------------------------------------*/
 	public int getInventoryIndex()
 	{
-		if(getType().equals("healing"))
+		if(getType() != null && getType().equals("healing"))
 			return 41;
 		else if(inventoryIndex == -1)
 			inventoryIndex = Config.modelStringToInventoryIndex(getModelString());

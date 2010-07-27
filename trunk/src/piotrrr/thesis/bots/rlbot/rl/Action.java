@@ -7,6 +7,7 @@ package piotrrr.thesis.bots.rlbot.rl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -28,17 +29,29 @@ public class Action {
     public static final int WPN_RAILGUN = 10;
     public static final int WPN_BFG10K = 11;
 
-    public static final int [] prohibitedActions = {WPN_GRENADES};
+    public static final int NO_FIRE = 0;
+    public static final int FIRE = 1;
+    public static final int FIRE_PREDICTED = 2;
 
-    public static final int minAct = 0;
-    public static final int maxAct = 11;
+    public static final int [] prohibitedWpnChngs = {WPN_GRENADES};
+
+    public static final int minWpn = 0;
+    public static final int maxWpn = 11;
+
+    public static final int minSht = 0;
+    public static final int maxSht = 2;
+
+    public static final int actToInvShift = 6;
     
 
-    int action = 0;
+    int wpnChange = NO_ACTION;
 
-    public Action(int action) {
-        if (action < minAct || action >= maxAct) action = minAct;
-        this.action = action;
+    int shootingMode = 0;
+
+    public Action(int action, int shootingMode) {
+        if (action < minWpn || action > maxWpn) action = minWpn;
+        this.wpnChange = action;
+        this.shootingMode = shootingMode;
     }
 
 
@@ -47,28 +60,22 @@ public class Action {
     }
 
     public int actionToInventoryIndex() {
-        return actionToInventoryIndex(this.action);
+        return actionToInventoryIndex(this.wpnChange);
     }
 
     public static int actionToInventoryIndex(int action) {
         if ( ! isChangeWeaponAction(action)) action = WPN_BLASTER;
-        return action+6;
+        return action+actToInvShift;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Action a = (Action)obj;
-        if (a.action == action) return true;
-        return false;
-    }
 
     @Override
     public int hashCode() {
-        return action % 256;
+        return wpnChange % 256;
     }
 
-    public int getAction() {
-        return action;
+    public int getWpnChange() {
+        return wpnChange;
     }
 
     @Override
@@ -76,7 +83,7 @@ public class Action {
         for (Field f : this.getClass().getFields()) {
             if (Modifier.isStatic(f.getModifiers())) {
                 try {
-                    if ((Integer) f.get(this) == this.action) {
+                    if ((Integer) f.get(this) == this.wpnChange) {
                         return f.getName();
                     }
                 } catch (Exception ex) {
@@ -88,18 +95,28 @@ public class Action {
     }
 
     public static Action [] getAllActionsArray() {
-        Action [] ret = new Action[maxAct-minAct+1];
-        for (int i=minAct; i<=maxAct; i++) {
-            ret[i-minAct] = new Action(i);
+        LinkedList<Action> list = new LinkedList<Action>();
+        for (int i=minWpn; i<=maxWpn; i++) {
+            for (int j=minSht; j<=maxSht; j++) {
+                list.add(new Action(i, j));
+            }
         }
+        Action [] ret = new Action[list.size()];
+        for (int i=0; i<ret.length; i++) ret[i] = list.pop();
         return ret;
     }
 
-    public static boolean isProhibited(int action) {
-        for (int a : prohibitedActions) {
-            if (a == action) return true;
+    public static boolean isProhibited(Action action) {
+        for (int a : prohibitedWpnChngs) {
+            if (a == action.wpnChange) return true;
         }
         return false;
     }
+
+    public int getShootingMode() {
+        return shootingMode;
+    }
+
+    
 
 }
