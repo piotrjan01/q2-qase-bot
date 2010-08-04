@@ -24,7 +24,7 @@ public class StatsChartsFactory {
 
     public static int rewardsChartSegments = 500;
 
-    public static int avgRewardsChartSegments = 20;
+    public static int avgRewardsChartSegments = 10;
 
     private static class BotSeries {
 
@@ -345,6 +345,7 @@ public class StatsChartsFactory {
                 for (BotSeries s : series) {
                     if (k.reward != 0 && s.botName.equals(k.botName)) {
                         s.d1 += k.reward;
+                        s.int1 = k.time;
                         break;
                     }
                 }
@@ -354,7 +355,7 @@ public class StatsChartsFactory {
                 i++;
                 if (i % segmentSize == 0) {
                     for (BotSeries s : series) {
-                        s.series.add(k.time / 10, s.d1);
+                        s.series.add(s.int1 / 10, s.d1);
                     }
                 }
 
@@ -416,11 +417,11 @@ public class StatsChartsFactory {
                 BotSeries as = series.getLast();
                 for (BotSeries s : series) {
                     if (s.botName.equals(as.botName)) continue;
-                    s.series.add(k.time / 10, s.d1 / segmentSize);
+                    s.series.add(k.time-segmentSize/2 / 10, s.d1 / segmentSize);
                     as.d1 += s.d1;
                     s.d1 = 0;
                 }
-                as.series.add(k.time / 10, as.d1 / (botsNum * segmentSize));
+                as.series.add(k.time-segmentSize/2 / 10, as.d1 / (botsNum * segmentSize));
                 as.d1 = 0;
             }
 

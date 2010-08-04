@@ -12,6 +12,7 @@ import piotrrr.thesis.common.combat.*;
 import piotrrr.thesis.common.CommFun;
 import piotrrr.thesis.common.jobs.HitsReporter;
 import piotrrr.thesis.common.stats.BotStatistic;
+import piotrrr.thesis.tools.Dbg;
 import pl.gdan.elsy.qconf.Brain;
 import pl.gdan.elsy.qconf.Perception;
 import soc.qase.tools.vecmath.Vector3f;
@@ -30,13 +31,11 @@ public class RLCombatModule extends Perception {
     double actionReward = 0;
     int actionTime = 10;
     int actionEndFrame = -1;
-
     int actionFireMode = Action.NO_FIRE;
-
     public TreeMap<Integer, WeaponScore> weaponRanking = new TreeMap<Integer, WeaponScore>();
-    
 
     public static class WeaponScore implements Comparable<WeaponScore> {
+
         private double rewardsTotal;
         private int rewardsCount;
 
@@ -46,14 +45,18 @@ public class RLCombatModule extends Perception {
         }
 
         double getScore() {
-            return rewardsTotal/rewardsCount;
+            return rewardsTotal / rewardsCount;
         }
 
         public int compareTo(WeaponScore o) {
             double t = getScore();
             double a = o.getScore();
-            if (t>a) return -1;
-            if (t<a) return 1;
+            if (t > a) {
+                return -1;
+            }
+            if (t < a) {
+                return 1;
+            }
             return 0;
         }
     }
@@ -74,7 +77,7 @@ public class RLCombatModule extends Perception {
     LinkedList<Shooting> shootings = new LinkedList<Shooting>();
     Action[] actions = Action.getAllActionsArray();
     public static final int maxShootingsCount = 100;
-    Brain brain;
+    public Brain brain;
     double actionDistance = 0;
     boolean unipolar = true;
 
@@ -97,35 +100,35 @@ public class RLCombatModule extends Perception {
 //        brain.setRandActions(getRandParam(0.01, 0.4, 0.1)); //exploration
 //        unipolar = Rand.b();
 
-        for (int i=7; i<18; i++) {
+        for (int i = 7; i < 18; i++) {
             weaponRanking.put(i, new WeaponScore(0.5, 1));
         }
 
     }
 
     double getRandParam(double from, double to, double quant) {
-        int count = (int)((to-from)/quant)+1;
+        int count = (int) ((to - from) / quant) + 1;
         Random r = new Random();
-        return from+r.nextInt(count)*quant;
+        return from + r.nextInt(count) * quant;
     }
 
     @Override
     public String toString() {
-        String s = "alpha=" + brain.getAlpha() + " gamma=" + brain.getGamma() + 
+        String s = "alpha=" + brain.getAlpha() + " gamma=" + brain.getGamma() +
                 "\nlambda=" + brain.getLambda() + " rand=" + brain.getRandActions() +
-                "\nunip=" + isUnipolar()+"\n";
+                "\nunip=" + isUnipolar() + "\n";
 
         TreeMap<Integer, WeaponScore> newRanking = new TreeMap<Integer, WeaponScore>();
-        for (Map.Entry<Integer, WeaponScore> e : weaponRanking.entrySet())
-            newRanking.put(e.getKey(), e.getValue());
-        weaponRanking = newRanking;
-        
         for (Map.Entry<Integer, WeaponScore> e : weaponRanking.entrySet()) {
-            s += "\n"+CommFun.getGunName(e.getKey())+" : "+e.getValue().getScore();
+            newRanking.put(e.getKey(), e.getValue());
+        }
+        weaponRanking = newRanking;
+
+        for (Map.Entry<Integer, WeaponScore> e : weaponRanking.entrySet()) {
+            s += "\n" + CommFun.getGunName(e.getKey()) + " : " + e.getValue().getScore();
         }
         return s;
     }
-    
 
     public FiringDecision getFiringDecision() {
         Vector3f playerPos = bot.getBotPosition();
@@ -140,16 +143,19 @@ public class RLCombatModule extends Perception {
                 continue;
             }
 
-            if (ei.lastUpdateFrame + bot.cConfig.maxEnemyInfoAge4Firing < bot.getFrameNumber())
+            if (ei.lastUpdateFrame + bot.cConfig.maxEnemyInfoAge4Firing < bot.getFrameNumber()) {
                 continue;
+            }
 
             float dist = CommFun.getDistanceBetweenPositions(playerPos, ei.getObjectPosition());
             float error = ei.lastPredictionError;
 
-            if (dist > maxDist)
+            if (dist > maxDist) {
                 maxDist = dist;
-            if (error > maxError)
+            }
+            if (error > maxError) {
                 maxError = error;
+            }
 
             eligible.add(ei);
         }
@@ -183,7 +189,7 @@ public class RLCombatModule extends Perception {
         }
 
         updateRewards();
-        
+
         boolean reloading = bot.getWorld().getPlayer().getPlayerGun().isCoolingDown();
         Vector3f noFiringLook = fd.enemyInfo.predictedPos == null ? fd.enemyInfo.getObjectPosition() : fd.enemyInfo.predictedPos;
         if (reloading) {
@@ -221,12 +227,13 @@ public class RLCombatModule extends Perception {
             double rwd = actionReward;
             int cwpi = bot.getCurrentWeaponIndex();
             if (weaponRanking.get(cwpi) != null) {
-                rc = weaponRanking.get(cwpi).rewardsCount+1;
-                rwd = weaponRanking.get(cwpi).rewardsTotal+actionReward;
+                rc = weaponRanking.get(cwpi).rewardsCount + 1;
+                rwd = weaponRanking.get(cwpi).rewardsTotal + actionReward;
             }
             weaponRanking.put(cwpi, new WeaponScore(rwd, rc));
 
             BotStatistic.getInstance().addReward(bot.getBotName(), actionReward, bot.getFrameNumber());
+//            Dbg.prn(bot.getBotName()+"@"+bot.getFrameNumber()+" r="+actionReward);
             //choose new action and execute it
             perceive();
             brain.count();
@@ -236,18 +243,18 @@ public class RLCombatModule extends Perception {
 
 //        return getFiringInstructionsAtHitpoint(fd, 1);
 
-        return getNewPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(bot.getCurrentWeaponIndex()));
+//        return getNewPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(bot.getCurrentWeaponIndex()));
 
-//        switch (actionFireMode) {
-//            case Action.FIRE:
-//                return getFastFiringInstructions(fd, bot);
-//            case Action.FIRE_PREDICTED:
-//                return getNewPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(bot.getCurrentWeaponIndex()));
-//            default:
-//            case Action.NO_FIRE:
-//                return getNoFiringInstructions(noFiringLook);
-//        }
-//
+        switch (actionFireMode) {
+            case Action.FIRE:
+                return getFastFiringInstructions(fd, bot);
+            case Action.FIRE_PREDICTED:
+                return getNewPredictingFiringInstructions(bot, fd, bot.cConfig.getBulletSpeedForGivenGun(bot.getCurrentWeaponIndex()));
+            default:
+            case Action.NO_FIRE:
+                return getNoFiringInstructions(noFiringLook);
+        }
+
     }
 
     FiringInstructions getNoFiringInstructions(Vector3f enemyPos) {
@@ -263,7 +270,9 @@ public class RLCombatModule extends Perception {
 
         //Calculate the time to hit
         double timeToHit = getTimeToHit(bulletSpeed, playerPos, enemyPos, fd.enemyInfo.predictedPos);
-	if (timeToHit <= 1.5) timeToHit = 1f;
+        if (timeToHit <= 1.5) {
+            timeToHit = 1f;
+        }
 
         //We add to enemy position the movement that the enemy is predicted to do in timeToHit.
         Vector3f hitPoint = CommFun.cloneVector(enemyPos);
@@ -275,7 +284,7 @@ public class RLCombatModule extends Perception {
         return new FiringInstructions(CommFun.getNormalizedDirectionVector(playerPos, hitPoint));
     }
 
-     /**
+    /**
      * * Point the enemy and shoot.
      * @param fd
      * @param playerPos
@@ -290,7 +299,7 @@ public class RLCombatModule extends Perception {
 
     public static double getTimeToHit(double bulletSpeed, Vector3f playerPos, Vector3f enemyPos, Vector3f enemyPredictedPos) {
 
-         double d = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
+        double d = CommFun.getDistanceBetweenPositions(playerPos, enemyPos);
         double v = bulletSpeed;
         double u = CommFun.getDistanceBetweenPositions(enemyPos, enemyPredictedPos);
 
@@ -317,7 +326,7 @@ public class RLCombatModule extends Perception {
 
     private void executeAction(Action action) {
         actionFireMode = action.getShootingMode();
-        
+
         if (Action.isProhibited(action)) {
             return;
         }
@@ -333,7 +342,7 @@ public class RLCombatModule extends Perception {
         if (bot.scoreCounter.getBotScore() > bot.lastBotScore) {
             bot.lastBotScore = bot.scoreCounter.getBotScore();
             //TODO: moze dac to do innego shootingu? Np. tego ktory ma hitpoint na teraz
-            actionReward += 0.3;
+            actionReward += 1;
         }
 //            Dbg.prn("");
         LinkedList<Shooting> toDelete = new LinkedList<Shooting>();
@@ -341,7 +350,7 @@ public class RLCombatModule extends Perception {
 
             int damage = HitsReporter.wasHitInGivenPeriod(s.shotTime + 1, s.hitTime + 2, s.enemyName);
             if (damage > 0) {
-                actionReward += (damage / 100d) * 0.3;
+                actionReward += (damage / 100d) * 0.2;
                 toDelete.add(s);
 //                System.out.println(bot.getBotName()+" got shooting rwd - "+actionReward);
             } else if (s.hitTime + 4 < bot.getFrameNumber()) {

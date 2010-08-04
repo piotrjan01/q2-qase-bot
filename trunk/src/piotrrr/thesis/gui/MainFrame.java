@@ -10,11 +10,24 @@
  */
 package piotrrr.thesis.gui;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
@@ -33,6 +46,8 @@ import piotrrr.thesis.common.jobs.GlobalKillsStatsJob;
 import piotrrr.thesis.common.jobs.DebugStepJob;
 import piotrrr.thesis.common.stats.BotStatistic;
 import piotrrr.thesis.common.stats.StatsChartsFactory;
+
+import piotrrr.thesis.tools.Dbg;
 import soc.qase.tools.vecmath.Vector3f;
 
 /**
@@ -134,6 +149,21 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         botStateInfoTextArea1 = new javax.swing.JTextArea();
+        jPanel16 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        mapsList = new javax.swing.JList();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        bot1List = new javax.swing.JList();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        bot2List = new javax.swing.JList();
+        jLabel18 = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        nrOfGamesList = new javax.swing.JList();
+        jLabel19 = new javax.swing.JLabel();
+        startExperimentButton = new javax.swing.JButton();
         jPanel13 = new javax.swing.JPanel();
         refreshButton = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
@@ -141,8 +171,8 @@ public class MainFrame extends javax.swing.JFrame {
         killsByTypejPanel14 = new javax.swing.JPanel();
         deathsByTypejPanel14 = new javax.swing.JPanel();
         weaponsjPanel14 = new javax.swing.JPanel();
-        killsePerDeathjPanel14 = new javax.swing.JPanel();
         whoKillsWhomjPanel14 = new javax.swing.JPanel();
+        killsePerDeathjPanel14 = new javax.swing.JPanel();
         rewardPanel16 = new javax.swing.JPanel();
         avgRewardjPanel16 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -150,6 +180,9 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         statsInfo = new javax.swing.JTextArea();
         jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        statsSourcejLabel16 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bot Debugging");
@@ -889,6 +922,127 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Info & Control", jPanel6);
 
+        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder("Options"));
+
+        mapsList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "q2dm1", "map1", "map2" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        mapsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        mapsList.setSelectedIndex(1);
+        jScrollPane5.setViewportView(mapsList);
+
+        jLabel16.setText("Map");
+
+        jLabel17.setText("Bot1");
+
+        bot1List.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "ReferenceBot", "RLBot", "NoRLBot" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        bot1List.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        bot1List.setSelectedIndex(0);
+        jScrollPane6.setViewportView(bot1List);
+
+        bot2List.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "ReferenceBot", "RLBot", "NoRLBot" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        bot2List.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        bot2List.setSelectedIndex(1);
+        jScrollPane7.setViewportView(bot2List);
+
+        jLabel18.setText("Bot2");
+
+        nrOfGamesList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "1", "2", "3", "4", "5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        nrOfGamesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        nrOfGamesList.setSelectedIndex(2);
+        jScrollPane8.setViewportView(nrOfGamesList);
+
+        jLabel19.setText("Nr of games");
+
+        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
+        jPanel17.setLayout(jPanel17Layout);
+        jPanel17Layout.setHorizontalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane8)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel17Layout.setVerticalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel17Layout.createSequentialGroup()
+                        .addComponent(jLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel17Layout.createSequentialGroup()
+                        .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane7)
+                            .addComponent(jScrollPane6)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        startExperimentButton.setText("Start");
+        startExperimentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startExperimentButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
+        jPanel16.setLayout(jPanel16Layout);
+        jPanel16Layout.setHorizontalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startExperimentButton))
+                .addContainerGap(449, Short.MAX_VALUE))
+        );
+        jPanel16Layout.setVerticalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(startExperimentButton)
+                .addContainerGap(345, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Run Experiment", jPanel16);
+
         refreshButton.setText("Refresh");
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -908,11 +1062,11 @@ public class MainFrame extends javax.swing.JFrame {
         weaponsjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("weapons by bot", weaponsjPanel14);
 
-        killsePerDeathjPanel14.setLayout(new java.awt.GridLayout(1, 0));
-        jTabbedPane2.addTab("kills per death", killsePerDeathjPanel14);
-
         whoKillsWhomjPanel14.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("who kills whom", whoKillsWhomjPanel14);
+
+        killsePerDeathjPanel14.setLayout(new java.awt.GridLayout(1, 0));
+        jTabbedPane2.addTab("kills per death", killsePerDeathjPanel14);
 
         rewardPanel16.setLayout(new java.awt.GridLayout(1, 0));
         jTabbedPane2.addTab("reward", rewardPanel16);
@@ -940,6 +1094,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel14.setText("Stats info");
 
+        jLabel15.setText("Stats source:");
+
+        statsSourcejLabel16.setText("none");
+
+        jButton5.setText("Load game stats");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
@@ -949,14 +1114,23 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(refreshButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(refreshButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
+                            .addComponent(jButton5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel14))
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(statsSourcejLabel16)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -970,13 +1144,18 @@ public class MainFrame extends javax.swing.JFrame {
                             .addComponent(refreshButton)
                             .addComponent(jButton1)
                             .addComponent(jButton2))
-                        .addGap(37, 37, 37))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel15)
+                            .addComponent(statsSourcejLabel16)
+                            .addComponent(jButton5))
+                        .addGap(11, 11, 11))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel14)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1006,14 +1185,13 @@ public class MainFrame extends javax.swing.JFrame {
         if (dbgBot != null) {
             return;
         }
-        RLBot bot = new RLBot("RLBot-dbg", AppConfig.skinName);
+        RLBot bot = new RLBot("RLBot-dbg", AppConfig.altSkinName);
         bot.connect(AppConfig.serverIP, AppConfig.serverPort);
         stepJob = new DebugStepJob(bot, this);
         bot.addBotJob(stepJob);
         bot.addBotJob(new GlobalKillsStatsJob(bot));
+        gameStats = BotStatistic.createNewInstance();
         dbgBot = bot;
-        stats = BotStatistic.createNewInstance();
-        stats.statsInfo = getStatsDescription();
     }//GEN-LAST:event_connectDebugedButtonActionPerformed
 
     private void connectOthersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectOthersButtonActionPerformed
@@ -1050,6 +1228,11 @@ public class MainFrame extends javax.swing.JFrame {
             b.disconnect();
         }
         bots.clear();
+        
+        for (Process p : childProcesses) p.destroy();
+        childProcesses.clear();
+
+        AppConfig.writeConfig();
     }//GEN-LAST:event_formWindowClosing
 
     private void pauseAnotherBotsToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseAnotherBotsToggleActionPerformed
@@ -1157,43 +1340,50 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_disconnectSelectedButton1ActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        if (stats == null) {
+        if (currentStats == null) {
+            statsSourcejLabel16.setText("none");
             return;
         }
+        if (currentStats == loadedStats) {
+            statsSourcejLabel16.setText("from file");
+        }
+        if (currentStats == gameStats) {
+            statsSourcejLabel16.setText("from a game");
+            currentStats.statsInfo = getStatsDescription();
+        }
 
-        stats.statsInfo = getStatsDescription();
-        statsInfo.setText(stats.statsInfo);
+        statsInfo.setText(currentStats.statsInfo);
 
         killsPanel14.removeAll();
-        killsPanel14.add(StatsChartsFactory.getKillsInTimeByBot(stats));
+        killsPanel14.add(StatsChartsFactory.getKillsInTimeByBot(currentStats));
         killsPanel14.revalidate();
 
         killsByTypejPanel14.removeAll();
-        killsByTypejPanel14.add(StatsChartsFactory.getKillsInTimeByBotType(stats));
+        killsByTypejPanel14.add(StatsChartsFactory.getKillsInTimeByBotType(currentStats));
         killsByTypejPanel14.revalidate();
 
         deathsByTypejPanel14.removeAll();
-        deathsByTypejPanel14.add(StatsChartsFactory.getDeathsInTimeByBotType(stats));
+        deathsByTypejPanel14.add(StatsChartsFactory.getDeathsInTimeByBotType(currentStats));
         deathsByTypejPanel14.revalidate();
 
         weaponsjPanel14.removeAll();
-        weaponsjPanel14.add(StatsChartsFactory.getWeaponUseageByBotBarChart(stats));
+        weaponsjPanel14.add(StatsChartsFactory.getWeaponUseageByBotBarChart(currentStats));
         weaponsjPanel14.revalidate();
 
         killsePerDeathjPanel14.removeAll();
-        killsePerDeathjPanel14.add(StatsChartsFactory.getKillsPerEachDeathByBotType(stats));
+        killsePerDeathjPanel14.add(StatsChartsFactory.getKillsPerEachDeathByBotType(currentStats));
         killsePerDeathjPanel14.revalidate();
 
         whoKillsWhomjPanel14.removeAll();
-        whoKillsWhomjPanel14.add(StatsChartsFactory.getWhoKillsWhomBarChart(stats));
+        whoKillsWhomjPanel14.add(StatsChartsFactory.getWhoKillsWhomBarChart(currentStats));
         whoKillsWhomjPanel14.revalidate();
 
         rewardPanel16.removeAll();
-        rewardPanel16.add(StatsChartsFactory.getRewardsInTimeByEachBot(stats));
+        rewardPanel16.add(StatsChartsFactory.getRewardsInTimeByEachBot(currentStats));
         rewardPanel16.revalidate();
 
         avgRewardjPanel16.removeAll();
-        avgRewardjPanel16.add(StatsChartsFactory.getAvgRewardsChart(stats));
+        avgRewardjPanel16.add(StatsChartsFactory.getAvgRewardsChart(currentStats));
         avgRewardjPanel16.revalidate();
 
 
@@ -1205,7 +1395,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (stats == null) {
+        if (currentStats == null) {
             return;
         }
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
@@ -1213,7 +1403,7 @@ public class MainFrame extends javax.swing.JFrame {
         fc.setDialogTitle("Save current statistics");
         fc.showOpenDialog(this);
         System.out.println("Saving stats to file: " + fc.getSelectedFile());
-        stats.saveToFile(fc.getSelectedFile().getPath());
+        currentStats.saveToFile(fc.getSelectedFile().getPath());
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1223,7 +1413,8 @@ public class MainFrame extends javax.swing.JFrame {
         fc.setDialogTitle("Open statistics");
         fc.showOpenDialog(this);
         System.out.println("Reading stats from file: " + fc.getSelectedFile());
-        stats = BotStatistic.readFromFile(fc.getSelectedFile().getPath());
+        loadedStats = BotStatistic.readFromFile(fc.getSelectedFile().getPath());
+        currentStats = loadedStats;
         refreshButtonActionPerformed(null);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -1234,7 +1425,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void connectRLBotsjButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectRLBotsjButton2ActionPerformed
         int num = Integer.parseInt(nrOfRLtBotsTextField3.getText());
         for (int i = 0; i < num; i++) {
-            RLBot bot = new RLBot("RLBot-" + i, AppConfig.skinName);
+            RLBot bot = new RLBot("RLBot-" + i, AppConfig.altSkinName);
             bot.dtalk.active = false;
             bot.connect(AppConfig.serverIP, AppConfig.serverPort);
             bots.add(bot);
@@ -1272,16 +1463,97 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void applyConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyConfigButtonActionPerformed
         AppConfig.quakePath = quakePathjTextField2.getText();
-        System.setProperty("QUAKE2", AppConfig.quakePath);
         AppConfig.serverIP = serverIPjTextField4.getText();
-        MapBotBase.MAPS_DIR = botMapsPathjTextField3.getText() + "\\";
+        AppConfig.botMapsDir = botMapsPathjTextField3.getText() + "\\";
+        System.setProperty("QUAKE2", AppConfig.quakePath);
+        AppConfig.writeConfig();
     }//GEN-LAST:event_applyConfigButtonActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (gameStats == null) {
+            gameStats = BotStatistic.createNewInstance();
+        }
+        currentStats = gameStats;
+        refreshButtonActionPerformed(evt);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private MapBotBase connectBotByListOption(String option, int nr, int port) {
+        MapBotBase bot = null;
+        if (option.equals("ReferenceBot")) {
+            Dbg.prn("connecting rfrnc");
+            bot = new ReferenceBot(option + "-" + nr, AppConfig.skinName);
+
+        } else if (option.equals("RLBot")) {
+            Dbg.prn("connecting rlbot learing");
+            bot = new RLBot(option + "-" + nr, AppConfig.altSkinName);
+
+        } else if (option.equals("NoRLBot")) {
+            Dbg.prn("connecting rlbot rubbing the mint");
+            bot = new RLBot(option + "-" + nr, AppConfig.altSkinName);
+            ((RLBot) bot).combatModule.brain.setAlpha(0.0);
+            ((RLBot) bot).combatModule.brain.setRandActions(0.99);
+        }
+        bot.connect(AppConfig.serverIP, port);
+        return bot;
+    }
+
+    private void runLocalQ2Server(int port, String mapName) {
+        String cmd = AppConfig.quakePath + "\\quake2.exe +set dedicated 1 +set deathmatch 1 +set maxclients 32 +map "+mapName+" +set cheats 1 +set port " + port;
+        String batName = "run" + port + ".bat";
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(batName));
+            pw.println("cd " + AppConfig.quakePath);
+            pw.println(cmd);
+            pw.println();
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Process p = Runtime.getRuntime().exec(batName);
+            childProcesses.add(p);
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    private void startExperimentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startExperimentButtonActionPerformed
+        int gamesNr = Integer.parseInt(nrOfGamesList.getSelectedValue().toString());
+        String b1 = bot1List.getSelectedValue().toString();
+        String b2 = bot2List.getSelectedValue().toString();
+
+        String mapName = mapsList.getSelectedValue().toString();
+
+        gameStats = BotStatistic.createNewInstance();
+
+        for (int i = 0; i < gamesNr; i++) {
+            runLocalQ2Server(AppConfig.serverPort + i, mapName);
+            sleep(1000);
+            MapBotBase bot1 = connectBotByListOption(b1, i, AppConfig.serverPort + i);
+            bot1.addBotJob(new GlobalKillsStatsJob(bot1));
+            bots.add(bot1);
+            sleep(1000);
+            MapBotBase bot2 = connectBotByListOption(b2, i, AppConfig.serverPort + i);
+            bots.add(bot2);
+            sleep(1000);
+        }
+        Dbg.prn("gamesNr: " + gamesNr);
+    }//GEN-LAST:event_startExperimentButtonActionPerformed
+
+    private void sleep(int milis) {
+        try {
+            Thread.sleep(milis);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        System.setProperty("QUAKE2", AppConfig.quakePath);
+        AppConfig.readConfig();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -1306,6 +1578,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton allEntsRadioButton1;
     private javax.swing.JButton applyConfigButton;
     private javax.swing.JPanel avgRewardjPanel16;
+    private javax.swing.JList bot1List;
+    private javax.swing.JList bot2List;
     private javax.swing.JTextField botMapsPathjTextField3;
     private javax.swing.JTextArea botStateInfoTextArea1;
     private javax.swing.JButton connectDebugedButton;
@@ -1326,12 +1600,18 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1348,6 +1628,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1360,16 +1642,22 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel killsByTypejPanel14;
     private javax.swing.JPanel killsPanel14;
     private javax.swing.JPanel killsePerDeathjPanel14;
+    private javax.swing.JList mapsList;
     private javax.swing.JTextArea messages;
     private javax.swing.JScrollPane messagesScrollPane1;
     private javax.swing.JRadioButton navPlanRadioButton;
     private javax.swing.JTextField nrBotsField;
+    private javax.swing.JList nrOfGamesList;
     private javax.swing.JTextField nrOfRLtBotsTextField3;
     private javax.swing.JTextField nrOfSmartBotsTextField2;
     private javax.swing.JPanel panelRunBots;
@@ -1385,7 +1673,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton sendCommandToAnothersButton;
     private javax.swing.JButton sendCommandToDBGButton;
     private javax.swing.JTextField serverIPjTextField4;
+    private javax.swing.JButton startExperimentButton;
     private javax.swing.JTextArea statsInfo;
+    private javax.swing.JLabel statsSourcejLabel16;
     private javax.swing.JButton stepButton1;
     private javax.swing.JTextField stepSizeTextField2;
     private javax.swing.JRadioButton visibleEntsRadioButton2;
@@ -1394,12 +1684,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel whoKillsWhomjPanel14;
     // End of variables declaration//GEN-END:variables
     private RLBot dbgBot = null;
-    private BotStatistic stats = null;
+    private BotStatistic currentStats = null;
+    private BotStatistic gameStats = null;
+    private BotStatistic loadedStats = null;
     private Vector<MapBotBase> bots = new Vector<MapBotBase>();
     private Vector<GameObject> requiredList = new Vector<GameObject>();
     private DebugStepJob stepJob = null;
     private MainFrameUpdater updater = null;
-
+    private LinkedList<Process> childProcesses = new LinkedList<Process>();
+    
     public JTextArea getMessagesTextArea() {
         return messages;
     }
@@ -1463,8 +1756,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
             reqListValueChanged(null);
             botStateInfoTextArea1.setText(dbgBot.toDetailedString());
-            if (stats != null)
-                statsInfo.setText(stats.statsInfo);
+            if (currentStats != null) {
+                statsInfo.setText(currentStats.statsInfo);
+            }
         }
 
         updateBotsList();
@@ -1492,15 +1786,30 @@ public class MainFrame extends javax.swing.JFrame {
         Thread t = new Thread(updater);
         t.start();
     }
+    Date programStartDate = new java.util.Date();
+
+    private String getCurrentMapName() {
+        if (dbgBot != null) {
+            return dbgBot.getMapName();
+        }
+        for (MapBotBase b : bots) {
+            return b.getMapName();
+        }
+        return "no game running!";
+    }
 
     private String getStatsDescription() {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        Date d = new java.util.Date();
-        String ret = "date: " + dateFormat.format(d) + "\n" +
-                "map: " + dbgBot.getMapName() + "\n";
 
-        if (dbgBot != null) ret += "\n"+dbgBot.toDetailedString();
-        for (MapBotBase b : bots) ret += "\n"+b.toDetailedString();
+        String ret = "date: " + dateFormat.format(programStartDate) + "\n" +
+                "map: " + getCurrentMapName() + "\n";
+
+        if (dbgBot != null) {
+            ret += "\n" + dbgBot.toDetailedString();
+        }
+        for (MapBotBase b : bots) {
+            ret += "\n" + b.toDetailedString();
+        }
 
         return ret;
 
