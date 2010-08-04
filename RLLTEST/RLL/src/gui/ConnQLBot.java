@@ -7,6 +7,7 @@ package gui;
 
 import pl.gdan.elsy.qconf.Brain;
 import pl.gdan.elsy.qconf.Perception;
+import pl.gdan.elsy.tool.Rand;
 import rll.RLAction;
 import testenv.Action;
 import testenv.Distance;
@@ -25,7 +26,7 @@ public class ConnQLBot extends Perception implements Bot {
     //WPN_HYPERBLASTER, WPN_RAILGUN, WPN_BFG10K;
 
 
-    Brain b;
+    Brain brain;
 
     double lastReward = 0;
 
@@ -38,12 +39,14 @@ public class ConnQLBot extends Perception implements Bot {
         int i=0;
         for (Action a : Action.values())
             acts[i++] = new TestAction(a);
-        b = new Brain(this,acts);
-        b.setAlpha(0.2);
-        b.setGamma(0.7);
-        b.setLambda(0.9);
-        b.setUseBoltzmann(true);
-        b.setTemperature(0.02);
+        brain = new Brain(this,acts);
+        brain.setAlpha(0.6); //learning rate
+        brain.setGamma(0.1); //discounting rate
+        brain.setLambda(0.999); //trace forgetting
+//        b.setUseBoltzmann(true);
+//        b.setTemperature(0.001);
+        brain.setRandActions(0.2); //exploration
+      
     }
 
 
@@ -52,8 +55,8 @@ public class ConnQLBot extends Perception implements Bot {
         lastReward = state.getLastReward();
         lastState = state;
         perceive();
-        b.count();
-        return acts[b.getAction()];
+        brain.count();
+        return acts[brain.getAction()];
     }
 
     @Override

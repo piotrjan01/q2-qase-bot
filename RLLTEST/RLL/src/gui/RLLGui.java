@@ -60,7 +60,7 @@ public class RLLGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        stepsTextField.setText("5000");
+        stepsTextField.setText("2000");
         stepsTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stepsTextFieldActionPerformed(evt);
@@ -84,11 +84,11 @@ public class RLLGui extends javax.swing.JFrame {
             }
         });
 
-        betaTextField1.setText("0.6");
+        betaTextField1.setText("0.2");
 
         gammajTextField2.setText("0.9");
 
-        explorationTextField3.setText("0.2");
+        explorationTextField3.setText("0.1");
 
         jLabel1.setText("gamma");
 
@@ -103,7 +103,7 @@ public class RLLGui extends javax.swing.JFrame {
             }
         });
 
-        experimentsTextField1.setText("5");
+        experimentsTextField1.setText("25");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -179,11 +179,11 @@ public class RLLGui extends javax.swing.JFrame {
 
         resetRewardInTimeChart();
 
-        doTheExperiment(rcRand, new RandomBot(), experiments, steps);
+//        doTheExperiment(rcRand, new RandomBot(), experiments, steps);
 
         doTheExperiment(rcRef, new ReferenceBot(), experiments, steps);
 
-        doTheExperiment(rcRL, new QLearningBot(), experiments, steps);
+//        doTheExperiment(rcRL, new QLearningBot(), experiments, steps);
 
         doTheExperiment(rcCRL, new ConnQLBot(), experiments, steps);
 
@@ -216,7 +216,9 @@ public class RLLGui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new RLLGui().setVisible(true);
+                RLLGui gui = new RLLGui();
+                gui.setVisible(true);
+                gui.resetNRunjButton2ActionPerformed(null);
             }
         });
     }
