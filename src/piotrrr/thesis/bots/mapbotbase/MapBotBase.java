@@ -1,6 +1,7 @@
 package piotrrr.thesis.bots.mapbotbase;
 
 
+import piotrrr.thesis.bots.AppConfig;
 import piotrrr.thesis.bots.botbase.BotBase;
 import piotrrr.thesis.bots.tuning.CombatConfig;
 import piotrrr.thesis.bots.tuning.WeaponConfig;
@@ -27,10 +28,6 @@ import soc.qase.tools.vecmath.Vector3f;
  */
 public class MapBotBase extends BotBase {
 	
-	/**
-	 * The directory where bot's maps are stored. Relative to main directory.
-	 */
-	public static String MAPS_DIR = "H:\\workspace\\inzynierka\\SmartBot\\botmaps\\";
 	
 	/**
 	 * Bot's Knowledge Base about the environment and items it can pick up.
@@ -114,7 +111,7 @@ public class MapBotBase extends BotBase {
 		if (botPaused) return;
 		
 		if (kb == null) { 
-			kb = WorldKB.createKB(MAPS_DIR+getMapName(), this);
+			kb = WorldKB.createKB(AppConfig.botMapsDir+getMapName(), this);
 			assert kb != null;
 			dtalk.addToLog("KB loaded!");
 		}
