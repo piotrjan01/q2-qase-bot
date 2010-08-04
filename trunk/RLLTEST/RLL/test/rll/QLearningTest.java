@@ -9,7 +9,7 @@ import gui.Bot;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import testenv.Actions;
+import testenv.Action;
 import testenv.Distance;
 import testenv.Gun;
 import testenv.TestAction;
@@ -23,9 +23,9 @@ import testenv.WorldState;
 public class QLearningTest {
 
 
-    TestAction f = new TestAction(Actions.fire, null);
-    TestAction nf = new TestAction(Actions.nofire , null);
-    TestAction ch = new TestAction(Actions.changeWpn , null);
+    TestAction f = new TestAction(Action.fire, null);
+    TestAction nf = new TestAction(Action.nofire , null);
+    TestAction ch = new TestAction(Action.changeWpn , null);
 
     WorldState cl_shtg = new WorldState(Distance.Close, Gun.WPN_SHOTGUN);
     WorldState fr_shtg = new WorldState(Distance.Far, Gun.WPN_SHOTGUN);

@@ -42,15 +42,16 @@ public class Environment {
                 g = Gun.valueOf(a.name());
                 if (newState.ownedGuns.ownsGun(g))
                     newState.currentGun = g;
+                else newState.currentGun = Gun.WPN_BLASTER;
         }
 
         double reward = g.getAccuracy()*g.getDamage()/g.getReloadingTime();
-        reward *= getRandValFromRange(0, 0.13);
+        reward *= getRandValFromRange(-0.01, 0.13);
         newState.lastReward = reward;
 
                 
 
-        if (getRandBool(0.3)) {
+        if (getRandBool(0.05)) {
             prn("Env changes");
             randomizeState(newState);
         }
