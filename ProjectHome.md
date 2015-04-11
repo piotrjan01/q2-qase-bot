@@ -1,0 +1,1 @@
+This project is a part of my engineering thesis. The task is to implement intelligent, learning agent capable of playing FPS computer game.
